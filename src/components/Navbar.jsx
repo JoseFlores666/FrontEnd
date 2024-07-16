@@ -85,8 +85,8 @@ export function Navbar() {
                   <li className="me-2">
                     <Link
                       to="/tecnico/:id"
-                      className={` p-4  rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-blue-600 ${activeLink === "/tecnico" ? "text-blue-600 " : "text-gray-900 dark:text-white"}`}
-                      onClick={() => setActiveLink("/tecnic/:id")}
+                      className={` p-4  rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-blue-600 ${activeLink === "/tecnico/:id" ? "text-blue-600 " : "text-gray-900 dark:text-white"}`}
+                      onClick={() => setActiveLink("/tecnico/:id")}
                     >
                       Registrar Orden
                     </Link>

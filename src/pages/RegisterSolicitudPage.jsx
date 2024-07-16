@@ -557,7 +557,7 @@ export const RegisterSolicitudPage = () => {
                 <tbody className="[&_tr:last-child]:border-0 border-gray-400">
                   {items.map((item, index) => (
                     <tr key={index} className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted border-gray-400">
-                      <td className="p-4 align-middle border border-gray-400">
+                      <td className="p-2 align-middle border border-gray-400">
                         <div className="flex justify-center">
                           <input
                             className="h-10 w-full text-center rounded-md border border-input px-3 py-2 border-gray-400 bg-gray-50 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
@@ -606,13 +606,13 @@ export const RegisterSolicitudPage = () => {
                             type: "text",
                             maxLength: 200,
                             name: `items[${index}][descripcion]`,
-                            className: "w-full text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
+                            className: "w-full resize-none text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
                             onBlur: () => setValue(`items[${index}].descripcion`, item.descripcion, { shouldValidate: true })
                           }}
                         />
                       </td>
-                      <td className="p-4 align-middle text-right border border-gray-400">
-                        <div className="flex items-center justify-center space-x-2">
+                      <td className="border border-gray-400">
+                        <div className="flex items-center justify-center">
                           <button
                             onClick={(e) => eliminarItem(index, e)}
                             className="inline-flex text-red-500 hover:text-red-700 items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10"
@@ -632,7 +632,7 @@ export const RegisterSolicitudPage = () => {
             <div className="p-4 bg-white border-b border-r border-l border-gray-400 rounded-b-md">
               <button
                 onClick={(e) => agregarItem(e)}
-                className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background focus-visible:ring-ring border-input bg-background hover:bg-gray-500 hover:text-white border-gray-200 ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-white h-10 px-4 py-2 w-full"              >
+                className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background focus-visible:ring-ring border-input bg-background hover:bg-green-600 hover:text-white border-gray-200 ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-white h-10 px-4 py-2 w-full">
                 Agregar más
               </button>
             </div>
@@ -655,7 +655,7 @@ export const RegisterSolicitudPage = () => {
                 type: "text",
                 maxLength: 200,
                 name: `justificacion`,
-                className: "w-full text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
+                className: "w-full resize-none text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
                 onBlur: () => setValue(`justificacion`, justificacion, { shouldValidate: true })
               }}
             />

@@ -90,7 +90,7 @@ export const Firmas = () => {
                   inputProps={{
                     type: "text",
                     maxLength: 200,
-                    className: "w-full text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
+                    className: "w-full resize-none text-center text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
                   }}
                 />
 
@@ -111,7 +111,7 @@ export const Firmas = () => {
                   inputProps={{
                     type: "text",
                     maxLength: 200,
-                    className: "w-full text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
+                    className: "w-full resize-none text-center text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
                   }}
                 />
 
@@ -134,7 +134,7 @@ export const Firmas = () => {
                   inputProps={{
                     type: "text",
                     maxLength: 200,
-                    className: "w-full text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
+                    className: "w-full resize-none text-center text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
                   }}
                 />
               </div>
@@ -153,7 +153,7 @@ export const Firmas = () => {
                   inputProps={{
                     type: "text",
                     maxLength: 200,
-                    className: "w-full text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
+                    className: "w-full resize-none text-center text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
                   }}
                 />
               </div>

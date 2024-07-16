@@ -188,7 +188,7 @@ export function SolicitudTable({ }) {
           </div>
         </div>
         <div>
-          <label htmlFor="entries-per-page" className="mr-2 text-black">Entradas por página:</label>
+          <label htmlFor="entries-per-page" className="mr-2 text-white">Entradas por página:</label>
           <select
             id="entries-per-page"
             className="p-1 border border-black rounded-lg text-black"

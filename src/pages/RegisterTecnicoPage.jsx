@@ -144,8 +144,6 @@ export const RegisterTecnicoPage = () => {
     window.open(url, '_blank', features);
   };
 
-
-
   return (
     <div className="mx-auto max-w-5xl p-4 text-black shadow-md">
       <form onSubmit={handleSubmit(onSubmit)} className="slide-down">
@@ -312,7 +310,7 @@ export const RegisterTecnicoPage = () => {
               inputProps={{
                 type: "text",
                 maxLength: 200,
-                className: "w-full text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
+                className: "w-full resize-none text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
               }}
             />
             <input name="descripcion" id="descripcion" type="hidden" value={descripcion} />
@@ -375,6 +373,7 @@ export const RegisterTecnicoPage = () => {
                       <button type="submit" style={{ all: 'unset', cursor: 'pointer' }}>
                         <img
                           src={imgPDF}
+                          style={{ width: '200px', height: '200px' }}
                           onClick={() => setClickedPDF(true)}
                         />
                       </button>

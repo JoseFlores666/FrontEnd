@@ -9,6 +9,7 @@ import { ImFileEmpty } from "react-icons/im";
 export const TecnicoPage = () => {
 
   const { getInfo, info, eliminarInfo } = useSoli();
+  const [selectedId, setSelectedId] = useState(null);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -136,11 +137,16 @@ export const TecnicoPage = () => {
     <div className="overflow-x-auto p-4">
       <div className="mb-1 flex justify-between items-center">
         <div className="relative">
+          <div className="absolute inset-y-0 left-0 flex items-center ps-3 pointer-events-none">
+            <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd"></path>
+            </svg>
+          </div>
           <input
             type="text"
             id="table-search"
             className="block p-2 ps-10 text-sm text-black border border-black rounded-lg w-80 bg-white focus:ring-blue-500 focus:border-blue-500"
-            placeholder="Buscar"
+            placeholder="Search for items"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -154,7 +160,7 @@ export const TecnicoPage = () => {
           )}
         </div>
         <div>
-          <label htmlFor="entries-per-page" className="mr-2 text-black">Entradas por página:</label>
+          <label htmlFor="entries-per-page" className="mr-2 text-white">Entradas por página:</label>
           <select
             id="entries-per-page"
             className="p-1 border border-black rounded-lg text-black"
@@ -233,22 +239,50 @@ export const TecnicoPage = () => {
         </tbody>
       </table>
 
-      <div className="flex justify-between items-center mt-4 text-white" >
-        <span>
-          Página {currentPage} de {Math.ceil(filteredSolicitudes.length / solicitudesPerPage)}
+      <nav aria-label="Page navigation example" className="flex items-center justify-between pt-4">
+        <span className="text-sm font-normal text-white dark:text-black-400">
+          Mostrando <span className="font-semibold text-white black:text-black">{indexOfFirstSolicitud + 1}-{indexOfLastSolicitud}</span> Total de Solicitudes: <span className="font-semibold text-white dark:text-white">{filteredSolicitudes.length}</span>
         </span>
-        <div className="flex space-x-2">
-          {Array.from({ length: Math.ceil(filteredSolicitudes.length / solicitudesPerPage) }, (_, index) => (
+        <ul className="inline-flex items-center -space-x-px h-8 text-sm">
+          <li>
             <button
-              key={index + 1}
-              onClick={() => paginate(index + 1)}
-              className={`px-3 py-1 border rounded ${currentPage === index + 1 ? 'bg-black text-white' : 'bg-white text-black'}`}
+              onClick={() => paginate(currentPage > 1 ? currentPage - 1 : 1, selectedId)}
+              className={`flex items-center justify-center px-3 h-8 leading-tight ${currentPage === 1
+                ? "text-gray-400 border-gray-300 cursor-not-allowed" : "text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+                } dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white`}
             >
-              {index + 1}
+              <span className="sr-only">Previous</span>
+              <svg className="w-2.5 h-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 1 1 5l4 4" />
+              </svg>
             </button>
+          </li>
+          {Array.from({ length: Math.ceil(filteredSolicitudes.length / solicitudesPerPage) }, (_, i) => (
+            <li key={i}>
+              <button
+                onClick={() => paginate(i + 1, selectedId)}
+                className={`flex items-center justify-center px-3 h-8 leading-tight ${currentPage === i + 1
+                  ? "text-black border border-black bg-blue-400 hover:bg-blue hover:text-black" : "text-black bg-white border border-black hover:bg-gray-100 hover:text-gray-700"}`}
+              >
+                {i + 1}
+              </button>
+            </li>
           ))}
-        </div>
-      </div>
+          <li>
+            <button
+              onClick={() => paginate(currentPage < Math.ceil(filteredSolicitudes.length / solicitudesPerPage) ? currentPage + 1 : currentPage, selectedId)}
+              className={`flex items-center justify-center px-3 h-8 leading-tight ${currentPage === Math.ceil(filteredSolicitudes.length / solicitudesPerPage)
+                ? "text-gray-400 border-gray-300 cursor-not-allowed" : "text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+                } dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white`}
+            >
+              <span className="sr-only">Next</span>
+              <svg className="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 9 4-4-4-4" />
+              </svg>
+            </button>
+          </li>
+        </ul>
+      </nav>
       {isModalOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
