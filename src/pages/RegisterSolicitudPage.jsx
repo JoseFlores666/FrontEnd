@@ -12,7 +12,6 @@ import { faTrashAlt, faClone } from '@fortawesome/free-solid-svg-icons';
 import "../css/Animaciones.css";
 import { AutocompleteInput } from "../components/ui/AutocompleteInput";
 
-
 export const RegisterSolicitudPage = () => {
   const {
     register,
@@ -54,7 +53,6 @@ export const RegisterSolicitudPage = () => {
 
   const [clickedPDF, setClickedPDF] = useState(false);
 
-
   const [projectsLoaded, setProjectsLoaded] = useState(false);
   const [fetchActivitiesFlag, setFetchActivitiesFlag] = useState(false);
   const [solicitudLoaded, setSolicitudLoaded] = useState(false);
@@ -73,10 +71,10 @@ export const RegisterSolicitudPage = () => {
   const { crearmySoli, getIdsProyect, ids, getIdsProyectYAct, idsAct = [], unasoli, traeFolioInterno, myFolioInterno, actializarSoli, getunSolitud, getFirmas, nombresFirmas, } = useSoli();
   const { traeHistorialSoli, historialSoli, } = useSoli();
 
-
   const handleCloseModal = () => {
     setIsOpen(false);
   };
+
   const guardarDatos = () => {
     if (
       !fecha ||
@@ -114,7 +112,7 @@ export const RegisterSolicitudPage = () => {
 
       console.log(datosSolicitud);
       crearmySoli(datosSolicitud);
-      // limpiarDatos();
+      limpiarDatos();
       localStorage.setItem("datosSolicitud", JSON.stringify(datosSolicitud));
 
       Swal.fire({
@@ -316,8 +314,11 @@ export const RegisterSolicitudPage = () => {
       });
       return;
     }
+    setIsOpen(true);
+  };
 
-    const datosSolicitud = {
+  const datosSolicitud = () => {
+    return {
       id,
       folioExterno,
       fecha,
@@ -326,11 +327,14 @@ export const RegisterSolicitudPage = () => {
       proyecto,
       actividad,
       justificacion,
-      items: items,
+      items,
     };
+  };
 
-    console.log(datosSolicitud)
-    actializarSoli(id, datosSolicitud);
+  const guardarActualizacion = () => {
+    const solicitud = datosSolicitud();
+    console.log(solicitud);
+    actializarSoli(id, solicitud);
 
     Swal.fire({
       title: "Completado!",
@@ -339,6 +343,19 @@ export const RegisterSolicitudPage = () => {
       confirmButtonText: "Cool",
     });
   };
+
+  useEffect(() => {
+    const images = document.querySelectorAll('img');
+
+    images.forEach(img => {
+      if (editar) {
+        img.onclick = guardarActualizacion;
+      } else {
+        img.onclick = fetchProyecto;
+      }
+    });
+  }, [editar, duplicar]);
+
 
   const handleProyectoChange = (e) => {
     const selectedProyectoId = e.target.value;
@@ -588,7 +605,9 @@ export const RegisterSolicitudPage = () => {
                           <option value="">Seleccione una opción</option>
                           <option value="Paquete">Paquete</option>
                           <option value="Rollo">Rollo</option>
+                          <option value="Kit">Kit</option>
                           <option value="Caja">Caja</option>
+                          <option value="Pieza">Pieza</option>
                         </select>
                       </td>
                       <td className="p-4 align-middle border border-gray-400">
@@ -771,7 +790,7 @@ export const RegisterSolicitudPage = () => {
                             <img
                               src={imgWord}
                               style={{ marginLeft: '25px', width: '150px', height: '150px' }}
-                              onClick={fetchProyecto}
+                              onClick={editar ? guardarActualizacion : fetchProyecto}
                             />
                           </button>
                         </div>
@@ -782,7 +801,7 @@ export const RegisterSolicitudPage = () => {
                             <img
                               src={imgPDF}
                               style={{ width: '200px', height: '200px' }}
-                              onClick={fetchProyecto}
+                              onClick={editar ? guardarActualizacion : fetchProyecto}
                             />
                           </button>
                         </div>

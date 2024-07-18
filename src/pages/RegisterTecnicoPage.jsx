@@ -59,8 +59,6 @@ export const RegisterTecnicoPage = () => {
     }
   }, [projectsLoaded, traeFolioInternoInforme, traeHistorialOrden, myFolioInternoInfo, historialOrden]);
 
-
-
   const handleToggleModal = (event) => {
     event.preventDefault();
     setIsOpen(!isOpen);
@@ -73,6 +71,7 @@ export const RegisterTecnicoPage = () => {
 
   const onSubmit = async (data, e) => {
     e.preventDefault();
+    setIsOpen(false);
     try {
       const formData = new FormData();
       formData.append("folio", data.folio);
@@ -91,7 +90,6 @@ export const RegisterTecnicoPage = () => {
         formData.append(`imagen-${i}`, files[i]);
         console.log(`imagen - ${i}`, files[i]);
       }
-
 
       const url = 'http://localhost/PlantillasWordyPdf/ManejoOrden.php';
       const method = 'POST';
