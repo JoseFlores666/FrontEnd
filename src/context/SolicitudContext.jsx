@@ -11,9 +11,9 @@ import {
   getFiltroEstado,
   nombreFirmas, editarNombreFirmas, putAbono, updateSoliFolioExterno, actualizaEstado,
 } from "../api/soli";
-import { getInfome, createInfome, deleteInfome, llenadoDEPInforme, } from "../api/informe";
+import { getInfome, createInfome, deleteInfome, llenadoDEPInforme, getUnaInfome, } from "../api/informe";
 import { getfolioInterno, getfolioInternoInforme } from "../api/folio";
-import { gethistorialOrdenTrabajo,gethistorialSoli } from "../api/historialInput";
+import { gethistorialOrdenTrabajo, gethistorialSoli } from "../api/historialInput";
 import { CrearApi_key, VerApis_Keys, actualizaApi_key } from "../api/api_key";
 
 const SoliContext = createContext();
@@ -34,6 +34,7 @@ export function SoliProvider({ children }) {
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [info, setInfo] = useState([]);
+  const [unaInfo, setUnaInfo] = useState([]);
   const [unasoli, setUnaSoli] = useState([]);
   const [unProyectAct, setUnProyectAct] = useState([]);
   const [nombresFirmas, setNombresFirmas] = useState([]);
@@ -221,11 +222,21 @@ export function SoliProvider({ children }) {
       setErrors(["Error creating solicitud"]);
     }
   };
+  const traeUnaInfo = async (id) => {
+    try {
+      const res = await getUnaInfome(id);
+      console.log(res.data)
+      setUnaInfo(res.data);
+    } catch (error) {
+      console.error("Error creating solicitud:", error);
+      setErrors(["Error creating solicitud"]);
+    }
+  };
 
   const eliminarInfo = async (id) => {
     try {
       const res = await deleteInfome(id);
-
+      console.log(res)
     } catch (error) {
       console.error("Error fetching solitudes:", error);
       setErrors(["Error fetching solitudes"]);
@@ -328,9 +339,10 @@ export function SoliProvider({ children }) {
   return (
     <SoliContext.Provider
       value={{
-        traeHistorialSoli,historialSoli,
+        traeHistorialSoli, historialSoli,
         soli,
         actualizarSoliFolioExterno,
+        traeUnaInfo, unaInfo,
         editarFirmas,
         actializarSoliEstado,
         myFolioInterno,

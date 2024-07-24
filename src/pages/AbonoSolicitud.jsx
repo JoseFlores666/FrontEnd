@@ -4,7 +4,7 @@ import "../css/solicitud.css";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
-import { AbonoSchema } from "../schemas/Abono";
+// import { AbonoSchema } from "../schemas/Abono";
 import { ImFileEmpty } from "react-icons/im";
 import { useForm } from "react-hook-form";
 import { faL } from "@fortawesome/free-solid-svg-icons";
@@ -12,9 +12,11 @@ import "../css/Animaciones.css";
 
 export const AbonoSolicitud = () => {
     const { id } = useParams();
-    const { handleSubmit, register, setValue, formState: { errors } } = useForm({
-        resolver: zodResolver(AbonoSchema),
-    });
+    const { handleSubmit, register, setValue, formState: { errors } } = useForm(
+    //     {
+    //     // resolver: zodResolver(AbonoSchema),
+    // }
+    );
 
     const formRef = useRef(null);
 
@@ -72,7 +74,7 @@ export const AbonoSolicitud = () => {
                 if (totalCantidad > item.cantidad) {
                     Swal.fire({
                         title: "Error",
-                        text: `La cantidad acumulada para el suministro ${item.descripcion} excede la cantidad permitida.`,
+                        text: `La cantidad acumulada para el suministro excede la cantidad permitida.`,
                         icon: "error",
                         confirmButtonText: "OK",
                     });

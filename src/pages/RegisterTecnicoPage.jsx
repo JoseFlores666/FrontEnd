@@ -1,17 +1,10 @@
 import React, { useRef, useState, useEffect } from "react";
-import "react-datepicker/dist/react-datepicker.css";
 import "../css/solicitud.css";
 import { useForm } from "react-hook-form";
 import { useSoli } from "../context/SolicitudContext";
 import "../css/Animaciones.css";
-import SubiendoImagenes from "../components/ui/SubiendoImagenes";
 import { AutocompleteInput } from "../components/ui/AutocompleteInput";
 import Swal from "sweetalert2";
-import imgPDF from '../img/imagenPDF.png';
-import imgWord from '../img/imagenWord.png';
-// import registerTecnicoSchema from '../schemas/registerTenico';
-
-
 
 export const RegisterTecnicoPage = () => {
   const {
@@ -19,17 +12,13 @@ export const RegisterTecnicoPage = () => {
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm({
-    // resolver: zodResolver(registerTecnicoSchema)
-  });
+  } = useForm();
 
   const [fechaOrden, setFechaOrden] = useState(() => {
     const today = new Date();
     return today.toISOString().split("T")[0];
   });
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [clickedPDF, setClickedPDF] = useState(false);
   const [areasoli, setAreasoli] = useState("");
   const [solicita, setSolicita] = useState("");
   const [edificio, setEdificio] = useState("");
@@ -38,7 +27,6 @@ export const RegisterTecnicoPage = () => {
   const [projectsLoaded, setProjectsLoaded] = useState(false);
 
   const inputRef = useRef([]);
-  const subiendoImagenesRef = useRef(null);
   const { createInfo, myFolioInternoInfo, mensaje, traeFolioInternoInforme, historialOrden, traeHistorialOrden } = useSoli();
 
   useEffect(() => {
@@ -49,8 +37,6 @@ export const RegisterTecnicoPage = () => {
 
         await traeHistorialOrden();
         console.log("historialOrden after fetch:", historialOrden);
-
-
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -62,64 +48,27 @@ export const RegisterTecnicoPage = () => {
     }
   }, [projectsLoaded, traeFolioInternoInforme, traeHistorialOrden, myFolioInternoInfo, historialOrden]);
 
-  const handleToggleModal = (event) => {
-    event.preventDefault();
-    setIsOpen(!isOpen);
-  };
-
-  const handleCloseModal = (event) => {
-    event.preventDefault();
-    setIsOpen(false);
-  };
-
-  const onSubmit = async (data, e) => {
-    e.preventDefault();
+  const onSubmit = async (data) => {
     try {
-      const formData = new FormData();
-      formData.append("folio", data.folio);
-      formData.append("fechaOrden", fechaOrden);
-      formData.append("folioExterno", data.folioExterno);
-      formData.append("areasoli", areasoli); // Usando el estado local `areasoli`
-      formData.append("solicita", solicita); // Usando el estado local `solicita`
-      formData.append("edificio", edificio); // Usando el estado local `edificio`
-      formData.append("tipoMantenimiento", data.tipoMantenimiento);
-      formData.append("tipoTrabajo", data.tipoTrabajo);
-      formData.append("tipoSolicitud", data.tipoSolicitud);
-      formData.append("descripcion", descripcion); // Usando el estado local `descripcion`
-
-      const files = subiendoImagenesRef.current.getFiles();
-      for (let i = 0; i < files.length; i++) {
-        formData.append(`imagen-${i}`, files[i]);
-        console.log(`imagen - ${i}`, files[i]);
-      }
-
-      const url = 'http://localhost/PlantillasWordyPdf/ManejoOrden.php';
-      const method = 'POST';
-
-      fetch(url, {
-        method: method,
-        body: formData,
-      })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.text();
-        })
-        .then(text => {
-          console.log('Formulario enviado correctamente:', text);
-          if (clickedPDF) {
-            openVentana();
-          } else {
-            descargarWORD();
-          }
-        });
+      const formData = {
+        folio: data.folio,
+        fechaOrden: fechaOrden,
+        folioExterno: data.folioExterno,
+        areasoli: areasoli,
+        solicita: solicita,
+        edificio: edificio,
+        tipoMantenimiento: data.tipoMantenimiento,
+        tipoTrabajo: data.tipoTrabajo,
+        tipoSolicitud: data.tipoSolicitud,
+        descripcion: descripcion,
+      };
 
       await createInfo(formData);
+
       if (mensaje) {
         Swal.fire({
           title: "Completado!",
-          text: "Registro Exitosa",
+          text: "Registro Exitoso",
           icon: "success",
           confirmButtonText: "Cool",
         });
@@ -127,21 +76,6 @@ export const RegisterTecnicoPage = () => {
     } catch (error) {
       console.error("Error submitting form: ", error);
     }
-  };
-
-  const descargarWORD = () => {
-    const a = document.createElement('a');
-    a.href = 'http://localhost/PlantillasWordyPdf/DescargarWordOrden.php';
-    a.download = 'SobrescritoOrden.docx';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  };
-
-  const openVentana = () => {
-    const url = 'http://localhost/PlantillasWordyPdf/ResultadoOrden.pdf';
-    const features = 'menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes';
-    window.open(url, '_blank', features);
   };
 
   return (
@@ -164,6 +98,7 @@ export const RegisterTecnicoPage = () => {
                 disabled
               />
             </div>
+            <div></div>
             <div>
               <label className="block text-base font-medium mb-1">Selecciona la fecha:</label>
               <input
@@ -174,19 +109,6 @@ export const RegisterTecnicoPage = () => {
                 value={fechaOrden}
                 onChange={(e) => setFechaOrden(e.target.value)}
               />
-            </div>
-            <div>
-              <label className="block text-base font-medium mb-1">No. de folio Externo:</label>
-              <input
-                type="number"
-                id="folioExterno"
-                placeholder="Ingrese el folio Externo"
-                name="folioExterno"
-                className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                {...register("folioExterno", { required: true })}
-              />{errors.folioExterno && (
-                <span className="text-red-500 mr-16">{errors.folioExterno.message}</span>
-              )}
             </div>
           </div>
           <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-4">
@@ -296,7 +218,6 @@ export const RegisterTecnicoPage = () => {
               </select>
             </div>
           </div>
-          <SubiendoImagenes ref={subiendoImagenesRef} />
           <div>
             <label className="block text-base font-medium mb-1">Descripción:</label>
             <AutocompleteInput
@@ -318,73 +239,13 @@ export const RegisterTecnicoPage = () => {
             <input name="descripcion" id="descripcion" type="hidden" value={descripcion} />
           </div>
           <div className="botones">
-            <button type="button" onClick={handleToggleModal}
+            <button
+              type="submit"
               className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md border border-black"
             >
               Guardar cambios
             </button>
           </div>
-        </div>
-        <div>
-          {isOpen && (
-            <div
-              id="static-modal"
-              tabIndex="-1"
-              aria-hidden={!isOpen}
-              className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full flex"
-            >
-              <div className="relative p-4 w-full max-w-2xl max-h-full">
-                <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                  <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Haga click en el tipo de archivo que desea generar:</h3>
-                    <button
-                      type="button"
-                      className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                      onClick={handleCloseModal}
-                    >
-                      <svg
-                        className="w-3 h-3"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 14 14"
-                      >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-
-                  <div className="grid grid-cols-2 p-4 md:grid-cols-2 gap-6 ">
-                    <div className="flex items-center justify-center">
-                      <button type="submit" style={{ all: 'unset', cursor: 'pointer' }}>
-                        <img
-                          src={imgWord}
-                          style={{ marginLeft: '25px', width: '150px', height: '150px' }}
-                          onClick={() => setClickedPDF(false)}
-                        />
-                      </button>
-                    </div>
-
-                    <div>
-                      <button type="submit" style={{ all: 'unset', cursor: 'pointer' }}>
-                        <img
-                          src={imgPDF}
-                          style={{ width: '200px', height: '200px' }}
-                          onClick={() => setClickedPDF(true)}
-                        />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </form>
     </div>

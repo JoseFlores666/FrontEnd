@@ -52,6 +52,7 @@ export const FolioExterno = () => {
         try {
             data.id = paramId;
             data.estado = "Asignada";
+            console.log(data)
             await actualizarSoliFolioExterno(paramId, data);
 
             Swal.fire({

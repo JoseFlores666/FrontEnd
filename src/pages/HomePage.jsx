@@ -5,34 +5,33 @@ import { useForm } from "react-hook-form";
 import { useSoli } from "../context/SolicitudContext";
 import "../css/Animaciones.css";
 import SubiendoImagenes from "../components/ui/SubiendoImagenes";
-import { Button } from "../components/ui";
-
 import { AutocompleteInput } from "../components/ui/AutocompleteInput";
-import { faL } from "@fortawesome/free-solid-svg-icons";
+import Swal from "sweetalert2";
+import imgPDF from '../img/imagenPDF.png';
+import imgWord from '../img/imagenWord.png';
+import { useParams } from "react-router-dom";
+// import registerTecnicoSchema from '../schemas/registerTenico';
+
+
 
 export const RegisterTecnicoPage = () => {
   const {
     register,
     handleSubmit,
     setValue,
-    formState: { errors },
-  } = useForm();
-
-  const [fechaOrden, setFechaOrden] = useState(() => {
-    const today = new Date();
-    return today.toISOString().split("T")[0];
+    formState: { errors }, reset,
+  } = useForm({
+    // resolver: zodResolver(registerTecnicoSchema)
   });
 
+  const editar = new URLSearchParams(location.search).get("editar") === "true";
+  console.log(editar)
+  const { id } = useParams();
+
+  const [fechaOrden, setFechaOrden] = useState(() => new Date().toISOString().split("T")[0]);
+
   const [isOpen, setIsOpen] = useState(false);
-
-  const inputRef = useRef([]);
-  const formRef = useRef(null);
-
-
-  const subiendoImagenesRef = useRef(null);
   const [clickedPDF, setClickedPDF] = useState(false);
-
-  const { createInfo, getIdsProyect, myFolioInternoInfo, traeFolioInternoInforme, historialOrden, traeHistorialOrden } = useSoli();
   const [areasoli, setAreasoli] = useState("");
   const [solicita, setSolicita] = useState("");
   const [edificio, setEdificio] = useState("");
@@ -40,18 +39,63 @@ export const RegisterTecnicoPage = () => {
   const [recentSuggestions, setRecentSuggestions] = useState([]);
   const [projectsLoaded, setProjectsLoaded] = useState(false);
 
-  useEffect(() => {
-    if (!projectsLoaded) {
-      getIdsProyect()
-        .then(() => {
-          setProjectsLoaded(true);
-        })
-        .catch((error) => {
-          console.error("Error fetching projects:", error);
-        });
-    }
-  }, [projectsLoaded, getIdsProyect])
+  const inputRef = useRef([]);
+  const subiendoImagenesRef = useRef(null);
+  const { createInfo, myFolioInternoInfo, mensaje, traeUnaInfo, unaInfo, traeFolioInternoInforme, historialOrden, traeHistorialOrden } = useSoli();
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (editar) {
+          limpiarFormulario()
+          await traeUnaInfo(id)
+          console.log("myFolioInternoInfo after fetch:", unaInfo);
+          llenadoEditar(unaInfo)
+        } else {
+          await traeFolioInternoInforme();
+          console.log("myFolioInternoInfo after fetch:", myFolioInternoInfo);
+        }
+        await traeHistorialOrden();
+        // console.log("historialOrden after fetch:", historialOrden);
+
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    if (!projectsLoaded) {
+      fetchData();
+      setProjectsLoaded(true);
+    }
+  }, [projectsLoaded, traeFolioInternoInforme, traeHistorialOrden, myFolioInternoInfo, historialOrden]);
+
+
+
+  const llenadoEditar = async (unaInfo) => {
+    setValue("folio", unaInfo.folio);
+    setFechaOrden(unaInfo.fecha ? new Date(unaInfo.fecha).toISOString().slice(0, 10) : "");
+    setValue("folioExterno", unaInfo.folioExterno);
+    setAreasoli(unaInfo.informe.Solicita.areaSolicitante);
+    setSolicita(unaInfo.informe.Solicita.nombre);
+    setEdificio(unaInfo.informe.Solicita.edificio);
+    setValue("tipoMantenimiento", unaInfo.tipoDeMantenimiento);
+    setValue("tipoTrabajo", unaInfo.tipoDeTrabajo);
+    setValue("tipoSolicitud", unaInfo.tipoDeSolicitud);
+    setDescripcion(unaInfo.informe.descripcionDelServicio);
+  };
+  const limpiarFormulario = () => {
+    reset(); // Resetea los valores del formulario usando react-hook-form
+    setFechaOrden(() => {
+      const today = new Date();
+      return today.toISOString().split("T")[0];
+    });
+    setAreasoli("");
+    setSolicita("");
+    setEdificio("");
+    setDescripcion("");
+    setRecentSuggestions([]);
+    setClickedPDF(false);
+  };
   const handleToggleModal = (event) => {
     event.preventDefault();
     setIsOpen(!isOpen);
@@ -62,12 +106,6 @@ export const RegisterTecnicoPage = () => {
     setIsOpen(false);
   };
 
-  useEffect(() => {
-    traeFolioInternoInforme();
-    traeHistorialOrden();
-    setValue("folio", myFolioInternoInfo || "");
-  }, []);
-
   const onSubmit = async (data, e) => {
     e.preventDefault();
     try {
@@ -75,9 +113,9 @@ export const RegisterTecnicoPage = () => {
       formData.append("folio", data.folio);
       formData.append("fechaOrden", fechaOrden);
       formData.append("folioExterno", data.folioExterno);
-      formData.append("areasoli", data.areasoli);
-      formData.append("solicita", data.solicita);
-      formData.append("edificio", data.edificio);
+      formData.append("areasoli", areasoli); // Usando el estado local `areasoli`
+      formData.append("solicita", solicita); // Usando el estado local `solicita`
+      formData.append("edificio", edificio); // Usando el estado local `edificio`
       formData.append("tipoMantenimiento", data.tipoMantenimiento);
       formData.append("tipoTrabajo", data.tipoTrabajo);
       formData.append("tipoSolicitud", data.tipoSolicitud);
@@ -89,7 +127,7 @@ export const RegisterTecnicoPage = () => {
         console.log(`imagen - ${i}`, files[i]);
       }
 
-      const url = 'http://localhost/PlantillasWordyPdf/ordenSoli.php';
+      const url = 'http://localhost/PlantillasWordyPdf/ManejoOrden.php';
       const method = 'POST';
 
       fetch(url, {
@@ -111,7 +149,16 @@ export const RegisterTecnicoPage = () => {
           }
         });
 
-      // await createInfo(formData);
+      await createInfo(formData);
+      if (mensaje) {
+        Swal.fire({
+          title: "Completado!",
+          text: "Registro Exitosa",
+          icon: "success",
+          confirmButtonText: "Cool",
+        });
+        limpiarFormulario();
+      }
     } catch (error) {
       console.error("Error submitting form: ", error);
     }
@@ -127,31 +174,28 @@ export const RegisterTecnicoPage = () => {
   };
 
   const openVentana = () => {
-    const url = 'http://localhost/PlantillasWordyPdf/ordenResult.pdf';
+    const url = 'http://localhost/PlantillasWordyPdf/ResultadoOrden.pdf';
     const features = 'menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes';
     window.open(url, '_blank', features);
   };
 
   return (
     <div className="mx-auto max-w-5xl p-4 text-black shadow-md">
-      <form onSubmit={handleSubmit(onSubmit)}
-        method="post" action="http://localhost/PlantillasWordyPdf/ordenSoli.php" target="_blank"
-        className="slide-down">
+      <form onSubmit={handleSubmit(onSubmit)} className="slide-down">
         <div className="bg-white p-6 rounded-md shadow-md">
           <div className="mb-6">
             <h2 className="text-2xl text-transform uppercase font-bold text-center text-black">Orden de trabajo de mantenimiento a mobiliario e instalaciones</h2>
           </div>
           <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-4">
             <div>
-              <label className="block  text-base font-medium mb-1">
-                No. de folio Interno:
-              </label>
+              <label className="block text-base font-medium mb-1">No. de folio Interno:</label>
               <input
                 type="text"
                 id="folio"
                 name="folio"
                 className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                 {...register("folio")}
+                value={myFolioInternoInfo || ""}
                 disabled
               />
             </div>
@@ -167,9 +211,7 @@ export const RegisterTecnicoPage = () => {
               />
             </div>
             <div>
-              <label className="block text-base font-medium mb-1">
-                No. de folio Externo:
-              </label>
+              <label className="block text-base font-medium mb-1">No. de folio Externo:</label>
               <input
                 type="number"
                 id="folioExterno"
@@ -177,14 +219,14 @@ export const RegisterTecnicoPage = () => {
                 name="folioExterno"
                 className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                 {...register("folioExterno", { required: true })}
-              />
+              />{errors.folioExterno && (
+                <span className="text-red-500 mr-16">{errors.folioExterno.message}</span>
+              )}
             </div>
           </div>
           <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-4">
             <div>
-              <label className="block text-base font-medium mb-1">
-                Area solicitante:
-              </label>
+              <label className="block text-base font-medium mb-1">Area solicitante:</label>
               <AutocompleteInput
                 index={0}
                 value={areasoli}
@@ -206,9 +248,7 @@ export const RegisterTecnicoPage = () => {
               />
             </div>
             <div>
-              <label className="block text-base font-medium mb-1">
-                Solicita:
-              </label>
+              <label className="block text-base font-medium mb-1">Solicita:</label>
               <AutocompleteInput
                 index={1}
                 value={solicita}
@@ -228,9 +268,7 @@ export const RegisterTecnicoPage = () => {
               />
             </div>
             <div>
-              <label className="block text-base font-medium mb-1">
-                Edificio:
-              </label>
+              <label className="block text-base font-medium mb-1">Edificio:</label>
               <AutocompleteInput
                 index={2}
                 value={edificio}
@@ -262,8 +300,8 @@ export const RegisterTecnicoPage = () => {
                 className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
               >
                 <option value="">Seleccione un tipo de mantenimiento</option>
-                <option value="Normal">Normal</option>
-                <option value="Urgente">Urgente</option>
+                <option value="Mobiliario">Mobiliario</option>
+                <option value="Instalaciones">Instalaciones</option>
               </select>
             </div>
             <div>
@@ -275,8 +313,8 @@ export const RegisterTecnicoPage = () => {
                 className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
               >
                 <option value="">Seleccione el tipo de trabajo</option>
-                <option value="preventivo">Preventivo</option>
-                <option value="correctivo">Correctivo</option>
+                <option value="Preventivo">Preventivo</option>
+                <option value="Correctivo">Correctivo</option>
               </select>
             </div>
             <div>
@@ -288,16 +326,14 @@ export const RegisterTecnicoPage = () => {
                 className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
               >
                 <option value="">Seleccione el tipo de solicitud</option>
-                <option value="Educativo">PC Educativo</option>
-                <option value="Otro">Otro</option>
+                <option value="Normal">Normal</option>
+                <option value="Urgente">Urgente</option>
               </select>
             </div>
           </div>
           <SubiendoImagenes ref={subiendoImagenesRef} />
           <div>
-            <label className="block text-base font-medium mb-1">
-              Descripción:
-            </label>
+            <label className="block text-base font-medium mb-1">Descripción:</label>
             <AutocompleteInput
               index={3}
               value={descripcion}
@@ -307,19 +343,21 @@ export const RegisterTecnicoPage = () => {
               setRecentSuggestions={setRecentSuggestions}
               inputRefs={inputRef}
               placeholder="Ingrese una descripción"
-              fieldsToCheck={['soliInsumosDescripcion']}
+              fieldsToCheck={['descripcionDelServicio']}
               inputProps={{
                 type: "text",
                 maxLength: 200,
-                className: "w-full text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
+                className: "w-full resize-none text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
               }}
             />
-            <input name="desc" id="desc" type="hidden" value={descripcion} />
+            <input name="descripcion" id="descripcion" type="hidden" value={descripcion} />
           </div>
           <div className="botones">
-            <Button type="button" onClick={handleToggleModal} className="btn-primary">
+            <button type="button" onClick={handleToggleModal}
+              className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md border border-black"
+            >
               Guardar cambios
-            </Button>
+            </button>
           </div>
         </div>
         <div>
@@ -359,10 +397,9 @@ export const RegisterTecnicoPage = () => {
 
                   <div className="grid grid-cols-2 p-4 md:grid-cols-2 gap-6 ">
                     <div className="flex items-center justify-center">
-                      <button type="submit"
-                        style={{ all: 'unset', cursor: 'pointer' }}>
+                      <button type="submit" style={{ all: 'unset', cursor: 'pointer' }}>
                         <img
-                          src="https://static.android.com.pl/uploads/2021/06/microsoft-word-5963679_1280.png"
+                          src={imgWord}
                           style={{ marginLeft: '25px', width: '150px', height: '150px' }}
                           onClick={() => setClickedPDF(false)}
                         />
@@ -370,10 +407,9 @@ export const RegisterTecnicoPage = () => {
                     </div>
 
                     <div>
-                      <button type="submit"
-                        style={{ all: 'unset', cursor: 'pointer' }}>
+                      <button type="submit" style={{ all: 'unset', cursor: 'pointer' }}>
                         <img
-                          src="https://static.vecteezy.com/system/resources/previews/023/234/824/original/pdf-icon-red-and-white-color-for-free-png.png"
+                          src={imgPDF}
                           style={{ width: '200px', height: '200px' }}
                           onClick={() => setClickedPDF(true)}
                         />

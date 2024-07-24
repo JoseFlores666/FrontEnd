@@ -88,7 +88,6 @@ function Register() {
               <p className="text-red-500 mt-1">{errors.email?.message}</p>
             )}
           </div>
-
           <div className="">
             <Label htmlFor="password">Contraseña:</Label>
             <div className="flex">
