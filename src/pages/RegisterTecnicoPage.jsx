@@ -5,11 +5,12 @@ import { useForm } from "react-hook-form";
 import { useSoli } from "../context/SolicitudContext";
 import "../css/Animaciones.css";
 import SubiendoImagenes from "../components/ui/SubiendoImagenes";
-import { Button } from "../components/ui";
 import { AutocompleteInput } from "../components/ui/AutocompleteInput";
 import Swal from "sweetalert2";
 import imgPDF from '../img/imagenPDF.png';
 import imgWord from '../img/imagenWord.png';
+// import registerTecnicoSchema from '../schemas/registerTenico';
+
 
 
 export const RegisterTecnicoPage = () => {
@@ -18,7 +19,9 @@ export const RegisterTecnicoPage = () => {
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    // resolver: zodResolver(registerTecnicoSchema)
+  });
 
   const [fechaOrden, setFechaOrden] = useState(() => {
     const today = new Date();
@@ -71,7 +74,6 @@ export const RegisterTecnicoPage = () => {
 
   const onSubmit = async (data, e) => {
     e.preventDefault();
-    setIsOpen(false);
     try {
       const formData = new FormData();
       formData.append("folio", data.folio);
@@ -182,7 +184,9 @@ export const RegisterTecnicoPage = () => {
                 name="folioExterno"
                 className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                 {...register("folioExterno", { required: true })}
-              />
+              />{errors.folioExterno && (
+                <span className="text-red-500 mr-16">{errors.folioExterno.message}</span>
+              )}
             </div>
           </div>
           <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-4">
@@ -304,7 +308,7 @@ export const RegisterTecnicoPage = () => {
               setRecentSuggestions={setRecentSuggestions}
               inputRefs={inputRef}
               placeholder="Ingrese una descripción"
-              fieldsToCheck={['soliInsumosDescripcion']}
+              fieldsToCheck={['descripcionDelServicio']}
               inputProps={{
                 type: "text",
                 maxLength: 200,

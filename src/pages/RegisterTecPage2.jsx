@@ -14,9 +14,11 @@ import "../css/Animaciones.css";
 
 export const RegisterTecPage2 = () => {
 
-    const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm({
+    const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm(
+        {
         resolver: zodResolver(formSchema)
-    });
+    }
+    );
 
     const { id } = useParams();
     const { user } = useAuth();

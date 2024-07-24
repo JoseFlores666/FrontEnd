@@ -1,9 +1,8 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 import { Navbar } from "./components/Navbar";
-import { AuthProvider, useAuth } from "./context/authContext";
+import { AuthProvider } from "./context/authContext";
 import { ProtectedRoute } from "./routes";
-// import HomePage from "./pages/HomePage";
 import { Firmas } from "./pages/Firmas";
 import RegisterPage from "./pages/RegisterPage";
 import { LoginPage } from "./pages/LoginPage";
@@ -30,7 +29,6 @@ function App() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route element={<ProtectedRoute />}>
-                  {/* <Route path="/home" element={<HomePage />} /> */}
                   <Route path="/soli/registro/:id" element={<RegisterSolicitudPage />} />
                   <Route path="/soli/abonar/:id" element={<AbonoSolicitud />} />
                   <Route path="/soli" element={<SolicitudTable />} />

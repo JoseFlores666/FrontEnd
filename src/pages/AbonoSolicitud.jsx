@@ -4,7 +4,7 @@ import "../css/solicitud.css";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
-import { formSchema } from "../schemas/Abono";
+import { AbonoSchema } from "../schemas/Abono";
 import { ImFileEmpty } from "react-icons/im";
 import { useForm } from "react-hook-form";
 import { faL } from "@fortawesome/free-solid-svg-icons";
@@ -13,7 +13,7 @@ import "../css/Animaciones.css";
 export const AbonoSolicitud = () => {
     const { id } = useParams();
     const { handleSubmit, register, setValue, formState: { errors } } = useForm({
-        resolver: zodResolver(formSchema),
+        resolver: zodResolver(AbonoSchema),
     });
 
     const formRef = useRef(null);
@@ -44,7 +44,7 @@ export const AbonoSolicitud = () => {
             llenaSolicitud();
         }
     }, [datosCargados]);
-
+ 
     const llenaSolicitud = () => {
         try {
             setValue("folio", unasoli.folio || "");

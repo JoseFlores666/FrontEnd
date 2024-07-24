@@ -620,7 +620,8 @@ export const RegisterSolicitudPage = () => {
                           setRecentSuggestions={setRecentSuggestions}
                           inputRefs={refs}
                           placeholder="Ingrese una descripción"
-                          fieldsToCheck={['areaSolicitante', 'soliInsumosDescripcion', 'justificacionAdquisicion']}
+                          fieldsToCheck={['soliInsumosDescripcion',
+                          ]}
                           inputProps={{
                             type: "text",
                             maxLength: 200,

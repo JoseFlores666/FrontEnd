@@ -10,7 +10,7 @@ const itemSchema = z.object({
     }),
 });
 
-export const formSchema = z.object({
+export const AbonoSchema = z.object({
   folioExterno: z
     .string()
     .nonempty({ message: "Folio externo es requerido" })
