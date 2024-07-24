@@ -8,18 +8,58 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faClone } from '@fortawesome/free-solid-svg-icons';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formSchema } from '../schemas/RegisterTecPage2'
+import SubiendoImagenes from "../components/ui/SubiendoImagenes";
 import Swal from "sweetalert2";
 import "../css/solicitud.css";
 import "../css/Animaciones.css";
+import imgPDF from '../img/imagenPDF.png';
+import imgWord from '../img/imagenWord.png';
 
 export const RegisterTecPage2 = () => {
+    const [banderaFirmas, setBanderaFirmas] = useState(false);
+    const [solicitante, setSolicitante] = useState('');
+    const [jefeInmediato, setJefeInmediato] = useState('');
+    const [dirrecion, setDirrecion] = useState('');
+    const [rectoría, setRectoría] = useState('');
+
+    const { getFirmas, nombresFirmas, } = useSoli();
+
+    const subiendoImagenesRef = useRef(null);
+
+    useEffect(() => {
+        const llenaFirmas = async () => {
+            try {
+                await getFirmas()
+
+
+                setBanderaFirmas(true);
+            } catch (error) {
+                console.error("Error fetching projects:", error);
+            }
+        };
+        if (!banderaFirmas) {
+            llenaFirmas();
+        }
+    }, [banderaFirmas, getFirmas]);
+
+    useEffect(() => {
+        if (nombresFirmas.length > 0) {
+            const { solicitud, revision, validacion, autorizacion } = nombresFirmas[0];
+            setSolicitante(solicitud);
+            setJefeInmediato(revision);
+            setDirrecion(validacion);
+            setRectoría(autorizacion);
+        }
+
+    }, [nombresFirmas]);
 
     const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm(
         {
-        resolver: zodResolver(formSchema)
-    }
+            resolver: zodResolver(formSchema)
+        }
     );
-
+    const [isOpen, setIsOpen] = useState(false);
+    const [clickedPDF, setClickedPDF] = useState(false);
     const { id } = useParams();
     const { user } = useAuth();
     const { createDEPInforme, historialOrden, traeFolioInternoInforme, traeHistorialOrden, myFolioInternoInfo } = useSoli();
@@ -42,6 +82,35 @@ export const RegisterTecPage2 = () => {
                 observaciones,
                 user: user.id,
             };
+
+            const files = subiendoImagenesRef.current.getFiles();
+            for (let i = 0; i < files.length; i++) {
+                formData.append(`imagen-${i}`, files[i]);
+                console.log(`imagen - ${i}`, files[i]);
+            }
+            const url = 'http://localhost/PlantillasWordyPdf/ManejoOrden.php';
+            const method = 'POST';
+
+            fetch(url, {
+                method: method,
+                body: formData,
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(text => {
+                    console.log('Formulario enviado correctamente:', text);
+                    if (clickedPDF) {
+                        openVentana();
+                    } else {
+                        descargarWORD();
+                    }
+                });
+
+            await createInfo(formData);
             console.log('Form Data:', formData);
             await createDEPInforme(id, formData);
             limpiar()
@@ -106,6 +175,31 @@ export const RegisterTecPage2 = () => {
         }
     };
 
+    const handleToggleModal = (event) => {
+        event.preventDefault();
+        setIsOpen(!isOpen);
+    };
+
+    const descargarWORD = () => {
+        const a = document.createElement('a');
+        a.href = 'http://localhost/PlantillasWordyPdf/DescargarWordOrden.php';
+        a.download = 'SobrescritoOrden.docx';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    };
+
+    const openVentana = () => {
+        const url = 'http://localhost/PlantillasWordyPdf/ResultadoOrden.pdf';
+        const features = 'menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes';
+        window.open(url, '_blank', features);
+    };
+
+    const handleCloseModal = (event) => {
+        event.preventDefault();
+        setIsOpen(false);
+    };
+
     const duplicarItem = async (index, e) => {
         e.preventDefault();
         const itemToDuplicate = items[index];
@@ -120,9 +214,59 @@ export const RegisterTecPage2 = () => {
     };
 
     return (
-        <div className="mx-auto max-w-4xl p-4 text-black">
+        <div className="mx-auto max-w-5xl p-4 text-black">
             <form onSubmit={handleSubmit(onSubmit)} className="slide-down">
                 <div className="bg-white p-6 rounded-md shadow-md">
+
+                    <h1 className="text-2xl font-bold text-center mb-5">Información de orden de servicios</h1>
+                    <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-1">
+
+                        <div className="mb-1">
+                            <label className="block font-medium mb-1">Fecha: 12/05/2006</label>
+
+                        </div>
+                        <div></div>
+                        <div className="mb-1">
+                            <label className="block font-medium mb-1">No. de folio: 4</label>
+
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-1">
+
+                        <div className="mb-4">
+                            <label className="block font-medium mb-1">Área solicitante:</label>
+                            <p>En esta area se solicita esto</p>
+                        </div>
+
+                        <div className="mb-4">
+                            <label className="block font-medium mb-1">Solicita:</label>
+                            <p>Florentino Perez</p>
+                        </div>
+                        <div className="mb-4">
+                            <label className="block font-medium mb-1">Edificio:</label>
+                            <p>Edificio K 6,7,8,9</p>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-1">
+                        <div className="mb-4">
+                            <label className="block font-medium mb-1">Tipo de mantenimiento:</label>
+                            <p>Mobiliario o instalaciones</p>
+                        </div>
+                        <div className="mb-4">
+                            <label className="block font-medium mb-1">Tipo de trabajo:</label>
+                            <p>Preventivo o Correctivo</p>
+                        </div>
+                        <div className="mb-4">
+                            <label className="block font-medium mb-1">Tipo de solicitud:</label>
+                            <p>Normal o Urgente</p>
+                        </div>
+                    </div>
+
+                    <div className="mb-6">
+                        <label className="block font-medium mb-1">Observaciones:</label>
+                        <p>Se hizo una estrusctura donde se agrego una barrera</p>
+                    </div>
+
                     <div className="flex items-center justify-center w-full h-11 p-3 rounded-md">
                         <label className="text-2xl text-transform uppercase font-bold text-center text-black">
                             Llenado Exclusivo para el DEP MSG:
@@ -246,9 +390,11 @@ export const RegisterTecPage2 = () => {
                                 </button>
                             </div>
                         </div>
+                        <SubiendoImagenes ref={subiendoImagenesRef} />
+
                         <div>
                             <label className="text-sm mb-1 font-medium leading-none" htmlFor="observaciones">
-                                Observaciones
+                                Observaciones y/o diagnóstico técnico
                             </label>
                             <AutocompleteInput
                                 index={items.length}
@@ -271,15 +417,135 @@ export const RegisterTecPage2 = () => {
                                 <span className="text-red-500">{errors.observaciones.message}</span>
                             )}
                         </div>
-                        <div className="flex justify-center mt-4">
-                            <button
-                                className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md border border-black"
-                                type="submit"
-                            >
-                                Guardar Registro
-                            </button>
+
+                    </div>
+                    <div className="tablafirmas flex justify-between mt-5 text-black">
+                        <div className="columna w-1/4 text-center">
+                            <label className="block text-sm font-medium mb-1">Solicitud</label>
+                            <textarea
+                                className="text-black text-center cursor-not-allowed w-full rounded-md resize-none"
+                                id="solicitud"
+                                name="solicitud"
+                                required
+                                value={solicitante}
+                                onChange={(e) => setSolicitante(e.target.value)}
+                                disabled
+                            />
+                            <input type="hidden" name="solicitud" value={solicitante} />
+                        </div>
+                        <div className="columna w-1/4 text-center">
+                            <label className="block text-sm font-medium mb-1">Revisión</label>
+                            <label className="block text-sm font-medium mb-1">Jefe Inmediato:</label>
+                            <textarea
+                                className="text-black text-center cursor-not-allowed w-full rounded-md resize-none"
+                                id="JefeInmediato"
+                                name="JefeInmediato"
+                                required
+                                value={jefeInmediato}
+                                onChange={(e) => setJefeInmediato(e.target.value)}
+                                disabled
+                            />
+                            <input type="hidden" name="JefeInmediato" value={jefeInmediato} />
+                        </div>
+                        <div className="columna w-1/4 text-center">
+                            <label className="block text-sm font-medium mb-1">Validación:</label>
+                            <label className="block text-sm font-medium mb-1">Dirección de Admón. y Finanzas:</label>
+                            <textarea
+                                className="text-black text-center cursor-not-allowed w-full rounded-md resize-none"
+                                id="Validacion"
+                                name="Validacion"
+                                required
+                                value={dirrecion}
+                                onChange={(e) => setDirrecion(e.target.value)}
+                                disabled
+                            />
+                            <input type="hidden" name="Validacion" value={dirrecion} />
+                        </div>
+                        <div className="columna w-1/4 text-center">
+                            <label className="block text-sm font-medium mb-1">Autorizó</label>
+                            <label className="block text-sm font-medium mb-1">Rectoría:</label>
+                            <textarea
+                                id="Autorizo"
+                                name="Autorizo"
+                                required
+                                className="text-black text-center cursor-not-allowed w-full rounded-md resize-none"
+                                value={rectoría}
+                                onChange={(e) => setRectoría(e.target.value)}
+                                disabled
+                            />
+                            <input type="hidden" name="Autorizo" value={rectoría} />
                         </div>
                     </div>
+                    <div className="flex justify-center">
+                        <button
+                            className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md border border-black"
+                            type="submit"
+                            onClick={handleToggleModal}
+                        >
+                            Guardar Registro
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    {isOpen && (
+                        <div
+                            id="static-modal"
+                            tabIndex="-1"
+                            aria-hidden={!isOpen}
+                            className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full flex"
+                        >
+                            <div className="relative p-4 w-full max-w-2xl max-h-full">
+                                <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                                    <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Haga click en el tipo de archivo que desea generar:</h3>
+                                        <button
+                                            type="button"
+                                            className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                                            onClick={handleCloseModal}
+                                        >
+                                            <svg
+                                                className="w-3 h-3"
+                                                aria-hidden="true"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 14 14"
+                                            >
+                                                <path
+                                                    stroke="currentColor"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth="2"
+                                                    d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                                                />
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 p-4 md:grid-cols-2 gap-6 ">
+                                        <div className="flex items-center justify-center">
+                                            <button type="submit" style={{ all: 'unset', cursor: 'pointer' }}>
+                                                <img
+                                                    src={imgWord}
+                                                    style={{ marginLeft: '25px', width: '150px', height: '150px' }}
+                                                    onClick={() => setClickedPDF(false)}
+                                                />
+                                            </button>
+                                        </div>
+
+                                        <div>
+                                            <button type="submit" style={{ all: 'unset', cursor: 'pointer' }}>
+                                                <img
+                                                    src={imgPDF}
+                                                    style={{ width: '200px', height: '200px' }}
+                                                    onClick={() => setClickedPDF(true)}
+                                                />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </form>
         </div>
