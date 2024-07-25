@@ -126,9 +126,9 @@ export const AbonoSolicitud = () => {
         <div className="mx-auto max-w-6xl p-4 text-black">
             <form ref={formRef} onSubmit={handleSubmit(onSubmit)} className="slide-down">
                 <div className="bg-white p-6 rounded-md shadow-md">
-                    <div className="flex items-center justify-center mb-6 w-full h-11 bg-green-600">
-                        <h1 className="text-2xl font-bold text-white text-center">Área de Entregas</h1>
-                    </div>
+                    
+                        <h1 className="text-2xl  font-bold text-center text-black mb-6">Área De Entregas</h1>
+                    
                     <div>
                         <div className="grid grid-cols-4 md:grid-cols-4 gap-6 mb-4">
                             <div>
@@ -196,7 +196,6 @@ export const AbonoSolicitud = () => {
                                 />
                             </div>
                         </div>
-                        <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
 
                         {showItems && items.map((item, index) => (
                             <div key={index} className="space-y-4 mb-4">

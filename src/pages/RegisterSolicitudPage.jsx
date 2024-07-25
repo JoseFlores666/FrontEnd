@@ -559,95 +559,96 @@ export const RegisterSolicitudPage = () => {
             <input type="hidden" id="myProyectoInput" name="myProyecto" value={myProyecto_ || ""} />
             <input type="hidden" id="myActividadInput" name="myActividad" value={myActividad_ || ""} />
           </div>
-          <div className="relative w-full">
-            <table className="w-full caption-bottom text-sm border">
-              <thead className="[&_tr]:border border-gray-400">
-                <tr className="border transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted border-gray-400">
-                  <th className="h-12 text-center px-4 align-middle font-medium text-black border-gray-400">Cantidad</th>
-                  <th className="h-12 text-center px-4 align-middle font-medium text-black border-gray-400">Unidad de medida</th>
-                  <th className="h-12 px-4 text-center align-middle font-medium text-black border-gray-400">Descripción del bien solicitado</th>
-                  <th className="h-12 px-4 align-middle font-medium text-black border-gray-400">Acción</th>
-                </tr>
-              </thead>
-              <tbody className="[&_tr:last-child]:border-0 border-gray-400">
-                {items.map((item, index) => (
-                  <tr key={index} className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted border-gray-400">
-                    <td className="p-2 align-middle border border-gray-400">
-                      <div className="flex justify-center">
-                        <input
-                          className="h-10 w-full text-center rounded-md border border-input px-3 py-2 border-gray-400 bg-gray-50 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                          type="number"
-                          placeholder="Ingrese la cantidad"
-                          maxLength="200"
-                          value={item.cantidad || ""}
+
+      
+            <div className="relative w-full">
+              <table className="w-full caption-bottom text-sm border">
+                <thead className="[&_tr]:border border-gray-400">
+                  <tr className="border transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted border-gray-400">
+                    <th className="h-12 text-center px-4 align-middle font-medium text-black border-gray-400">Cantidad</th>
+                    <th className="h-12 text-center px-4 align-middle font-medium text-black border-gray-400">Unidad de medida</th>
+                    <th className="h-12 px-4 text-center align-middle font-medium text-black border-gray-400">Descripción del bien solicitado</th>
+                    <th className="h-12 px-4 align-middle font-medium text-black border-gray-400">Acción</th>
+                  </tr>
+                </thead>
+                <tbody className="[&_tr:last-child]:border-0 border-gray-400">
+                  {items.map((item, index) => (
+                    <tr key={index} className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted border-gray-400">
+                      <td className="p-2 align-middle border border-gray-400">
+                        <div className="flex justify-center">
+                          <input
+                            className="h-10 w-full text-center rounded-md border border-input px-3 py-2 border-gray-400 bg-gray-50 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                            type="number"
+                            placeholder="Ingrese la cantidad"
+                            maxLength="200"
+                            value={item.cantidad || ""}
+                            onChange={(e) => {
+                              const newItems = [...items];
+                              newItems[index].cantidad = e.target.value;
+                              setItems(newItems);
+                            }}
+                            name={`items[${index}][cantidad]`}
+                          />
+                        </div>
+                      </td>
+                      <td className="p-4 align-middle border border-gray-400">
+                        <select
+                          className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                          value={item.unidad || ""}
                           onChange={(e) => {
                             const newItems = [...items];
-                            newItems[index].cantidad = e.target.value;
+                            newItems[index].unidad = e.target.value;
                             setItems(newItems);
                           }}
-                          name={`items[${index}][cantidad]`}
-                        />
-                      </div>
-                    </td>
-                    <td className="p-4 align-middle border border-gray-400">
-                      <select
-                        className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                        value={item.unidad || ""}
-                        onChange={(e) => {
-                          const newItems = [...items];
-                          newItems[index].unidad = e.target.value;
-                          setItems(newItems);
-                        }}
-                        name={`items[${index}][unidad]`}
-                      >
-                        <option value="">Seleccione una opción</option>
-                        <option value="Paquete">Paquete</option>
-                        <option value="Rollo">Rollo</option>
-                        <option value="Kit">Kit</option>
-                        <option value="Caja">Caja</option>
-                        <option value="Pieza">Pieza</option>
-                      </select>
-                    </td>
-                    <td className="p-4 align-middle border border-gray-400 relative">
-                      <AutocompleteInput
-                        index={index}
-                        value={item.descripcion}
-                        onChange={(value) => handleInputChange(index, value, "descripcion")}
-                        data={historialSoli}
-                        recentSuggestions={recentSuggestions}
-                        setRecentSuggestions={setRecentSuggestions}
-                        inputRefs={refs}
-                        placeholder="Ingrese una descripción"
-                        fieldsToCheck={['suministros',
-                        ]}
-                        inputProps={{
-                          type: "text",
-                          maxLength: 200,
-                          name: `items[${index}][descripcion]`,
-                          className: "w-full resize-none text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
-                          onBlur: () => setValue(`items[${index}].descripcion`, item.descripcion, { shouldValidate: true })
-                        }}
-                      />
-                    </td>
-                    <td className="border border-gray-400">
-                      <div className="flex items-center justify-center">
-                        <button
-                          onClick={(e) => eliminarItem(index, e)}
-                          className="inline-flex text-red-500 hover:text-red-700 items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10"
+                          name={`items[${index}][unidad]`}
                         >
-                          <FontAwesomeIcon icon={faTrashAlt} />
-                        </button>
-                        <button className="text-blue-500 hover:text-blue-700"
-                          onClick={(e) => duplicarItem(index, e)}>
-                          <FontAwesomeIcon icon={faClone} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
+                          <option value="">Seleccione una opción</option>
+                          <option value="Paquete">Paquete</option>
+                          <option value="Rollo">Rollo</option>
+                          <option value="Kit">Kit</option>
+                          <option value="Caja">Caja</option>
+                          <option value="Pieza">Pieza</option>
+                        </select>
+                      </td>
+                      <td className="p-4 align-middle border border-gray-400">
+                        <AutocompleteInput
+                          index={index}
+                          value={item.descripcion}
+                          onChange={(value) => handleInputChange(index, value, "descripcion")}
+                          data={historialSoli}
+                          recentSuggestions={recentSuggestions}
+                          setRecentSuggestions={setRecentSuggestions}
+                          inputRefs={refs}
+                          placeholder="Ingrese una descripción"
+                          fieldsToCheck={['suministros',
+                          ]}
+                          inputProps={{
+                            type: "text",
+                            maxLength: 200,
+                            name: `items[${index}][descripcion]`,
+                            className: "w-full resize-none text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
+                            onBlur: () => setValue(`items[${index}].descripcion`, item.descripcion, { shouldValidate: true })
+                          }}
+                        />
+                      </td>
+                      <td className="border border-gray-400">
+                        <div className="flex items-center justify-center">
+                          <button
+                            onClick={(e) => eliminarItem(index, e)}
+                            className="inline-flex text-red-500 hover:text-red-700 items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10"
+                          >
+                            <FontAwesomeIcon icon={faTrashAlt} />
+                          </button>
+                          <button className="text-blue-500 hover:text-blue-700" onClick={(e) => duplicarItem(index, e)}>
+                            <FontAwesomeIcon icon={faClone} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+         
             <div className="p-4 bg-white border-b border-r border-l border-gray-400 rounded-b-md">
               <button
                 onClick={(e) => agregarItem(e)}
@@ -656,6 +657,8 @@ export const RegisterSolicitudPage = () => {
               </button>
             </div>
           </div>
+
+
           <div className="mb-6">
             <label className="block text-sm font-medium mb-1">Justificación para la adquisición:</label>
             <AutocompleteInput
@@ -667,7 +670,7 @@ export const RegisterSolicitudPage = () => {
               setRecentSuggestions={setRecentSuggestions}
               inputRefs={refs}
               placeholder="Ingrese la justificacion"
-              fieldsToCheck={['justificacionAdquisicion']}
+              fieldsToCheck={['areaSolicitante', 'soliInsumosDescripcion', 'justificacionAdquisicion']}
               inputProps={{
                 type: "text",
                 maxLength: 200,

@@ -83,7 +83,7 @@ export const RegisterTecnicoPage = () => {
       <form onSubmit={handleSubmit(onSubmit)} className="slide-down">
         <div className="bg-white p-6 rounded-md shadow-md">
           <div className="mb-6">
-            <h2 className="text-2xl text-transform uppercase font-bold text-center text-black">Orden de trabajo de mantenimiento a mobiliario e instalaciones</h2>
+            <h2 className="text-2xl  font-bold text-center text-black">Orden De Trabajo De Mantenimiento A Mobiliario E Instalaciones</h2>
           </div>
           <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-4">
             <div>
@@ -241,6 +241,8 @@ export const RegisterTecnicoPage = () => {
           <div className="botones">
             <button
               type="submit"
+            <button 
+              type="submit" 
               className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md border border-black"
             >
               Guardar cambios
