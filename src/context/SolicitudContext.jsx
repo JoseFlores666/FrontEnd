@@ -11,7 +11,7 @@ import {
   getFiltroEstado,
   nombreFirmas, editarNombreFirmas, putAbono, updateSoliFolioExterno, actualizaEstado,
 } from "../api/soli";
-import { getInfome, createInfome, deleteInfome, llenadoDEPInforme, getUnaInfome, } from "../api/informe";
+import { getInfome, createInfome, deleteInfome, llenadoDEPInforme, getUnaInfome, evaluacionDelInfome, getTecnicos } from "../api/informe";
 import { getfolioInterno, getfolioInternoInforme } from "../api/folio";
 import { gethistorialOrdenTrabajo, gethistorialSoli } from "../api/historialInput";
 import { CrearApi_key, VerApis_Keys, actualizaApi_key } from "../api/api_key";
@@ -44,6 +44,7 @@ export function SoliProvider({ children }) {
   const [historialSoli, setHistorialSoli] = useState([]);
   const [api_Key, setApi_Key] = useState([]);
   const [mensaje, setMensaje] = useState("");
+  const [tecnicos, setTecnicos] = useState("");
 
   //Solicitudes
   const getSoli = async () => {
@@ -222,6 +223,16 @@ export function SoliProvider({ children }) {
       setErrors(["Error creating solicitud"]);
     }
   };
+  const evaluarInfor = async (id, info) => {
+    try {
+      const res = await evaluacionDelInfome(id, info);
+      !res ? console.log("Error al crear la solicitud") : console.log("Solicitud creada con éxito")
+
+    } catch (error) {
+      console.error("Error creating solicitud:", error);
+      setErrors(["Error creating solicitud"]);
+    }
+  };
   const traeUnaInfo = async (id) => {
     try {
       const res = await getUnaInfome(id);
@@ -237,6 +248,17 @@ export function SoliProvider({ children }) {
     try {
       const res = await deleteInfome(id);
       console.log(res)
+    } catch (error) {
+      console.error("Error fetching solitudes:", error);
+      setErrors(["Error fetching solitudes"]);
+    }
+  };
+
+  //Tecnicos
+  const traerTecnicos = async () => {
+    try {
+      const res = await getTecnicos();
+      setTecnicos(res.data);
     } catch (error) {
       console.error("Error fetching solitudes:", error);
       setErrors(["Error fetching solitudes"]);
@@ -339,10 +361,13 @@ export function SoliProvider({ children }) {
   return (
     <SoliContext.Provider
       value={{
-        traeHistorialSoli, historialSoli,
+        traeHistorialSoli,
+        historialSoli,
         soli,
         actualizarSoliFolioExterno,
-        traeUnaInfo, unaInfo,
+        traeUnaInfo,
+        unaInfo,
+        evaluarInfor,
         editarFirmas,
         actializarSoliEstado,
         myFolioInterno,
@@ -354,7 +379,8 @@ export function SoliProvider({ children }) {
         nombresFirmas,
         traeFolioInterno,
         unasoli,
-        RealizarAbono, traeApis_keys,
+        RealizarAbono,
+        traeApis_keys,
         api_Key,
         EditarApis_keys,
         CrearUnaApi_key,
@@ -379,6 +405,8 @@ export function SoliProvider({ children }) {
         getInfo,
         createInfo,
         eliminarInfo,
+        traerTecnicos,
+        tecnicos,
         errors,
         loading,
         mensaje,

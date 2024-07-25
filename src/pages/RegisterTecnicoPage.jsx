@@ -129,7 +129,7 @@ export const RegisterTecnicoPage = () => {
                   id: "areasoli",
                   name: "areasoli",
                   type: "text",
-                  maxLength: 200,
+                  maxLength: 500,
                   className: "w-full text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
                 }}
               />
@@ -149,7 +149,7 @@ export const RegisterTecnicoPage = () => {
                 ConvertirAInput={true}
                 inputProps={{
                   type: "text",
-                  maxLength: 200,
+                  maxLength: 500,
                   className: "w-full text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
                 }}
               />
@@ -171,7 +171,7 @@ export const RegisterTecnicoPage = () => {
                   id: "edificio",
                   name: "edificio",
                   type: "text",
-                  maxLength: 200,
+                  maxLength: 500,
                   className: "w-full text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
                 }}
               />
@@ -219,7 +219,7 @@ export const RegisterTecnicoPage = () => {
             </div>
           </div>
           <div>
-            <label className="block text-base font-medium mb-1">Descripción:</label>
+            <label className="block text-base font-medium mb-1">Descripción (servicio requerido)</label>
             <AutocompleteInput
               index={3}
               value={descripcion}
@@ -232,7 +232,7 @@ export const RegisterTecnicoPage = () => {
               fieldsToCheck={['descripcionDelServicio']}
               inputProps={{
                 type: "text",
-                maxLength: 200,
+                maxLength: 500,
                 className: "w-full resize-none text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
               }}
             />
@@ -241,7 +241,7 @@ export const RegisterTecnicoPage = () => {
           <div className="botones">
             <button
               type="submit"
-          
+
               className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md border border-black"
             >
               Guardar cambios

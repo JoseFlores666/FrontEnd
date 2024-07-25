@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import '../../css/Animaciones.css';
 
 export const AutocompleteInput = ({
   index,
@@ -10,8 +11,8 @@ export const AutocompleteInput = ({
   inputRefs,
   inputProps,
   placeholder = "Ingrese un valor",
-  fieldsToCheck = [], // Array de campos a consultar
-  ConvertirAInput // Bandera para alternar entre input y textarea
+  fieldsToCheck = [],
+  ConvertirAInput
 }) => {
   const [showHistorial, setShowHistorial] = useState(false);
   const [filteredWords, setFilteredWords] = useState([]);
@@ -21,6 +22,7 @@ export const AutocompleteInput = ({
   const [wordCount, setWordCount] = useState(0);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
   const [arrowKeyPressed, setArrowKeyPressed] = useState(false);
+  const [lastAutocompleteType, setLastAutocompleteType] = useState(null);
 
   const containerRef = useRef(null);
   const suggestionsRef = useRef(null);
@@ -30,6 +32,7 @@ export const AutocompleteInput = ({
       if (
         containerRef.current &&
         !containerRef.current.contains(event.target) &&
+        suggestionsRef.current &&
         !suggestionsRef.current.contains(event.target)
       ) {
         setShowHistorial(false);
@@ -44,17 +47,26 @@ export const AutocompleteInput = ({
     };
   }, []);
 
-  const handleSelectWord = (selectedWord) => {
+  const handleSelectWord = (selected) => {
+    const { type, suggestion } = selected;
+
+    const currentValue = Array.isArray(value) ? value.join(' ') : value;
+    const trimmedValue = currentValue.trim();
     let newValue;
-    if (Array.isArray(value)) {
-      newValue = value.map(val => val.replace(/\S+$/, selectedWord));
-    } else {
-      newValue = value.replace(/\S+$/, selectedWord);
+
+    if (type === 'phrase') {
+      newValue = `${trimmedValue}${suggestion}`.trim();
+    } else if (type === 'word') {
+      const words = trimmedValue.split(/\s+/);
+      const lastWord = words[words.length - 1] || '';
+      newValue = words.slice(0, -1).join(' ') + (lastWord ? ' ' : '') + suggestion;
+    }
+
+    if (newValue.startsWith(' ')) {
+      newValue = newValue.slice(1);
     }
 
     onChange(newValue);
-    setShowHistorial(false);
-    setLastSelectedConcept(null);
 
     if (Array.isArray(newValue)) {
       setWordCount(newValue.reduce((count, val) => count + val.split(/\s+/).length, 0));
@@ -62,11 +74,14 @@ export const AutocompleteInput = ({
       setWordCount(newValue.split(/\s+/).length);
     }
 
-    if (!recentSuggestions.includes(selectedWord)) {
+    setShowHistorial(false);
+    setLastSelectedConcept(null);
+
+    if (!recentSuggestions.includes(suggestion)) {
       if (recentSuggestions.length >= 5) {
-        setRecentSuggestions([...recentSuggestions.slice(1), selectedWord]);
+        setRecentSuggestions([...recentSuggestions.slice(1), suggestion]);
       } else {
-        setRecentSuggestions([...recentSuggestions, selectedWord]);
+        setRecentSuggestions([...recentSuggestions, suggestion]);
       }
     }
 
@@ -74,6 +89,7 @@ export const AutocompleteInput = ({
     setDisplaySuggestions([]);
     setSelectedSuggestionIndex(-1);
     setArrowKeyPressed(false);
+    setLastAutocompleteType(type);
   };
 
   const handleKeyDown = (event) => {
@@ -144,7 +160,9 @@ export const AutocompleteInput = ({
     onChange(value);
 
     const trimmedValue = Array.isArray(value) ? value.map(val => val.trim()) : value.trim();
-    if (trimmedValue === "" || (Array.isArray(trimmedValue) && trimmedValue.every(val => val === ""))) {
+    const lastChar = value.slice(-1);
+
+    if (trimmedValue === "" || (Array.isArray(trimmedValue) && trimmedValue.every(val => val === "")) || lastChar === " ") {
       setFilteredWords([]);
       setDisplaySuggestions([]);
       setShowHistorial(false);
@@ -154,22 +172,28 @@ export const AutocompleteInput = ({
     } else {
       setLoading(true);
 
-      const words = Array.isArray(trimmedValue) ? trimmedValue.flatMap(val => val.toLowerCase().split(/\s+/)) : trimmedValue.toLowerCase().split(/\s+/);
+      const lines = trimmedValue.split('\n');
+      const lastLine = lines[lines.length - 1] || '';
+      const words = lastLine.split(/\s+/);
+
+      const lastWords = words.slice(-3).join(' ');
       const lastWord = words[words.length - 1];
 
-      let suggestions = [];
+      const allPhrases = extractPhrasesFromData();
+      const phraseSuggestions = allPhrases
+        .filter(phrase => phrase.startsWith(lastWords) && phrase.length > lastWords.length)
+        .map(phrase => phrase.slice(lastWords.length).trim());
 
-      if (!lastSelectedConcept) {
-        const allPhrases = extractPhrasesFromData();
-        suggestions = allPhrases.filter(phrase => phrase.startsWith(lastWord));
-      }
+      const allWords = extractWordsFromData();
+      const wordSuggestions = allWords
+        .filter(word => word.startsWith(lastWord))
+        .slice(0, 5);
 
-      if (suggestions.length === 0 || lastSelectedConcept) {
-        const allWords = extractWordsFromData();
-        suggestions = allWords.filter(word => word.startsWith(lastWord));
-      }
+      const filteredSuggestions = [
+        ...phraseSuggestions.map(suggestion => ({ type: 'phrase', suggestion })),
+        ...wordSuggestions.map(suggestion => ({ type: 'word', suggestion }))
+      ];
 
-      const filteredSuggestions = suggestions.filter(suggestion => suggestion !== lastWord).slice(0, 5);
       setFilteredWords(filteredSuggestions);
       setDisplaySuggestions(filteredSuggestions);
       setShowHistorial(true);
@@ -200,24 +224,26 @@ export const AutocompleteInput = ({
             top: '100%',
             left: 0,
             width: '100%',
-            maxHeight: '200px', 
+            maxHeight: '200px',
+            overflowY: 'auto'
           }}
         >
           {displaySuggestions.length > 0 ? (
             displaySuggestions.map((suggestion, wordIndex) => (
-              <div key={wordIndex} className={`mb-2 ${selectedSuggestionIndex === wordIndex ? 'border-2 border-gray-500 rounded bg-gray-200' : ''}`}>
+              <div
+                key={wordIndex}
+                className={`mb-2 ${selectedSuggestionIndex === wordIndex ? 'border-2 border-gray-500 rounded bg-gray-200' : ''}`}
+              >
                 <span
-                  className={`text-sm cursor-pointer hover:text-blue-500 ${selectedSuggestionIndex === wordIndex ? 'font-bold' : ''}`}
+                  className={`text-sm cursor-pointer hover:text-blue-500 ${selectedSuggestionIndex === wordIndex ? 'suggestion-expanded font-bold' : 'suggestion-truncated'}`}
                   onClick={() => handleSelectWord(suggestion)}
                 >
-                  {suggestion}
+                  {suggestion.suggestion}
                 </span>
               </div>
             ))
           ) : (
-            <div className="text-sm text-gray-500 mt-1">
-              No hay sugerencias disponibles.
-            </div>
+            <div className="text-sm text-gray-500">No hay sugerencias</div>
           )}
         </div>
       )}

@@ -1,27 +1,36 @@
-
 @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-      -webkit-transform: translateY(-10px);
-      -moz-transform: translateY(-10px);
-      -ms-transform: translateY(-10px);
-      -o-transform: translateY(-10px);
-}
-    to {
-      opacity: 1;
-      transform: translateY(0);
-      -webkit-transform: translateY(0);
-      -moz-transform: translateY(0);
-      -ms-transform: translateY(0);
-      -o-transform: translateY(0);
-}
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+    -webkit-transform: translateY(-10px);
+    -moz-transform: translateY(-10px);
+    -ms-transform: translateY(-10px);
+    -o-transform: translateY(-10px);
   }
-  
-  .slide-down {
-    animation: slideDown 1.3s ease-out;
-    -webkit-animation: slideDown 0.7s ease-out;
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    -webkit-transform: translateY(0);
+    -moz-transform: translateY(0);
+    -ms-transform: translateY(0);
+    -o-transform: translateY(0);
+  }
 }
 
+.slide-down {
+  animation: slideDown 1.3s ease-out;
+  -webkit-animation: slideDown 0.7s ease-out;
+}
 
-  
+.suggestion-truncated {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 250px; /* Ajusta el ancho según tus necesidades */
+  display: inline-block;
+}
+
+.suggestion-expanded {
+  white-space: normal;
+  max-width: none;
+}

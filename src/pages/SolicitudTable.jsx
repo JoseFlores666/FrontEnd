@@ -274,7 +274,8 @@ export function SolicitudTable({ }) {
                       className="text-green-600 hover:text-green-800 mx-1"
                     >
                       <FontAwesomeIcon icon={faTruck} />
-                    </Link><Link
+                    </Link>
+                    <Link
                       to={`/soli/registro/${solicitud._id}?duplicar=true`}
                       className="text-blue-600 hover:text-blue-800 mx-2"
                     >

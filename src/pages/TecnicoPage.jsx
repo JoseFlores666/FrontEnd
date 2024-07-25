@@ -252,7 +252,7 @@ export const TecnicoPage = () => {
                   </Link>
                   <Link
                     className="text-blue-600 hover:text-blue-800 mx-2"
-                    to={`/asignarTec`} >
+                    to={`/asignarTec/${solicitud._id}?`} >
                     <FontAwesomeIcon icon={faCheck} className="mr-2" />
                   </Link>
                 </div>

@@ -559,8 +559,6 @@ export const RegisterSolicitudPage = () => {
             <input type="hidden" id="myProyectoInput" name="myProyecto" value={myProyecto_ || ""} />
             <input type="hidden" id="myActividadInput" name="myActividad" value={myActividad_ || ""} />
           </div>
-
-      
             <div className="relative w-full">
               <table className="w-full caption-bottom text-sm border">
                 <thead className="[&_tr]:border border-gray-400">
@@ -624,7 +622,7 @@ export const RegisterSolicitudPage = () => {
                           ]}
                           inputProps={{
                             type: "text",
-                            maxLength: 200,
+                            maxLength: 500,
                             name: `items[${index}][descripcion]`,
                             className: "w-full resize-none text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
                             onBlur: () => setValue(`items[${index}].descripcion`, item.descripcion, { shouldValidate: true })
@@ -673,7 +671,7 @@ export const RegisterSolicitudPage = () => {
               fieldsToCheck={['areaSolicitante', 'soliInsumosDescripcion', 'justificacionAdquisicion']}
               inputProps={{
                 type: "text",
-                maxLength: 200,
+                maxLength: 500,
                 name: `justificacion`,
                 className: "w-full resize-none text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
                 onBlur: () => setValue(`justificacion`, justificacion, { shouldValidate: true })

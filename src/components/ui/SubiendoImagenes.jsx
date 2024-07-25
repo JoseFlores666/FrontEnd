@@ -34,7 +34,7 @@ const SubiendoImagenes = forwardRef((props, ref) => {
   return (
     <div>
       <Container style={{ textAlign: 'center' ,color: 'black' }}>
-        <h1 className='text-center text-base font-medium mb-1'>Sube tus imágenes aquí</h1>
+        <h1 className='text-center text-base font-medium mb-1'>Suba sus evidencias aquí</h1>
         {error && <div className="error-message">{error}</div>}
         <Dropzone onDrop={handleDrop}>
           {({ getRootProps, getInputProps }) => (
@@ -42,13 +42,13 @@ const SubiendoImagenes = forwardRef((props, ref) => {
               <div {...getRootProps({ className: "dropzone" })}>
                 <input {...getInputProps()} />
                 <span>📁</span>
-                <p className='text-sm font-medium mb-1'>Coloca tus imágenes aquí, o haz clic para seleccionar</p>
+                <p className='text-sm font-medium mb-1'>Coloca tus evidencias aquí, o haz clic para seleccionar</p>
               </div>
             </section>
           )}
         </Dropzone>
         <div className="image-preview-container">
-          {files.length === 0 ? <h3 className='font-medium'>No hay imágenes</h3> : files.map((file, index) => (
+          {files.length === 0 ? <h3 className='font-medium'>No hay imágenes(evidencias)</h3> : files.map((file, index) => (
             <div key={index} className="image-container">
               <img alt='Imagen' className="preview-image" src={URL.createObjectURL(file)} />
               <button onClick={(e) => removeFile(e, file)} className="remove-button">&times;</button>

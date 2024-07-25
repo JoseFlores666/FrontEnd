@@ -178,7 +178,7 @@ export const RegisterTecPage2 = () => {
     };
 
     return (
-        <div className="mx-auto max-w-4xl p-4 text-black">
+        <div className="mx-auto max-w-5xl p-4 text-black">
             <form onSubmit={handleSubmit(onSubmit)} className="slide-down">
                 <div className="bg-white p-6 rounded-md shadow-md">
 
@@ -271,7 +271,7 @@ export const RegisterTecPage2 = () => {
                             </div>
                         </div>
 
-                        <div className="border rounded-lg bg-white overflow-x-auto">
+            
                             <div className="relative w-full">
                                 <table className="w-full caption-bottom text-sm border">
                                     <thead className="[&_tr]:border border-gray-400">
@@ -345,7 +345,6 @@ export const RegisterTecPage2 = () => {
                                         ))}
                                     </tbody>
                                 </table>
-                            </div>
                             <div className="p-4 bg-white border-b border-r border-l border-gray-400 rounded-b-md">
                                 <button
                                     onClick={(e) => agregarItem(e)}
@@ -372,7 +371,7 @@ export const RegisterTecPage2 = () => {
                                 fieldsToCheck={['Observacionestecnicas', 'descripcionDelServicio', 'soliInsumosDescripcion']}
                                 inputProps={{
                                     type: "text",
-                                    maxLength: 200,
+                                    maxLength: 500,
                                     className: "w-full resize-none text-black p-3 border border-gray-400 bg-gray-50 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
                                     onBlur: () => setValue("observaciones", observaciones, { shouldValidate: true })
                                 }}
