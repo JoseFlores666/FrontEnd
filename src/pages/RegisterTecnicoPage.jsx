@@ -241,8 +241,7 @@ export const RegisterTecnicoPage = () => {
           <div className="botones">
             <button
               type="submit"
-            <button 
-              type="submit" 
+          
               className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md border border-black"
             >
               Guardar cambios
