@@ -87,7 +87,7 @@ export const RegisterTecnicoPage = () => {
           </div>
           <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-4">
             <div>
-              <label className="block text-base font-medium mb-1">No. de folio Interno:</label>
+              <label className="block text-base font-medium mb-1">No. de folio Externo:</label>
               <input
                 type="text"
                 id="folio"

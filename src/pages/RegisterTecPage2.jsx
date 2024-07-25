@@ -8,7 +8,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faClone } from '@fortawesome/free-solid-svg-icons';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formSchema } from '../schemas/RegisterTecPage2'
-import SubiendoImagenes from "../components/ui/SubiendoImagenes";
 import Swal from "sweetalert2";
 import "../css/solicitud.css";
 import "../css/Animaciones.css";
@@ -390,33 +389,7 @@ export const RegisterTecPage2 = () => {
                                 </button>
                             </div>
                         </div>
-                        <SubiendoImagenes ref={subiendoImagenesRef} />
-
-                        <div>
-                            <label className="text-sm mb-1 font-medium leading-none" htmlFor="observaciones">
-                                Observaciones y/o diagnóstico técnico
-                            </label>
-                            <AutocompleteInput
-                                index={items.length}
-                                value={observaciones}
-                                onChange={(newValue) => setObservaciones(newValue)}
-                                data={historialOrden}
-                                recentSuggestions={recentSuggestions}
-                                setRecentSuggestions={setRecentSuggestions}
-                                inputRefs={refs}
-                                placeholder="Ingrese sus Observaciones"
-                                fieldsToCheck={['Observacionestecnicas', 'descripcionDelServicio', 'soliInsumosDescripcion']}
-                                inputProps={{
-                                    type: "text",
-                                    maxLength: 200,
-                                    className: "w-full resize-none text-black p-3 border border-gray-400 bg-gray-50 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
-                                    onBlur: () => setValue("observaciones", observaciones, { shouldValidate: true })
-                                }}
-                            />
-                            {errors.observaciones && (
-                                <span className="text-red-500">{errors.observaciones.message}</span>
-                            )}
-                        </div>
+                       
 
                     </div>
                     <div className="tablafirmas flex justify-between mt-5 text-black">
