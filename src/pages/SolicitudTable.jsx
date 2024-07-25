@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faFileAlt, faEdit, faTruck, faTimesCircle, faCopy, } from "@fortawesome/free-solid-svg-icons";
 import { ImFileEmpty } from "react-icons/im";
+import TablaVistaSolicitud from "./TablaVistaSolicitud";
 
 export function SolicitudTable({ }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -22,6 +23,15 @@ export function SolicitudTable({ }) {
   const [loading, setLoading] = useState(true);
   const [solicitudesFetched, setSolicitudesFetched] = useState(false);
 
+  const [isModalOpen2, setIsModalOpen2] = useState(false);
+
+  const abrirModal = () => {
+    setIsModalOpen2(true);
+  };
+
+  const cerrarModal = () => {
+    setIsModalOpen2(false);
+  };
 
   useEffect(() => {
     if (!solicitudesFetched) {
@@ -187,6 +197,8 @@ export function SolicitudTable({ }) {
             )}
           </div>
         </div>
+        <button onClick={abrirModal} className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >Consultar solicitudes</button>
         <div>
           <label htmlFor="entries-per-page" className="mr-2 text-white">Entradas por página:</label>
           <select
@@ -347,7 +359,23 @@ export function SolicitudTable({ }) {
           </div>
         </div>
       )}
-
+      {isModalOpen2 && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+        >
+          <div
+            className="bg-white p-6 rounded-lg shadow-lg relative absolute"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <TablaVistaSolicitud />
+            <button
+              className="absolute top-2 right-2 text-red-500"
+              onClick={cerrarModal}
+            >
+              X
+            </button>
+          </div>
+        </div>)}
     </div >
   );
 }

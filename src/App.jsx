@@ -15,6 +15,8 @@ import { AbonoSolicitud } from "./pages/AbonoSolicitud";
 import { FolioExterno } from "./pages/FolioExterno";
 import { RegisterTecPage2 } from "./pages/RegisterTecPage2";
 import { DashboardMenu } from "./pages/DashboardMenu";
+import {Evidencias} from "./pages/Evidencias"
+import {AsignarTecnico} from "./pages/AsignarTecnico"
 
 function App() {
   return (
@@ -38,6 +40,8 @@ function App() {
                   <Route path="/tecnico/:id" element={<RegisterTecnicoPage />} />
                   <Route path="/tecnico/orden" element={<TecnicoPage />} />
                   <Route path="/tecnico2/:id" element={<RegisterTecPage2 />} />
+                  <Route path="/evidencias" element={<Evidencias />} />
+                  <Route path="/asignarTec" element={<AsignarTecnico />} />
                 </Route>
               </Routes>
             </main>

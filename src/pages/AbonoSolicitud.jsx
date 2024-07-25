@@ -4,19 +4,16 @@ import "../css/solicitud.css";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
-// import { AbonoSchema } from "../schemas/Abono";
+
 import { ImFileEmpty } from "react-icons/im";
 import { useForm } from "react-hook-form";
-import { faL } from "@fortawesome/free-solid-svg-icons";
 import "../css/Animaciones.css";
 
 export const AbonoSolicitud = () => {
     const { id } = useParams();
-    const { handleSubmit, register, setValue, formState: { errors } } = useForm(
-    //     {
-    //     // resolver: zodResolver(AbonoSchema),
-    // }
-    );
+
+
+    const { handleSubmit, register, setValue, formState: { errors } } = useForm();
 
     const formRef = useRef(null);
 
@@ -46,7 +43,7 @@ export const AbonoSolicitud = () => {
             llenaSolicitud();
         }
     }, [datosCargados]);
- 
+
     const llenaSolicitud = () => {
         try {
             setValue("folio", unasoli.folio || "");
@@ -126,9 +123,7 @@ export const AbonoSolicitud = () => {
         <div className="mx-auto max-w-6xl p-4 text-black">
             <form ref={formRef} onSubmit={handleSubmit(onSubmit)} className="slide-down">
                 <div className="bg-white p-6 rounded-md shadow-md">
-                    
-                        <h1 className="text-2xl  font-bold text-center text-black mb-6">Área De Entregas</h1>
-                    
+                    <h1 className="text-2xl  font-bold text-center text-black mb-6">Área De Entregas</h1>
                     <div>
                         <div className="grid grid-cols-4 md:grid-cols-4 gap-6 mb-4">
                             <div>

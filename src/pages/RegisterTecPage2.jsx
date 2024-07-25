@@ -8,7 +8,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faClone } from '@fortawesome/free-solid-svg-icons';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formSchema } from '../schemas/RegisterTecPage2'
-import SubiendoImagenes from "../components/ui/SubiendoImagenes";
 import Swal from "sweetalert2";
 import "../css/solicitud.css";
 import "../css/Animaciones.css";
@@ -355,7 +354,7 @@ export const RegisterTecPage2 = () => {
                                 </button>
                             </div>
                         </div>
-                        <SubiendoImagenes ref={subiendoImagenesRef} />
+                        {/* <SubiendoImagenes ref={subiendoImagenesRef} /> */}
 
                         <div>
                             <label className="text-sm mb-1 font-medium leading-none" htmlFor="observaciones">

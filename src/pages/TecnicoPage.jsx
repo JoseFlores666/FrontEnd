@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faEdit, faTimes, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faEdit, faTimes, faChevronLeft, faChevronRight, faCamera,faCheck } from '@fortawesome/free-solid-svg-icons';
 import { useSoli } from "../context/SolicitudContext";
 import { Link } from 'react-router-dom';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { ImFileEmpty } from "react-icons/im";
+import TablaVistaOrden from './TablaVistaOrden';
 
 export const TecnicoPage = () => {
 
@@ -21,6 +22,16 @@ export const TecnicoPage = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [datosCargados, setDatosCargados] = useState(false);
+
+  const [isModalOpen2, setIsModalOpen2] = useState(false);
+
+  const abrirModal = () => {
+    setIsModalOpen2(true);
+  };
+
+  const cerrarModal = () => {
+    setIsModalOpen2(false);
+  };
 
   const [loading, setLoading] = useState(true);
 
@@ -159,6 +170,8 @@ export const TecnicoPage = () => {
             </button>
           )}
         </div>
+        <button onClick={abrirModal} className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >Consultar solicitudes</button>
         <div>
           <label htmlFor="entries-per-page" className="mr-2 text-white">Entradas por página:</label>
           <select
@@ -231,6 +244,16 @@ export const TecnicoPage = () => {
                     className="text-blue-600 hover:text-blue-800 mx-2"
                     to={`/tecnico2/${solicitud._id}?`} >
                     <FontAwesomeIcon icon={faPlus} />
+                  </Link>
+                  <Link
+                    className="text-blue-600 hover:text-blue-800 mx-2"
+                    to={`/evidencias`} >
+                    <FontAwesomeIcon icon={faCamera} />
+                  </Link>
+                  <Link
+                    className="text-blue-600 hover:text-blue-800 mx-2"
+                    to={`/asignarTec`} >
+                    <FontAwesomeIcon icon={faCheck} className="mr-2" />
                   </Link>
                 </div>
               </td>
@@ -318,6 +341,23 @@ export const TecnicoPage = () => {
           </div>
         </div>
       )}
+      {isModalOpen2 && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+        >
+          <div
+            className="bg-white p-6 rounded-lg shadow-lg relative absolute"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <TablaVistaOrden />
+            <button
+              className="absolute top-2 right-2 text-red-500"
+              onClick={cerrarModal}
+            >
+              X
+            </button>
+          </div>
+        </div>)}
     </div>
   );
 };
