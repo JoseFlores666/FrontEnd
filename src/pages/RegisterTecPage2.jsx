@@ -287,7 +287,7 @@ export const RegisterTecPage2 = () => {
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody className="[&_tr:last-child]:border-0 border-gray-400">
+                                    <tbody className="[&_tr:last-child]:border-0  border-b border-r border-l border-gray-400">
                                         {items.map((item, index) => (
                                             <tr key={index} className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted border-gray-400">
                                                 <td className="align-middle border border-gray-400">
@@ -353,7 +353,6 @@ export const RegisterTecPage2 = () => {
                                 </button>
                             </div>
                         </div>
-                        {/* <SubiendoImagenes ref={subiendoImagenesRef} /> */}
 
                         <div>
                             <label className="text-sm mb-1 font-medium leading-none" htmlFor="observaciones">

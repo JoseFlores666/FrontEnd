@@ -41,7 +41,7 @@ function App() {
                   <Route path="/tecnico/:id" element={<RegisterTecnicoPage />} />
                   <Route path="/tecnico/orden" element={<TecnicoPage />} />
                   <Route path="/tecnico2/:id" element={<RegisterTecPage2 />} />
-                  <Route path="/evidencias" element={<Evidencias />} />
+                  <Route path="/evidencias/:id" element={<Evidencias />} />
                   <Route path="/asignarTec/:id" element={<AsignarTecnico />} />
                   <Route path="/proyectAndAct" element={<ProjectAndActManager />} />
                 </Route>
