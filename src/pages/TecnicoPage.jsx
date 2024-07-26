@@ -110,6 +110,10 @@ export const TecnicoPage = () => {
     setSearchTerm("");
   };
 
+  const countOrdenesByState = (ordenes, state) => {
+    return ordenes.filter(ordenes => ordenes.estado === state).length;
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -119,7 +123,17 @@ export const TecnicoPage = () => {
         </div>
       </div>
     );
-  }
+  };
+
+  const data = {
+    recibidas: countOrdenesByState(info, 'Recibidas'),
+    asignadas: countOrdenesByState(info, 'Asignada'),
+    diagnosticadas: countOrdenesByState(info, 'Diagnosticada'),
+    completadas: countOrdenesByState(info, 'Completada'),
+    declinadas: countOrdenesByState(info, 'Declinada'),
+    total: info.length
+  };
+
   return (
     <div className="overflow-x-auto p-4">
       <div className="mb-1 flex justify-between items-center">
@@ -166,16 +180,16 @@ export const TecnicoPage = () => {
       <table className="w-full min-w-full divide-y divide-white-200 text-sm text-black rounded-lg overflow-hidden">
         <thead className="bg-black text-white">
           <tr>
-            <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center cursor-pointer w-1/12" onClick={() => requestSort('folio')}>Folio</th>
-            <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center cursor-pointer w-1/12" onClick={() => requestSort('fecha')}>Fecha</th>
-            <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center cursor-pointer w-1/12" onClick={() => requestSort('tipoDeMantenimiento')}>Tipo de Mantenimiento</th>
-            <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center cursor-pointer w-1/12" onClick={() => requestSort('tipoDeTrabajo')}>Tipo de Trabajo</th>
-            <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center cursor-pointer w-1/12" onClick={() => requestSort('tipoDeSolicitud')}>Tipo de Solicitud</th>
-            <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center cursor-pointer w-2/12" onClick={() => requestSort('descripcionDelServicio')}>Descripción del Servicio</th>
-            <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center cursor-pointer w-1/12" onClick={() => requestSort('estado')}>Estado</th>
-            <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center w-1/12">Imágenes</th>
-            <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center w-1/12">Acciones</th>
-            <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center w-1/12">Informe</th>
+            <th className="text-left font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('folio')}>FOLIO</th>
+            <th className="text-left font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('fecha')}>FECHA</th>
+            <th className="text-left font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('tipoDeMantenimiento')}>TIPO DE MANTENIMIENTO</th>
+            <th className="text-left font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('tipoDeTrabajo')}>TIPO DE TRABAJO</th>
+            <th className="text-left font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('tipoDeSolicitud')}>TIPO DE SOLICITUD</th>
+            <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center cursor-pointer w-2/12" onClick={() => requestSort('descripcionDelServicio')}>DESCRIPCION DEL SERVICIO</th>
+            <th className="text-left font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('estado')}>ESTADO</th>
+            <th className="text-left font-medium border text-center cursor-pointer w-1/12">IMÁGENES</th>
+            <th className="text-left font-medium border text-center cursor-pointer w-1/12">ACCIONES</th>
+            <th className="text-left font-medium border text-center cursor-pointer w-1/12">INFORME</th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
@@ -184,57 +198,56 @@ export const TecnicoPage = () => {
               key={index}
               className={`text-left ${solicitud.estado === 'Declinado' ? 'border-red-500' : ''}`}
             >
-              <td className="px-3 py-2 whitespace-normal break-words border text-center">{solicitud.folio}</td>
-              <td className="px-3 py-2 whitespace-normal break-words border text-center">{new Date(solicitud.informe.fecha).toLocaleDateString()}</td>
-              <td className="px-3 py-2 whitespace-normal break-words border text-center">{solicitud.informe.tipoDeMantenimiento}</td>
-              <td className="px-3 py-2 whitespace-normal break-words border text-center">{solicitud.informe.tipoDeTrabajo}</td>
-              <td className="px-3 py-2 whitespace-normal break-words border text-center">{solicitud.informe.tipoDeSolicitud}</td>
-              <td className="px-3 py-2 whitespace-normal break-words border text-center">{solicitud.informe.descripcionDelServicio}</td>
-              <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center w-1/12">
+              <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">{solicitud.folio}</td>
+              <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">{new Date(solicitud.informe.fecha).toLocaleDateString()}</td>
+              <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">{solicitud.informe.tipoDeMantenimiento}</td>
+              <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">{solicitud.informe.tipoDeTrabajo}</td>
+              <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">{solicitud.informe.tipoDeSolicitud}</td>
+              <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">{solicitud.informe.descripcionDelServicio}</td>
+              <th className="p-1 whitespace-normal break-words border border-gray-400 text-center">
                 <Link to={`/evidencias/${solicitud._id}?`} className="text-black">
                   Imágenes
                 </Link>
               </th>
-              <td className="px-3 py-2 whitespace-normal break-words border text-center">
+              <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">
                 {solicitud.estado === 'Declinada' ? (
                   <button className="text-red-500 border border-red-500 px-2 py-1 rounded-lg" disabled>Declinado</button>
                 ) : (
                   solicitud.estado
                 )}
               </td>
-              <td className="px-3 py-2 whitespace-normal break-words border text-center">
+              <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">
                 {solicitud.estado === 'Declinada' ? (
                   <button className="text-red-500 border border-red-500 px-2 py-1 rounded-lg" disabled>Declinado</button>
                 ) : (
-                  <>
+                  <div className="flex justify-center items-center space-x-2">
                     <button
                       onClick={() => handleDelete(solicitud._id)}
-                      className="text-red-500 hover mx-2"
+                      className="text-red-500 hover"
                     >
                       <FontAwesomeIcon icon={faTrash} />
                     </button>
                     <Link
-                      className="text-blue-600 hover:text-blue-800 mx-2"
+                      className="text-blue-600 hover:text-blue-800"
                       to={`/tecnico/${solicitud._id}?editar=true`}
                     >
                       <FontAwesomeIcon icon={faEdit} />
                     </Link>
                     <Link
-                      className="text-blue-600 hover:text-blue-800 mx-2"
+                      className="text-blue-600 hover:text-blue-800"
                       to={`/tecnico2/${solicitud._id}?`}
                     >
                       <FontAwesomeIcon icon={faPlus} />
                     </Link>
                     <Link
-                      className="text-blue-600 hover:text-blue-800 mx-2"
+                      className="text-blue-600 hover:text-blue-800"
                       to={`/asignarTec/${solicitud._id}?`}
                     >
-                      <FontAwesomeIcon icon={faCheck} className="mr-2" />
+                      <FontAwesomeIcon icon={faCheck} />
                     </Link>
-                  </>
-                )}
+                  </div>)}
               </td>
-              <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center w-1/12">
+              <th className="p-1 whitespace-normal break-words border border-gray-400 text-center">
                 <Link to={`/verInforme/${solicitud._id}?`} className="text-black">
                   Ver
                 </Link>
@@ -298,7 +311,7 @@ export const TecnicoPage = () => {
               className="bg-white p-6 rounded-lg shadow-lg relative absolute"
               onClick={(e) => e.stopPropagation()}
             >
-              <TablaVistaOrden />
+              <TablaVistaOrden data={data} />
               <button
                 className="absolute top-2 right-2 text-red-500"
                 onClick={cerrarModal}

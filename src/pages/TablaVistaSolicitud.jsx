@@ -1,21 +1,9 @@
 import React from 'react';
 
-const TablaVistaSolicitud = () => {
-    // Aquí defines los datos para la tabla
-    const data = {
-        nuevas: 0,
-        asignadas: 0,
-        pendientes: 0,
-        completadas: 0,
-        rechazadas: 0,
-        total: 0
-    };
-
+const TablaVistaSolicitud = ({ data }) => {
     return (
         <div>
-            <h2 className="text-2xl  font-bold text-center text-black">Solicitudes</h2>
-
-
+            <h2 className="text-2xl font-bold text-center text-black">Solicitudes</h2>
             <table className="text-black w-full text-left border-collapse">
                 <thead>
                     <tr>

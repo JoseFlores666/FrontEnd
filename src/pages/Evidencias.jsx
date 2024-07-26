@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { useParams } from 'react-router-dom';
 import { useSoli } from '../context/SolicitudContext';
 
 export const Evidencias = () => {
