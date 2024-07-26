@@ -180,8 +180,8 @@ export const TecnicoPage = () => {
         <tbody className="bg-white divide-y divide-gray-200">
           {currentSolicitudes.map((solicitud, index) => (
             <tr
-              key={solicitud._id}
-              className={index % 2 === 0 ? "bg-gray-100 hover:bg-gray-200" : "hover:bg-gray-200"}
+              key={index}
+              className={`text-left ${solicitud.estado === 'Declinado' ? 'border-red-500' : ''}`}
             >
               <td className="px-3 py-2 whitespace-normal break-words border text-center">{solicitud.folio}</td>
               <td className="px-3 py-2 whitespace-normal break-words border text-center">{new Date(solicitud.informe.fecha).toLocaleDateString()}</td>
@@ -189,35 +189,49 @@ export const TecnicoPage = () => {
               <td className="px-3 py-2 whitespace-normal break-words border text-center">{solicitud.informe.tipoDeTrabajo}</td>
               <td className="px-3 py-2 whitespace-normal break-words border text-center">{solicitud.informe.tipoDeSolicitud}</td>
               <td className="px-3 py-2 whitespace-normal break-words border text-center">{solicitud.informe.descripcionDelServicio}</td>
-              <td className="px-3 py-2 whitespace-normal break-words border text-center">{solicitud.estado}</td>
               <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center w-1/12">
                 <Link to={`/evidencias/${solicitud._id}?`} className="text-black">
                   Imágenes
                 </Link>
               </th>
-
               <td className="px-3 py-2 whitespace-normal break-words border text-center">
-                <div className="flex justify-center items-center space-x-2">
-                  <Link
-                    className="text-blue-600 hover:text-blue-800 mx-2"
-                    to={`/tecnico/${solicitud._id}?editar=true`} >
-                    <FontAwesomeIcon icon={faEdit} />
-                  </Link>
-                  <button onClick={() => handleDelete(solicitud._id)}
-                    className="text-red-500 hover mx-2">
-                    <FontAwesomeIcon icon={faTrash} />
-                  </button>
-                  <Link
-                    className="text-blue-600 hover:text-blue-800 mx-2"
-                    to={`/tecnico2/${solicitud._id}?`} >
-                    <FontAwesomeIcon icon={faPlus} />
-                  </Link>
-                  <Link
-                    className="text-blue-600 hover:text-blue-800 mx-2"
-                    to={`/asignarTec/${solicitud._id}?`} >
-                    <FontAwesomeIcon icon={faCheck} className="mr-2" />
-                  </Link>
-                </div>
+                {solicitud.estado === 'Declinada' ? (
+                  <button className="text-red-500 border border-red-500 px-2 py-1 rounded-lg" disabled>Declinado</button>
+                ) : (
+                  solicitud.estado
+                )}
+              </td>
+              <td className="px-3 py-2 whitespace-normal break-words border text-center">
+                {solicitud.estado === 'Declinada' ? (
+                  <button className="text-red-500 border border-red-500 px-2 py-1 rounded-lg" disabled>Declinado</button>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => handleDelete(solicitud._id)}
+                      className="text-red-500 hover mx-2"
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </button>
+                    <Link
+                      className="text-blue-600 hover:text-blue-800 mx-2"
+                      to={`/tecnico/${solicitud._id}?editar=true`}
+                    >
+                      <FontAwesomeIcon icon={faEdit} />
+                    </Link>
+                    <Link
+                      className="text-blue-600 hover:text-blue-800 mx-2"
+                      to={`/tecnico2/${solicitud._id}?`}
+                    >
+                      <FontAwesomeIcon icon={faPlus} />
+                    </Link>
+                    <Link
+                      className="text-blue-600 hover:text-blue-800 mx-2"
+                      to={`/asignarTec/${solicitud._id}?`}
+                    >
+                      <FontAwesomeIcon icon={faCheck} className="mr-2" />
+                    </Link>
+                  </>
+                )}
               </td>
             </tr>
           ))}

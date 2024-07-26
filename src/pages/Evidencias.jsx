@@ -50,9 +50,7 @@ export const Evidencias = () => {
               <th className="h-12 text-center px-4 hover:bg-gray-100 border-b border-gray-400 align-middle font-medium text-black ">
                 Imagen 2
               </th>
-              <th className="h-12 text-center px-4 hover:bg-gray-100 border-b border-gray-400 align-middle font-medium text-black ">
-                Acción
-              </th>
+
             </tr>
           </thead>
           <tbody className="[&_tr:last-child]:border-0 border-b border-gray-400">
@@ -67,20 +65,6 @@ export const Evidencias = () => {
                   {par.length < 2 && (
                     <td className="p-4 border border-gray-400 w-1/4 bg-light-50"></td>
                   )}
-                  <td className="p-4 border border-gray-400 w-1/4 text-center bg-light-50">
-                    <Link
-                      className="text-blue-600 hover:text-blue-800 mx-2"
-                      to={`/tecnico/${id}?editar=true`}
-                    >
-                      <FontAwesomeIcon icon={faEdit} />
-                    </Link>
-                    <button
-                      onClick={() => handleDelete(id)}
-                      className="text-red-500 hover mx-2"
-                    >
-                      <FontAwesomeIcon icon={faTrash} />
-                    </button>
-                  </td>
                 </tr>
               ))
             ) : (
