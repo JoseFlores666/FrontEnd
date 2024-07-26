@@ -23,11 +23,6 @@ export const Evidencias = () => {
     }
   }, [id, traeImagenInfo, cargarDatos]);
 
-  const handleDelete = (id) => {
-    // Función para manejar la eliminación de la solicitud
-    console.log(`Eliminar solicitud con id: ${id}`);
-  };
-
   const dividirEnPares = (arr) => {
     const pares = [];
     for (let i = 0; i < arr.length; i += 2) {

@@ -39,7 +39,6 @@ export default function AsignarTecnico() {
 
     const llenarDatos = () => {
         if (tecnicos.length > 0) {
-            console.log(tecnicos);
             setDatosCargados(true);
         }
     };
@@ -68,7 +67,6 @@ export default function AsignarTecnico() {
             const formData = new FormData();
             const files = subiendoImagenesRef.current.getFiles();
 
-            // Solo añade imágenes si hay alguna
             if (files.length > 0) {
                 for (let i = 0; i < files.length; i++) {
                     formData.append(`imagen-${i}`, files[i]);
@@ -89,7 +87,7 @@ export default function AsignarTecnico() {
                 confirmButtonText: "Cool",
             });
 
-            reset(); // Reset the form after successful submission
+            reset();
         } catch (error) {
             console.error("Error al enviar los datos:", error);
         }

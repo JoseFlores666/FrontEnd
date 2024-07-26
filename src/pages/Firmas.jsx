@@ -45,7 +45,6 @@ export const Firmas = () => {
 
   const llenadoFirmas = () => {
     if (nombresFirmas.length > 0) {
-      console.log(nombresFirmas)
       const { solicitud, revision, validacion, autorizacion } = nombresFirmas[0];
       setSolicitud(solicitud);
       setJefeInmediato(revision);

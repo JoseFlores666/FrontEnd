@@ -354,7 +354,7 @@ export const RegisterTecPage2 = () => {
                             </div>
                         </div>
 
-                        <div>
+                        {/* <div>
                             <label className="text-sm mb-1 font-medium leading-none" htmlFor="observaciones">
                                 Observaciones y/o diagnóstico técnico
                             </label>
@@ -378,7 +378,7 @@ export const RegisterTecPage2 = () => {
                             {errors.observaciones && (
                                 <span className="text-red-500">{errors.observaciones.message}</span>
                             )}
-                        </div>
+                        </div> */}
                         <div className="flex justify-center mt-4">
                             <button
                                 className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md border border-black"

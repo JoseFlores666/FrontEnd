@@ -60,7 +60,6 @@ export function SoliProvider({ children }) {
   const getunSolitud = async (id) => {
     try {
       const res = await getUnaSoli(id);
-      // console.log(res.data);
       setUnaSoli(res.data);
     } catch (error) {
       console.error("Error fetching solitudes:", error);
@@ -138,9 +137,7 @@ export function SoliProvider({ children }) {
   const RealizarAbono = async (id, data) => {
     try {
       const response = await putAbono(id, data);
-      console.log("Abonado con exito");
       return response.data;
-
     } catch (error) {
       console.error("Error al abonar:", error);
       setErrors(["Error al abonar"]);
@@ -170,7 +167,6 @@ export function SoliProvider({ children }) {
   const getIdsProyectYAct = async (id) => {
     try {
       const res = await traeUnProyectAct(id);
-
       setIdsAct(res.data.actividades);
     } catch (error) {
       console.error("Error fetching project activities:", error);
@@ -227,7 +223,7 @@ export function SoliProvider({ children }) {
   const evaluarInfor = async (id, info) => {
     try {
       const res = await evaluacionDelInfome(id, info);
-      !res ? console.log("Error al crear la solicitud") : console.log("Solicitud creada con éxito")
+      !res ? console.log("Error al crear el informe") : console.log("Informe creado con éxito")
 
     } catch (error) {
       console.error("Error creating solicitud:", error);
@@ -237,7 +233,6 @@ export function SoliProvider({ children }) {
   const traeUnaInfo = async (id) => {
     try {
       const res = await getUnaInfome(id);
-      console.log(res.data)
       setUnaInfo(res.data);
     } catch (error) {
       console.error("Error creating solicitud:", error);
@@ -247,7 +242,6 @@ export function SoliProvider({ children }) {
   const traeImagenInfo = async (id) => {
     try {
       const res = await getImagenInfome(id);
-      console.log(res.data)
       setImagenInfo(res.data);
     } catch (error) {
       console.error("Error creating solicitud:", error);
@@ -258,7 +252,6 @@ export function SoliProvider({ children }) {
   const eliminarInfo = async (id) => {
     try {
       const res = await deleteInfome(id);
-      console.log(res)
     } catch (error) {
       console.error("Error fetching solitudes:", error);
       setErrors(["Error fetching solitudes"]);
@@ -300,7 +293,6 @@ export function SoliProvider({ children }) {
 
       const id = "664d5e645db2ce15d4468548";
       await editarNombreFirmas(id, nombrefirmas);
-
       console.log("Actulizado con exito");
     } catch (error) {
       console.error("Error :", error);
@@ -311,7 +303,6 @@ export function SoliProvider({ children }) {
   const traeFolioInterno = async () => {
     try {
       const res = await getfolioInterno();
-      console.log(res.data.folio)
       setMyFolioInterno(res.data.folio);
     } catch (error) {
       console.error("Error fetching firmas:", error);
@@ -321,7 +312,6 @@ export function SoliProvider({ children }) {
   const traeFolioInternoInforme = async () => {
     try {
       const res = await getfolioInternoInforme();
-      console.log("mi folio interno es:", res.data.folioInforme)
       setMyFolioInternoInfo(res.data.folioInforme);
     } catch (error) {
       console.error("Error fetching firmas:", error);
@@ -333,7 +323,6 @@ export function SoliProvider({ children }) {
   const traeHistorialOrden = async () => {
     try {
       const res = await gethistorialOrdenTrabajo();
-      console.log("historia orden:", res.data)
       setHistorialOrden(res.data);
     } catch (error) {
       console.error("Error fetching firmas:", error);
@@ -343,7 +332,6 @@ export function SoliProvider({ children }) {
   const traeHistorialSoli = async () => {
     try {
       const res = await gethistorialSoli();
-      console.log("historia orden:", res.data)
       setHistorialSoli(res.data);
     } catch (error) {
       console.error("Error fetching firmas:", error);
@@ -354,7 +342,6 @@ export function SoliProvider({ children }) {
   const traeApis_keys = async () => {
     try {
       const res = await VerApis_Keys();
-      console.log(res.data)
       setApi_Key(res.data);
     } catch (error) {
       console.error("Error consultar los api_Key:", error);
@@ -363,7 +350,6 @@ export function SoliProvider({ children }) {
   };
   const EditarApis_keys = async (idApiKeys, newApiKey) => {
     try {
-      console.log(idApiKeys, newApiKey)
       await actualizaApi_key(idApiKeys, newApiKey);
     } catch (error) {
       console.error("Error al editar el api_key:", error);
@@ -426,7 +412,7 @@ export function SoliProvider({ children }) {
         getInfo,
         createInfo,
         eliminarInfo,
-        imagenInfo, 
+        imagenInfo,
         traeImagenInfo,
         traerTecnicos,
         tecnicos,

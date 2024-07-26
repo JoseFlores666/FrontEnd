@@ -58,7 +58,7 @@ export const TecnicoPage = () => {
 
   useEffect(() => {
     setFilteredSolicitudes(info);
-    console.log(info);
+
   }, [info]);
 
   useEffect(() => {
@@ -175,6 +175,7 @@ export const TecnicoPage = () => {
             <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center cursor-pointer w-1/12" onClick={() => requestSort('estado')}>Estado</th>
             <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center w-1/12">Imágenes</th>
             <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center w-1/12">Acciones</th>
+            <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center w-1/12">Informe</th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
@@ -233,6 +234,11 @@ export const TecnicoPage = () => {
                   </>
                 )}
               </td>
+              <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center w-1/12">
+                <Link to={`/verInforme/${solicitud._id}?`} className="text-black">
+                  Ver
+                </Link>
+              </th>
             </tr>
           ))}
         </tbody>
