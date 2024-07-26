@@ -17,7 +17,8 @@ import { RegisterTecPage2 } from "./pages/RegisterTecPage2";
 import { DashboardMenu } from "./pages/DashboardMenu";
 import { Evidencias } from "./pages/Evidencias"
 import AsignarTecnico from "./pages/AsignarTecnico"
-import {ProjectAndActManager} from "./pages/EditarProyects&Act"
+import { ProjectAndActManager } from "./pages/EditarProyects&Act"
+import { VerInforme } from "./pages/VerInformePage"
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
                   <Route path="/evidencias/:id" element={<Evidencias />} />
                   <Route path="/asignarTec/:id" element={<AsignarTecnico />} />
                   <Route path="/proyectAndAct" element={<ProjectAndActManager />} />
+                  <Route path="/verInforme/:id" element={<VerInforme />} />
                 </Route>
               </Routes>
             </main>
