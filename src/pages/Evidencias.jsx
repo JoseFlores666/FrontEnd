@@ -1,5 +1,5 @@
 import React from 'react';
-import img1 from '../img/imagenPDF.png';
+import img1 from "../img/imagenWord.png";
 
 export const Evidencias = () => {
   return (
@@ -18,7 +18,6 @@ export const Evidencias = () => {
                 <img src={img1} className="w-48 h-48 object-cover mx-auto" />
               </td>
             </tr>
-           
           </tbody>
         </table>
       </div>

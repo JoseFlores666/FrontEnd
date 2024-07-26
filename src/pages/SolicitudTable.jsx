@@ -156,6 +156,10 @@ export function SolicitudTable({ }) {
     };
   }, []);
 
+  const countSolicitudesByState = (solicitudes, state) => {
+    return solicitudes.filter(solicitud => solicitud.estado === state).length;
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -166,6 +170,15 @@ export function SolicitudTable({ }) {
       </div>
     );
   }
+
+  const data = {
+    nuevas: countSolicitudesByState(soli, 'Nueva'),
+    asignadas: countSolicitudesByState(soli, 'Asignada'),
+    pendientes: countSolicitudesByState(soli, 'Pendiente'),
+    completadas: countSolicitudesByState(soli, 'Completada'),
+    rechazadas: countSolicitudesByState(soli, 'Rechazada'),
+    total: soli.length
+  };
 
   return (
     <div className="overflow-x-auto p-4">
@@ -217,93 +230,92 @@ export function SolicitudTable({ }) {
       <table className="w-full min-w-full divide-y divide-white-200 text-sm text-black rounded-lg overflow-hidden">
         <thead className="bg-black text-white">
           <tr>
-            <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center cursor-pointer w-1/12" onClick={() => requestSort('folio')}>Folio</th>
-            <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center cursor-pointer w-1/12" onClick={() => requestSort('fecha')}>Fecha</th>
-            <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center cursor-pointer w-1/12" onClick={() => requestSort('tipoSuministro')}>Tipo Suministro</th>
-            <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center cursor-pointer w-1/12" onClick={() => requestSort('procesoClave')}>Proceso Clave</th>
-            <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center cursor-pointer w-1/12" onClick={() => requestSort('proyecto')}>Proyecto</th>
-            <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center cursor-pointer w-1/12" onClick={() => requestSort('actividades')}>Actividades</th>
-
-            <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center cursor-pointer w-1/12" onClick={() => requestSort('estado')}>Estado</th>
-            <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center w-1/12">Acciones</th>
+            <th className="text-left font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('folio')}>FOLIO</th>
+            <th className="text-left font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('fecha')}>FECHA</th>
+            <th className="px-3 py-1 text-left font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('tipoSuministro')}>TIPO DE SUMINISTRO</th>
+            <th className="text-left font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('procesoClave')}>PROCESO CLAVE</th>
+            <th className="text-left font-medium border text-center w-2/12" >PROYECTO</th>
+            <th className="text-left font-medium border text-center w-2/12" >ACTIVIDADES</th>
+            <th className="text-left font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('estado')}>ESTADO</th>
+            <th className="text-left font-medium border text-center w-1/12">ACCIONES</th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-black">
           {currentSolicitudes.map((solicitud, index) => (
             <tr key={index} className={`text-left ${rejectedSolicitudes.includes(solicitud._id) ? 'border-red-500' : ''}`}>
-              <td className="px-3 py-2 whitespace-normal break-words border text-center">{solicitud.folio}</td>
-              <td className="px-3 py-2 whitespace-normal break-words border text-center">{solicitud.fecha}</td>
-              <td className="px-3 py-2 whitespace-normal break-words border text-center">{solicitud.tipoSuministro}</td>
-              <td className="px-3 py-2 whitespace-normal break-words border text-center">{solicitud.procesoClave}</td>
-              <td className="px-3 py-2 whitespace-normal break-words border text-center">{solicitud.proyecto?.nombre}</td>
-              <td className="px-3 py-2 whitespace-normal break-words border text-center">{solicitud.actividades?.map((actividad, idx) => (
+              <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">{solicitud.folio}</td>
+              <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">{solicitud.fecha}</td>
+              <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">{solicitud.tipoSuministro}</td>
+              <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">{solicitud.procesoClave}</td>
+              <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">{solicitud.proyecto?.nombre}</td>
+              <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">{solicitud.actividades?.map((actividad, idx) => (
                 <span key={idx}>{actividad.nombre}{idx < solicitud.actividades.length - 1 ? ', ' : ''}</span>
               ))}</td>
-              <td className="px-3 py-2 whitespace-normal break-words border text-center">
+              <td className="px-3 py-2 whitespace-normal break-words border border-gray-400 text-center">
                 {rejectedSolicitudes.includes(solicitud._id) ? (
                   <button className="text-red-500 border border-red-500 px-2 py-1 rounded-lg">Rechazado</button>
                 ) : (
                   solicitud.estado
                 )}
               </td>
-              <td className="px-3 py-2 whitespace-normal break-words border text-center">
+              <td className="px-3 py-2 whitespace-normal break-words border border-gray-400 text-center">
                 {rejectedSolicitudes.includes(solicitud._id) ? (
                   <button className="text-red-500 border border-red-500 px-2 py-1 rounded-lg">Rechazado</button>
                 ) : (
-                  <>
+                  <div className="flex justify-center items-center space-x-2">
                     <button
                       onClick={() => handleDelete(solicitud._id)}
-                      className="text-red-500 hover mx-2"
+                      className="text-red-500 hover"
                     >
                       <FontAwesomeIcon icon={faTrash} />
                     </button>
                     <Link
                       to={`/soli/registro/${solicitud._id}?editar=true`}
-                      className="text-blue-600 hover:text-blue-800 mx-2"
+                      className="text-blue-600 hover:text-blue-800 "
                     >
                       <FontAwesomeIcon icon={faEdit} />
                     </Link>
                     <Link
                       to={`/soli/folioExterno/${solicitud._id}?`}
-                      className="text-blue-600 hover:text-blue-800 mx-2"
+                      className="text-blue-600 hover:text-blue-800 "
                     >
                       <FontAwesomeIcon icon={faFileAlt} />
                     </Link>
                     <Link
                       to={`/soli/abonar/${solicitud._id}?`}
-                      className="text-green-600 hover:text-green-800 mx-1"
+                      className="text-green-600 hover:text-green-800"
                     >
                       <FontAwesomeIcon icon={faTruck} />
                     </Link>
                     <Link
                       to={`/soli/registro/${solicitud._id}?duplicar=true`}
-                      className="text-blue-600 hover:text-blue-800 mx-2"
+                      className="text-blue-600 hover:text-blue-800"
                     >
                       <FontAwesomeIcon icon={faCopy} />
                     </Link>
                     <button
                       onClick={() => handleOpenModal(solicitud._id)}
-                      className="text-red-500 border border-red-500 px-2 y-1 rounded-lg mx-1"
+                      className="text-red-500 border border-red-500 px-2 y-1 rounded-lg"
                     >
                       <FontAwesomeIcon icon={faTimesCircle} />
                     </button>
-                  </>
+                  </div>
                 )}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <nav aria-label="Page navigation example" className="flex items-center justify-between pt-4">
+      <nav className="flex items-center justify-between pt-2">
         <span className="text-sm font-normal text-white dark:text-black-400">
           Mostrando <span className="font-semibold text-white black:text-black">{indexOfFirstSolicitud + 1}-{indexOfLastSolicitud}</span> Total de Solicitudes: <span className="font-semibold text-white dark:text-white">{filteredSolicitudes.length}</span>
         </span>
-        <ul className="inline-flex items-center -space-x-px h-8 text-sm">
+        <ul className="inline-flex items-center h-8 text-sm">
           <li>
             <button
               onClick={() => paginate(currentPage > 1 ? currentPage - 1 : 1, selectedId)}
               className={`flex items-center justify-center px-3 h-8 leading-tight ${currentPage === 1
-                ? "text-gray-400 border-gray-300 cursor-not-allowed" : "text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+                ? "text-gray-400 border-gray-400 cursor-not-allowed" : "text-gray-500 bg-white border border-gray-400 hover:bg-gray-100 hover:text-gray-700"
                 } dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white`}
             >
               <span className="sr-only">Previous</span>
@@ -327,7 +339,7 @@ export function SolicitudTable({ }) {
             <button
               onClick={() => paginate(currentPage < Math.ceil(filteredSolicitudes.length / solicitudesPerPage) ? currentPage + 1 : currentPage, selectedId)}
               className={`flex items-center justify-center px-3 h-8 leading-tight ${currentPage === Math.ceil(filteredSolicitudes.length / solicitudesPerPage)
-                ? "text-gray-400 border-gray-300 cursor-not-allowed" : "text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+                ? "text-gray-400 border-gray-400 cursor-not-allowed" : "text-gray-500 bg-white border border-gray-400 hover:bg-gray-100 hover:text-gray-700"
                 } dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white`}
             >
               <span className="sr-only">Next</span>
@@ -368,7 +380,7 @@ export function SolicitudTable({ }) {
             className="bg-white p-6 rounded-lg shadow-lg relative absolute"
             onClick={(e) => e.stopPropagation()}
           >
-            <TablaVistaSolicitud />
+            <TablaVistaSolicitud data={data} />
             <button
               className="absolute top-2 right-2 text-red-500"
               onClick={cerrarModal}

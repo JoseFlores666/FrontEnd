@@ -1,16 +1,6 @@
 import React from 'react';
 
-const TablaVistaOrden = () => {
-    // Aquí defines los datos para la tabla
-    const data = {
-        Recibidas: 0,
-        Asignadas: 0,
-        Diagnosticadas: 0,
-        Completadas: 0,
-        Desclinadas: 0,
-        Total: 0
-    };
-
+const TablaVistaOrden = ({ data }) => {
     return (
         <div className="p-4">
             <h2 className="text-2xl font-bold text-center text-black mb-4">Solicitudes</h2>
@@ -24,27 +14,27 @@ const TablaVistaOrden = () => {
                 <tbody>
                     <tr>
                         <td className="border-b border-black px-4 py-2">Recibidas</td>
-                        <td className="border-b border-black px-4 py-2">{data.Recibidas}</td>
+                        <td className="border-b border-black px-4 py-2">{data.recibidas}</td>
                     </tr>
                     <tr>
                         <td className="border-b border-black px-4 py-2">Asignadas</td>
-                        <td className="border-b border-black px-4 py-2">{data.Asignadas}</td>
+                        <td className="border-b border-black px-4 py-2">{data.asignadas}</td>
                     </tr>
                     <tr>
                         <td className="border-b border-black px-4 py-2">Diagnosticadas</td>
-                        <td className="border-b border-black px-4 py-2">{data.Diagnosticadas}</td>
+                        <td className="border-b border-black px-4 py-2">{data.diagnosticadas}</td>
                     </tr>
                     <tr>
                         <td className="border-b border-black px-4 py-2">Completadas</td>
-                        <td className="border-b border-black px-4 py-2">{data.Completadas}</td>
+                        <td className="border-b border-black px-4 py-2">{data.completadas}</td>
                     </tr>
                     <tr>
                         <td className="border-b border-black px-4 py-2">Desclinadas</td>
-                        <td className="border-b border-black px-4 py-2">{data.Desclinadas}</td>
+                        <td className="border-b border-black px-4 py-2">{data.declinadas}</td>
                     </tr>
                     <tr>
                         <td className="border-b border-black px-4 py-2">Total</td>
-                        <td className="border-b border-black px-4 py-2">{data.Total}</td>
+                        <td className="border-b border-black px-4 py-2">{data.total}</td>
                     </tr>
                 </tbody>
             </table>
