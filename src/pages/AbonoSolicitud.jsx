@@ -4,7 +4,6 @@ import "../css/solicitud.css";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
-
 import { ImFileEmpty } from "react-icons/im";
 import { useForm } from "react-hook-form";
 import "../css/Animaciones.css";

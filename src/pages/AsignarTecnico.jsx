@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from "react-hook-form";
 import { AutocompleteInput } from "../components/ui/AutocompleteInput";
 import SubiendoImagenes from '../components/ui/SubiendoImagenes';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useSoli } from '../context/SolicitudContext';
 import { asignarTecnicoSchema } from '../schemas/AsignarTecnico.js'
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,7 +12,7 @@ import Swal from "sweetalert2";
 export default function AsignarTecnico() {
 
     const { id } = useParams();
-    const { historialOrden, traeHistorialOrden, evaluarInfor, traerTecnicos, tecnicos } = useSoli();
+    const { historialOrden, traeHistorialOrden, evaluarInfor, traerTecnicos, tecnicos, editarEstadoInfo } = useSoli();
     const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm({
         resolver: zodResolver(asignarTecnicoSchema),
     });
@@ -27,7 +27,6 @@ export default function AsignarTecnico() {
         const iniciarDatos = async () => {
             try {
                 await traerTecnicos();
-                setDatosCargados(true);
             } catch (error) {
                 console.error("Error al cargar los datos", error);
             }
@@ -41,7 +40,25 @@ export default function AsignarTecnico() {
     const llenarDatos = () => {
         if (tecnicos.length > 0) {
             console.log(tecnicos);
-            // Aquí puedes manejar datos adicionales si es necesario
+            setDatosCargados(true);
+        }
+    };
+    const declinar = async () => {
+        try {
+            const res = await editarEstadoInfo(id)
+
+            if (res) {
+                Swal.fire({
+                    title: "Completado!",
+                    text: res.mensaje,
+                    icon: "success",
+                    confirmButtonText: "Cool",
+                });
+            } else {
+                Swal.fire("Error", "Error, el informe ya ha sido asignado a un técnico", "error");
+            }
+        } catch (error) {
+            console.error("Error al intentar declinar el informe", error)
         }
     };
 
@@ -156,7 +173,12 @@ export default function AsignarTecnico() {
                         <SubiendoImagenes ref={subiendoImagenesRef} />
                     </div>
                     <div className="flex gap-2 justify-end mt-4">
-                        <button type='button' className="px-4 py-2 border border-gray-400 rounded-md hover:bg-gray-100">Declinar</button>
+                        <Link
+                            to={`/tecnico/orden`}
+                            onClick={declinar}
+                            className="px-4 py-2 border border-gray-400 rounded-md hover:bg-gray-100"
+                        >Declinar
+                        </Link>
                         <button type='submit' className="px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600">Continuar Proceso</button>
                     </div>
                 </div>

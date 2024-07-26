@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faEdit, faTimes, faChevronLeft, faChevronRight, faCamera,faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faEdit, faTimes, faChevronLeft, faChevronRight, faCamera, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { useSoli } from "../context/SolicitudContext";
 import { Link } from 'react-router-dom';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -10,7 +10,6 @@ import TablaVistaOrden from './TablaVistaOrden';
 export const TecnicoPage = () => {
 
   const { getInfo, info, eliminarInfo } = useSoli();
-  const [selectedId, setSelectedId] = useState(null);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,9 +17,6 @@ export const TecnicoPage = () => {
   const [sortConfig, setSortConfig] = useState({ key: 'folio', direction: 'des' });
   const [filteredSolicitudes, setFilteredSolicitudes] = useState([]);
 
-  const [modalImages, setModalImages] = useState([]);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [datosCargados, setDatosCargados] = useState(false);
 
   const [isModalOpen2, setIsModalOpen2] = useState(false);
@@ -34,8 +30,6 @@ export const TecnicoPage = () => {
   };
 
   const [loading, setLoading] = useState(true);
-
-  const modalContentRef = useRef(null);
 
   useEffect(() => {
     const fetchInfo = async () => {
@@ -116,24 +110,6 @@ export const TecnicoPage = () => {
     setSearchTerm("");
   };
 
-  const openModal = (imagesArray) => {
-    const modalImages = imagesArray.map(image => image.secure_url);
-    setModalImages(modalImages);
-    setCurrentImageIndex(0);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setModalImages([]);
-    setCurrentImageIndex(0);
-  };
-
-  const handleClickOutside = (event) => {
-    if (modalContentRef.current && !modalContentRef.current.contains(event.target)) {
-      closeModal();
-    }
-  };
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -214,20 +190,11 @@ export const TecnicoPage = () => {
               <td className="px-3 py-2 whitespace-normal break-words border text-center">{solicitud.informe.tipoDeSolicitud}</td>
               <td className="px-3 py-2 whitespace-normal break-words border text-center">{solicitud.informe.descripcionDelServicio}</td>
               <td className="px-3 py-2 whitespace-normal break-words border text-center">{solicitud.estado}</td>
-              <td className="px-3 py-2 whitespace-normal break-words border text-center">
-                {solicitud.informe.imagenes.length > 0 ? (
-                  <button
-                    className="focus:outline-none"
-                    onClick={() =>
-                      openModal(solicitud.informe.imagenes) // Corrected to `solicitud.informe.imagenes`
-                    }
-                  >
-                    Ver imágenes ({solicitud.informe.imagenes.length})
-                  </button>
-                ) : (
-                  <span>No hay imágenes</span>
-                )}
-              </td>
+              <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center w-1/12">
+                <Link to={`/evidencias/${solicitud._id}?`} className="text-black">
+                  Imágenes
+                </Link>
+              </th>
 
               <td className="px-3 py-2 whitespace-normal break-words border text-center">
                 <div className="flex justify-center items-center space-x-2">
@@ -244,11 +211,6 @@ export const TecnicoPage = () => {
                     className="text-blue-600 hover:text-blue-800 mx-2"
                     to={`/tecnico2/${solicitud._id}?`} >
                     <FontAwesomeIcon icon={faPlus} />
-                  </Link>
-                  <Link
-                    className="text-blue-600 hover:text-blue-800 mx-2"
-                    to={`/evidencias`} >
-                    <FontAwesomeIcon icon={faCamera} />
                   </Link>
                   <Link
                     className="text-blue-600 hover:text-blue-800 mx-2"
@@ -306,58 +268,26 @@ export const TecnicoPage = () => {
           </li>
         </ul>
       </nav>
-      {isModalOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
-          onClick={handleClickOutside}
-        >
-          <div ref={modalContentRef} className="relative bg-white p-4 rounded-lg">
-            <button
-              className="absolute top-0 right-0 m-2 text-black"
-              onClick={closeModal}
-            >
-              <FontAwesomeIcon icon={faTimes} className="text-2xl" /> {/* Ajusta el tamaño del icono aquí */}
-            </button>
-            <div className="flex justify-center items-center">
-              <button
-                className="text-black mx-2"
-                onClick={() => setCurrentImageIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : modalImages.length - 1))}
-              >
-                <FontAwesomeIcon icon={faChevronLeft} className="text-2xl" /> {/* Ajusta el tamaño del icono aquí */}
-              </button>
-              <img
-                src={modalImages[currentImageIndex]}
-                alt={`Image ${currentImageIndex + 1}`}
-                className="max-w-full h-auto rounded-lg max-h-96"
-              />
 
+      {
+        isModalOpen2 && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+          >
+            <div
+              className="bg-white p-6 rounded-lg shadow-lg relative absolute"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <TablaVistaOrden />
               <button
-                className="text-black mx-2"
-                onClick={() => setCurrentImageIndex((prevIndex) => (prevIndex < modalImages.length - 1 ? prevIndex + 1 : 0))}
+                className="absolute top-2 right-2 text-red-500"
+                onClick={cerrarModal}
               >
-                <FontAwesomeIcon icon={faChevronRight} className="text-2xl" /> {/* Ajusta el tamaño del icono aquí */}
+                X
               </button>
             </div>
-          </div>
-        </div>
-      )}
-      {isModalOpen2 && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
-        >
-          <div
-            className="bg-white p-6 rounded-lg shadow-lg relative absolute"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <TablaVistaOrden />
-            <button
-              className="absolute top-2 right-2 text-red-500"
-              onClick={cerrarModal}
-            >
-              X
-            </button>
-          </div>
-        </div>)}
-    </div>
+          </div>)
+      }
+    </div >
   );
 };

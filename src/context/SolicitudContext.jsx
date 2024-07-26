@@ -11,7 +11,7 @@ import {
   getFiltroEstado,
   nombreFirmas, editarNombreFirmas, putAbono, updateSoliFolioExterno, actualizaEstado,
 } from "../api/soli";
-import { getInfome, createInfome, deleteInfome, llenadoDEPInforme, getUnaInfome, evaluacionDelInfome, getTecnicos } from "../api/informe";
+import { getInfome, createInfome, deleteInfome, llenadoDEPInforme, getUnaInfome, evaluacionDelInfome, getTecnicos, editarEstadoInforme, getImagenInfome } from "../api/informe";
 import { getfolioInterno, getfolioInternoInforme } from "../api/folio";
 import { gethistorialOrdenTrabajo, gethistorialSoli } from "../api/historialInput";
 import { CrearApi_key, VerApis_Keys, actualizaApi_key } from "../api/api_key";
@@ -45,6 +45,7 @@ export function SoliProvider({ children }) {
   const [api_Key, setApi_Key] = useState([]);
   const [mensaje, setMensaje] = useState("");
   const [tecnicos, setTecnicos] = useState("");
+  const [imagenInfo, setImagenInfo] = useState("");
 
   //Solicitudes
   const getSoli = async () => {
@@ -243,11 +244,30 @@ export function SoliProvider({ children }) {
       setErrors(["Error creating solicitud"]);
     }
   };
+  const traeImagenInfo = async (id) => {
+    try {
+      const res = await getImagenInfome(id);
+      console.log(res.data)
+      setImagenInfo(res.data);
+    } catch (error) {
+      console.error("Error creating solicitud:", error);
+      setErrors(["Error creating solicitud"]);
+    }
+  };
 
   const eliminarInfo = async (id) => {
     try {
       const res = await deleteInfome(id);
       console.log(res)
+    } catch (error) {
+      console.error("Error fetching solitudes:", error);
+      setErrors(["Error fetching solitudes"]);
+    }
+  };
+  const editarEstadoInfo = async (id) => {
+    try {
+      const res = await editarEstadoInforme(id);
+      return res.data;
     } catch (error) {
       console.error("Error fetching solitudes:", error);
       setErrors(["Error fetching solitudes"]);
@@ -368,6 +388,7 @@ export function SoliProvider({ children }) {
         traeUnaInfo,
         unaInfo,
         evaluarInfor,
+        editarEstadoInfo,
         editarFirmas,
         actializarSoliEstado,
         myFolioInterno,
@@ -405,6 +426,8 @@ export function SoliProvider({ children }) {
         getInfo,
         createInfo,
         eliminarInfo,
+        imagenInfo, 
+        traeImagenInfo,
         traerTecnicos,
         tecnicos,
         errors,

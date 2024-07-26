@@ -12,7 +12,12 @@ export const deleteInfome = async (id) => axios.delete(`/informe/${id}`);
 
 export const getUnaInfome = async (id) => axios.get(`/informe/${id}`);
 
+export const getImagenInfome = async (id) => axios.get(`/informe/traerImagenes/${id}`);
+
 export const evaluacionDelInfome = async (id,info) =>axios.put(`/informe/AsignarTecnico/${id}`, info);
+
+//estado
+export const editarEstadoInforme = async (id) =>axios.put(`/informe/editarEstadoInforme/${id}`);
 
 
 //Tecnicos
