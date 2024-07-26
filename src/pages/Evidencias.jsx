@@ -1,13 +1,6 @@
-<<<<<<< HEAD
-import React from 'react';
-import img1 from "../img/imagenWord.png";
-=======
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { useParams } from 'react-router-dom';
 import { useSoli } from '../context/SolicitudContext';
->>>>>>> 417e0023e3500aad98b6639a5cafd7214494aa05
 
 export const Evidencias = () => {
   const { id } = useParams();
@@ -27,11 +20,6 @@ export const Evidencias = () => {
       trayendoImagenes();
     }
   }, [id, traeImagenInfo, cargarDatos]);
-
-  const handleDelete = (id) => {
-    // Función para manejar la eliminación de la solicitud
-    console.log(`Eliminar solicitud con id: ${id}`);
-  };
 
   const dividirEnPares = (arr) => {
     const pares = [];
@@ -57,8 +45,6 @@ export const Evidencias = () => {
               </th>
 
             </tr>
-<<<<<<< HEAD
-=======
           </thead>
           <tbody className="[&_tr:last-child]:border-0 border-b border-gray-400">
             {imagenesPares.length > 0 ? (
@@ -81,7 +67,6 @@ export const Evidencias = () => {
                 </td>
               </tr>
             )}
->>>>>>> 417e0023e3500aad98b6639a5cafd7214494aa05
           </tbody>
         </table>
       </div>
