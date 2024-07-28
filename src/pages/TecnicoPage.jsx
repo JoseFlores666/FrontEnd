@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faEdit, faTimes, faChevronLeft, faChevronRight, faCamera, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faEdit, faCheck,faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { useSoli } from "../context/SolicitudContext";
 import { Link } from 'react-router-dom';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -235,16 +235,23 @@ export const TecnicoPage = () => {
                     </Link>
                     <Link
                       className="text-blue-600 hover:text-blue-800"
-                      to={`/tecnico2/${solicitud._id}?`}
-                    >
-                      <FontAwesomeIcon icon={faPlus} />
-                    </Link>
-                    <Link
-                      className="text-blue-600 hover:text-blue-800"
                       to={`/asignarTec/${solicitud._id}?`}
                     >
                       <FontAwesomeIcon icon={faCheck} />
                     </Link>
+                    <Link
+                      className="text-blue-600 hover:text-blue-800"
+                      to={`/informacionOrden`}
+                    >
+                      <FontAwesomeIcon icon={faInfoCircle} />
+                    </Link>
+                    <Link
+                      className="text-blue-600 hover:text-blue-800"
+                      to={`/tecnico2/${solicitud._id}?`}
+                    >
+                      <FontAwesomeIcon icon={faPlus} />
+                    </Link>
+
                   </div>)}
               </td>
               <th className="p-1 whitespace-normal break-words border border-gray-400 text-center">

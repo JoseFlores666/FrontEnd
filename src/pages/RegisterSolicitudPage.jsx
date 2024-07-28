@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSoliSchema } from "../schemas/registerSoliPage";
 import { useSoli } from "../context/SolicitudContext";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import imgPDF from '../img/imagenPDF.png';
 import imgWord from '../img/imagenWord.png';
 import Swal from "sweetalert2";
@@ -13,6 +13,8 @@ import "../css/Animaciones.css";
 import { AutocompleteInput } from "../components/ui/AutocompleteInput";
 
 export const RegisterSolicitudPage = () => {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -387,6 +389,7 @@ export const RegisterSolicitudPage = () => {
   const subirDatos = (event) => {
     event.preventDefault(); 
     setIsOpen(false);
+    navigate('/soli');
     const form = event.target;
 
     const formData = new FormData(form);
@@ -410,6 +413,7 @@ export const RegisterSolicitudPage = () => {
         } else {
           descargarWORD();
         }
+        
       });
   };
 
@@ -432,7 +436,7 @@ export const RegisterSolicitudPage = () => {
           <div>
             <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-4">
               <div>
-                <label className="block text-sm font-medium mb-1">No. de folio:</label>
+                <label className="block text-sm font-bold mb-1">No. de folio:</label>
                 <input
                   type="text"
                   id="folio"
@@ -444,7 +448,7 @@ export const RegisterSolicitudPage = () => {
                 />
               </div>
               <div>
-                <label htmlFor="fecha" className="block text-sm font-medium mb-1">
+                <label htmlFor="fecha" className="block text-sm font-bold mb-1">
                   Selecciona la fecha:
                 </label>
                 <input
@@ -458,7 +462,7 @@ export const RegisterSolicitudPage = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block text-sm font-bold mb-1">
                   Tipo de Suministro:
                 </label>
                 <select
@@ -478,7 +482,7 @@ export const RegisterSolicitudPage = () => {
             <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-4">
 
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block text-sm font-bold mb-1">
                   Proceso Clave (PC):
                 </label>
                 <select
@@ -495,7 +499,7 @@ export const RegisterSolicitudPage = () => {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block text-sm font-bold mb-1">
                   Proyecto:
                 </label>
                 <select
@@ -521,7 +525,7 @@ export const RegisterSolicitudPage = () => {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block text-sm font-bold mb-1">
                   Actividad:
                 </label>
                 <select
@@ -553,10 +557,10 @@ export const RegisterSolicitudPage = () => {
             <table className="w-full caption-bottom text-sm border">
               <thead className="[&_tr]:border border-gray-400">
                 <tr className="border transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted border-gray-400">
-                  <th className="h-12 text-center px-4 align-middle font-medium text-black border-gray-400">Cantidad</th>
-                  <th className="h-12 text-center px-4 align-middle font-medium text-black border-gray-400">Unidad de medida</th>
-                  <th className="h-12 px-4 text-center align-middle font-medium text-black border-gray-400">Descripción del bien solicitado</th>
-                  <th className="h-12 px-4 align-middle font-medium text-black border-gray-400">Acción</th>
+                  <th className="h-12 text-center px-4 align-middle font-bold text-black border-gray-400">Cantidad</th>
+                  <th className="h-12 text-center px-4 align-middle font-bold text-black border-gray-400">Unidad de medida</th>
+                  <th className="h-12 px-4 text-center align-middle font-bold text-black border-gray-400">Descripción del bien solicitado</th>
+                  <th className="h-12 px-4 align-middle font-bold text-black border-gray-400">Acción</th>
                 </tr>
               </thead>
               <tbody className="[&_tr:last-child]:border-0 border-gray-400">
@@ -640,7 +644,7 @@ export const RegisterSolicitudPage = () => {
             <div className="p-4 bg-white border-b border-r border-l border-gray-400 rounded-b-md">
               <button
                 onClick={(e) => agregarItem(e)}
-                className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background focus-visible:ring-ring border-input bg-background hover:bg-green-600 hover:text-white border-gray-200 ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-white h-10 px-4 py-2 w-full">
+                className="px-4 py-2 text-white font-bold border bg-green-500 border-black rounded-md hover:bg-green-700 w-full">
                 Agregar más
               </button>
             </div>
@@ -648,7 +652,7 @@ export const RegisterSolicitudPage = () => {
 
 
           <div className="mb-6">
-            <label className="block text-sm font-medium mb-1">Justificación para la adquisición:</label>
+            <label className="block text-sm font-bold mb-1">Justificación para la adquisición:</label>
             <AutocompleteInput
               index={items.length}
               value={justificacion}
@@ -672,7 +676,7 @@ export const RegisterSolicitudPage = () => {
           <div>
             <div className="tablafirmas flex justify-between mt-5 text-black">
               <div className="columna w-1/4 text-center">
-                <label className="block text-sm font-medium mb-1">Solicitud</label>
+                <label className="block text-sm font-bold mb-1">Solicitud</label>
                 <textarea
                   className="text-black text-center cursor-not-allowed w-full rounded-md resize-none"
                   id="solicitud"
@@ -685,8 +689,8 @@ export const RegisterSolicitudPage = () => {
                 <input type="hidden" name="solicitud" value={solicitante} />
               </div>
               <div className="columna w-1/4 text-center">
-                <label className="block text-sm font-medium mb-1">Revisión</label>
-                <label className="block text-sm font-medium mb-1">Jefe Inmediato:</label>
+                <label className="block text-sm font-bold mb-1">Revisión</label>
+                <label className="block text-sm font-bold mb-1">Jefe Inmediato:</label>
                 <textarea
                   className="text-black text-center cursor-not-allowed w-full rounded-md resize-none"
                   id="JefeInmediato"
@@ -699,8 +703,8 @@ export const RegisterSolicitudPage = () => {
                 <input type="hidden" name="JefeInmediato" value={jefeInmediato} />
               </div>
               <div className="columna w-1/4 text-center">
-                <label className="block text-sm font-medium mb-1">Validación:</label>
-                <label className="block text-sm font-medium mb-1">Dirección de Admón. y Finanzas:</label>
+                <label className="block text-sm font-bold mb-1">Validación:</label>
+                <label className="block text-sm font-bold mb-1">Dirección de Admón. y Finanzas:</label>
                 <textarea
                   className="text-black text-center cursor-not-allowed w-full rounded-md resize-none"
                   id="Validacion"
@@ -713,8 +717,8 @@ export const RegisterSolicitudPage = () => {
                 <input type="hidden" name="Validacion" value={dirrecion} />
               </div>
               <div className="columna w-1/4 text-center">
-                <label className="block text-sm font-medium mb-1">Autorizó</label>
-                <label className="block text-sm font-medium mb-1">Rectoría:</label>
+                <label className="block text-sm font-bold mb-1">Autorizó</label>
+                <label className="block text-sm font-bold mb-1">Rectoría:</label>
                 <textarea
                   id="Autorizo"
                   name="Autorizo"

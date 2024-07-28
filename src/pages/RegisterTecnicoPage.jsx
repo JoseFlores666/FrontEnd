@@ -2,11 +2,14 @@ import React, { useRef, useState, useEffect } from "react";
 import "../css/solicitud.css";
 import { useForm } from "react-hook-form";
 import { useSoli } from "../context/SolicitudContext";
+import { useNavigate } from "react-router-dom";
 import "../css/Animaciones.css";
 import { AutocompleteInput } from "../components/ui/AutocompleteInput";
 import Swal from "sweetalert2";
 
 export const RegisterTecnicoPage = () => {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -62,6 +65,7 @@ export const RegisterTecnicoPage = () => {
       };
 
       await createInfo(formData);
+      navigate('/tecnico/orden');
 
       if (mensaje) {
         Swal.fire({
@@ -85,7 +89,7 @@ export const RegisterTecnicoPage = () => {
           </div>
           <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-4">
             <div>
-              <label className="block text-base font-medium mb-1">No. de folio Externo:</label>
+              <label className="block text-sm font-bold mb-1">No. de folio Externo:</label>
               <input
                 type="text"
                 id="folio"
@@ -98,7 +102,7 @@ export const RegisterTecnicoPage = () => {
             </div>
             <div></div>
             <div>
-              <label className="block text-base font-medium mb-1">Selecciona la fecha:</label>
+              <label className="block text-sm font-bold mb-1">Selecciona la fecha:</label>
               <input
                 type="date"
                 id="fechaOrden"
@@ -111,7 +115,7 @@ export const RegisterTecnicoPage = () => {
           </div>
           <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-4">
             <div>
-              <label className="block text-base font-medium mb-1">Area solicitante:</label>
+              <label className="block text-sm font-bold mb-1">Area solicitante:</label>
               <AutocompleteInput
                 index={0}
                 value={areasoli}
@@ -133,7 +137,7 @@ export const RegisterTecnicoPage = () => {
               />
             </div>
             <div>
-              <label className="block text-base font-medium mb-1">Solicita:</label>
+              <label className="block text-sm font-bold mb-1">Solicita:</label>
               <AutocompleteInput
                 index={1}
                 value={solicita}
@@ -153,7 +157,7 @@ export const RegisterTecnicoPage = () => {
               />
             </div>
             <div>
-              <label className="block text-base font-medium mb-1">Edificio:</label>
+              <label className="block text-sm font-bold mb-1">Edificio:</label>
               <AutocompleteInput
                 index={2}
                 value={edificio}
@@ -177,7 +181,7 @@ export const RegisterTecnicoPage = () => {
           </div>
           <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-4">
             <div>
-              <label className="block text-base font-medium mb-1">Tipo de Mantenimiento:</label>
+              <label className="block text-sm font-bold mb-1">Tipo de Mantenimiento:</label>
               <select
                 id="tipoMantenimiento"
                 {...register("tipoMantenimiento", { required: true })}
@@ -190,7 +194,7 @@ export const RegisterTecnicoPage = () => {
               </select>
             </div>
             <div>
-              <label className="block text-base font-medium mb-1">Tipo de Trabajo:</label>
+              <label className="block text-sm font-bold mb-1">Tipo de Trabajo:</label>
               <select
                 id="tipoTrabajo"
                 {...register("tipoTrabajo", { required: true })}
@@ -203,7 +207,7 @@ export const RegisterTecnicoPage = () => {
               </select>
             </div>
             <div>
-              <label className="block text-base font-medium mb-1">Tipo de Solicitud:</label>
+              <label className="block text-sm font-bold mb-1">Tipo de Solicitud:</label>
               <select
                 id="tipoSolicitud"
                 {...register("tipoSolicitud", { required: true })}
@@ -217,7 +221,7 @@ export const RegisterTecnicoPage = () => {
             </div>
           </div>
           <div>
-            <label className="block text-base font-medium mb-1">Descripción (servicio requerido)</label>
+            <label className="block text-sm font-bold mb-1">Descripción (servicio requerido)</label>
             <AutocompleteInput
               index={3}
               value={descripcion}
@@ -231,7 +235,7 @@ export const RegisterTecnicoPage = () => {
               inputProps={{
                 type: "text",
                 maxLength: 500,
-                className: "w-full resize-none text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
+                className: "w-full mb-5 resize-none text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
               }}
             />
             <input name="descripcion" id="descripcion" type="hidden" value={descripcion} />
