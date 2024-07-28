@@ -11,7 +11,7 @@ import {
   getFiltroEstado,
   nombreFirmas, editarNombreFirmas, putAbono, updateSoliFolioExterno, actualizaEstado,
 } from "../api/soli";
-import { getInfome, createInfome, deleteInfome, llenadoDEPInforme, getUnaInfome, evaluacionDelInfome, getTecnicos, editarEstadoInforme, getImagenInfome } from "../api/informe";
+import { getInfome, createInfome, deleteInfome, llenadoDEPInforme, getUnaInfome, evaluacionDelInfome, getTecnicos, editarEstadoInforme, getDescripcionYTecnicos, getImagenInfome, InformaciónDeLaOrden, } from "../api/informe";
 import { getfolioInterno, getfolioInternoInforme } from "../api/folio";
 import { gethistorialOrdenTrabajo, gethistorialSoli } from "../api/historialInput";
 import { CrearApi_key, VerApis_Keys, actualizaApi_key } from "../api/api_key";
@@ -45,6 +45,7 @@ export function SoliProvider({ children }) {
   const [api_Key, setApi_Key] = useState([]);
   const [mensaje, setMensaje] = useState("");
   const [tecnicos, setTecnicos] = useState("");
+  const [tecYDescripcion, setTecYDescripcion] = useState("");
   const [imagenInfo, setImagenInfo] = useState("");
 
   //Solicitudes
@@ -230,6 +231,17 @@ export function SoliProvider({ children }) {
       setErrors(["Error creating solicitud"]);
     }
   };
+  const ObservacionesDelTenico = async (id, observaciones) => {
+    try {
+      const res = await InformaciónDeLaOrden(id, observaciones);
+      !res ? console.log("Error al crear el informe") : console.log("Informe creado con éxito")
+     
+      return res.data
+    } catch (error) {
+      console.error("Error creating solicitud:", error);
+      setErrors(["Error creating solicitud"]);
+    }
+  };
   const traeUnaInfo = async (id) => {
     try {
       const res = await getUnaInfome(id);
@@ -272,6 +284,16 @@ export function SoliProvider({ children }) {
     try {
       const res = await getTecnicos();
       setTecnicos(res.data);
+    } catch (error) {
+      console.error("Error fetching solitudes:", error);
+      setErrors(["Error fetching solitudes"]);
+    }
+  };
+  const traerDescripYTecnico = async (id) => {
+    try {
+      const res = await getDescripcionYTecnicos(id);
+      !res ? console.log("Error al traer el informe") : console.log("Exito al consultar el informe")
+      setTecYDescripcion(res.data);
     } catch (error) {
       console.error("Error fetching solitudes:", error);
       setErrors(["Error fetching solitudes"]);
@@ -367,9 +389,11 @@ export function SoliProvider({ children }) {
   return (
     <SoliContext.Provider
       value={{
+        ObservacionesDelTenico,
         traeHistorialSoli,
         historialSoli,
         soli,
+        traerDescripYTecnico, tecYDescripcion,
         actualizarSoliFolioExterno,
         traeUnaInfo,
         unaInfo,

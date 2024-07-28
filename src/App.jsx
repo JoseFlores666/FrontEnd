@@ -47,7 +47,7 @@ function App() {
                   <Route path="/asignarTec/:id" element={<AsignarTecnico />} />
                   <Route path="/proyectAndAct" element={<ProjectAndActManager />} />
                   <Route path="/verInforme/:id" element={<VerInforme />} />
-                  <Route path="/informacionOrden" element={<InformacionOrden />} />
+                  <Route path="/informacionOrden/:id" element={<InformacionOrden />} />
                 </Route>
               </Routes>
             </main>

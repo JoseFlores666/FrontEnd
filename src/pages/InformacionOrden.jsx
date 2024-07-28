@@ -17,10 +17,12 @@ import SubiendoImagenes from "../components/ui/SubiendoImagenes"
 
 export const InformacionOrden = () => {
     const { id } = useParams();
-    const { historialOrden, traeHistorialOrden, evaluarInfor, traerTecnicos, tecnicos, editarEstadoInfo } = useSoli();
-    const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm({
-        resolver: zodResolver(asignarTecnicoSchema),
-    });
+    const { historialOrden, traeHistorialOrden, ObservacionesDelTenico, traerDescripYTecnico, tecYDescripcion, editarEstadoInfo } = useSoli();
+    const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm(
+        //     {
+        //     resolver: zodResolver(asignarTecnicoSchema),
+        // }
+    );
 
     const [datosCargados, setDatosCargados] = useState(false);
     const [observaciones, setObservaciones] = useState('');
@@ -31,22 +33,19 @@ export const InformacionOrden = () => {
     useEffect(() => {
         const iniciarDatos = async () => {
             try {
-                await traerTecnicos();
+                await traerDescripYTecnico(id);
             } catch (error) {
                 console.error("Error al cargar los datos", error);
             }
         }
         if (!datosCargados) {
             iniciarDatos();
-            llenarDatos();
-        }
-    }, [traerTecnicos, datosCargados]);
 
-    const llenarDatos = () => {
-        if (tecnicos.length > 0) {
             setDatosCargados(true);
         }
-    };
+    }, [traerDescripYTecnico, datosCargados]);
+
+
 
     const declinar = async () => {
         try {
@@ -82,16 +81,24 @@ export const InformacionOrden = () => {
 
             formData.append('id', id);
             formData.append('observaciones', observaciones);
-            formData.append('idTecnico', data.tecnico);
 
-            await evaluarInfor(id, formData);
 
-            Swal.fire({
-                title: "Completado!",
-                text: "Registro Exitoso",
-                icon: "success",
-                confirmButtonText: "Cool",
-            });
+            const res = await ObservacionesDelTenico(id, formData);
+            if (res) {
+                Swal.fire({
+                    title: "Completado!",
+                    text: "Registro Exitoso",
+                    icon: "success",
+                    confirmButtonText: "Cool",
+                });
+            } else {
+                Swal.fire({
+                    title: "Error",
+                    text: "Error en el servidor",
+                    icon: "error",
+                    confirmButtonText: "Cool",
+                });
+            }
 
             reset();
         } catch (error) {
@@ -108,14 +115,15 @@ export const InformacionOrden = () => {
                         <p>Rellene los Detalles Del Trabajo A Realizar</p>
                     </div>
                     <label className="block text-sm font-bold mb-1">Descripción:</label>
-                    <p className='mb-4'>En esta area se solicita esto </p>
+                    <p className='mb-4'>{tecYDescripcion.descripcionDelServicio}</p>
 
                     {errors.observaciones && (
                         <span className="text-red-500">{errors.observaciones.message}</span>
                     )}
-
                     <label className="block text-sm font-bold mb-1">Técnico Encargado:</label>
-                    <p className='mb-4'>Eduardo Hernandez Hernandez</p>
+                    {tecYDescripcion.tecnico && (
+                        <p className='mb-4'>{tecYDescripcion.tecnico.nombreCompleto}</p>
+                    )}
 
                     {errors.tecnico && (
                         <span className="text-red-500">{errors.tecnico.message}</span>
@@ -125,13 +133,13 @@ export const InformacionOrden = () => {
                         <label className="block text-sm font-bold mb-1">Observaciones del servicio requerido</label>
                         <AutocompleteInput
                             index={3}
-                            //   value={descripcion}
-                            //   onChange={(newValue) => setDescripcion(newValue)}
+                            value={observaciones}
+                            onChange={(newValue) => setObservaciones(newValue)}
                             data={historialOrden}
                             recentSuggestions={recentSuggestions}
                             setRecentSuggestions={setRecentSuggestions}
                             inputRefs={refs}
-                            placeholder="Ingrese una descripción"
+                            placeholder="Ingrese sus observaciones"
                             fieldsToCheck={['descripcionDelServicio']}
                             inputProps={{
                                 type: "text",
@@ -139,7 +147,6 @@ export const InformacionOrden = () => {
                                 className: "w-full mb-2 resize-none text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
                             }}
                         />
-                        <input name="descripcion" id="descripcion" type="hidden" />
                     </div>
 
                     <div>

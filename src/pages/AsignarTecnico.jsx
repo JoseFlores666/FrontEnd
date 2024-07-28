@@ -14,21 +14,21 @@ import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 export default function AsignarTecnico() {
 
     const { id } = useParams();
-    const { historialOrden, traeHistorialOrden, evaluarInfor, traerTecnicos, tecnicos, editarEstadoInfo } = useSoli();
-    const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm({
-        resolver: zodResolver(asignarTecnicoSchema),
-    });
+    const { historialOrden, traeHistorialOrden, evaluarInfor, traerTecnicos, tecnicos, editarEstadoInfo, traeUnaInfo, unaInfo } = useSoli();
+    const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm(
+        // {
+        // resolver: zodResolver(asignarTecnicoSchema),
+        // }
+    );
 
     const [datosCargados, setDatosCargados] = useState(false);
     const [observaciones, setObservaciones] = useState('');
-    const subiendoImagenesRef = useRef(null);
-    const [recentSuggestions, setRecentSuggestions] = useState([]);
-    const refs = useRef([]);
 
     useEffect(() => {
         const iniciarDatos = async () => {
             try {
                 await traerTecnicos();
+                await traeUnaInfo(id);
             } catch (error) {
                 console.error("Error al cargar los datos", error);
             }
@@ -44,44 +44,34 @@ export default function AsignarTecnico() {
             setDatosCargados(true);
         }
     };
-    const declinar = async () => {
-        try {
-            const res = await editarEstadoInfo(id)
+    // const declinar = async () => {
+    //     try {
+    //         const res = await editarEstadoInfo(id)
 
-            if (res) {
-                Swal.fire({
-                    title: "Completado!",
-                    text: res.mensaje,
-                    icon: "success",
-                    confirmButtonText: "Cool",
-                });
-            } else {
-                Swal.fire("Error", "Error, el informe ya ha sido asignado a un técnico", "error");
-            }
-        } catch (error) {
-            console.error("Error al intentar declinar el informe", error)
-        }
-    };
+    //         if (res) {
+    //             Swal.fire({
+    //                 title: "Completado!",
+    //                 text: res.mensaje,
+    //                 icon: "success",
+    //                 confirmButtonText: "Cool",
+    //             });
+    //         } else {
+    //             Swal.fire("Error", "Error, el informe ya ha sido asignado a un técnico", "error");
+    //         }
+    //     } catch (error) {
+    //         console.error("Error al intentar declinar el informe", error)
+    //     }
+    // };
 
     const onSubmit = async (data, e) => {
         e.preventDefault();
         try {
             const formData = new FormData();
-            const files = subiendoImagenesRef.current.getFiles();
-
-            if (files.length > 0) {
-                for (let i = 0; i < files.length; i++) {
-                    formData.append(`imagen-${i}`, files[i]);
-                    console.log(`imagen - ${i}`, files[i]);
-                }
-            }
 
             formData.append('id', id);
-            formData.append('observaciones', observaciones);
             formData.append('idTecnico', data.tecnico);
 
             await evaluarInfor(id, formData);
-
             Swal.fire({
                 title: "Completado!",
                 text: "Registro Exitoso",
@@ -116,7 +106,7 @@ export default function AsignarTecnico() {
                     </div>
                     <label className="block text-sm font-bold mb-1">Descripción:</label>
                     <div className="mb-8 flex items-center">
-                        <p>En esta area se solicita esto</p>
+                        <p>{unaInfo.informe.descripcionDelServicio}</p>
                     </div>
 
                     {errors.observaciones && (
@@ -141,7 +131,7 @@ export default function AsignarTecnico() {
                     <div className="flex gap-2 justify-center mt-4">
                         <Link
                             to={`/tecnico/orden`}
-                            onClick={declinar}
+                            // onClick={declinar}
                             className="px-4 py-2 text-white border bg-red-500 border-black rounded-md hover:bg-red-700"
                         >
                             Cancelar
