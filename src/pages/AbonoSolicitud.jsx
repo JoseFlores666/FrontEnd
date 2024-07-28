@@ -45,10 +45,10 @@ export const AbonoSolicitud = () => {
 
     const llenaSolicitud = () => {
         try {
+            console.log(unasoli)
             setValue("folio", unasoli.folio || "");
             setValue("folioExterno", unasoli.folioExterno || "");
             setValue("fecha", unasoli.fecha ? new Date(unasoli.fecha).toISOString().slice(0, 10) : "");
-            setValue("NumEntregas", unasoli.NumeroDeEntregas || "");;
             setValue("items", unasoli.suministros || []);
             setItems(unasoli.suministros || []);
 
@@ -65,8 +65,13 @@ export const AbonoSolicitud = () => {
     const onSubmit = async (data) => {
         try {
             data.id = id;
-            for (const item of data.items) {
-                const totalCantidad = item.cantidadAcumulada + parseInt(item.cantidadEntregada);
+            // Eliminar propiedades no deseadas
+            const { NumEntregas, ...restData } = data;
+            delete restData[""];
+
+            // Validar las cantidades
+            for (const item of restData.items) {
+                const totalCantidad = item.cantidadAcumulada + parseInt(item.cantidadEntregada, 10);
                 if (totalCantidad > item.cantidad) {
                     Swal.fire({
                         title: "Error",
@@ -78,8 +83,9 @@ export const AbonoSolicitud = () => {
                 }
             }
 
-            const response = await RealizarAbono(id, data);
+            console.log(restData); // Imprime el objeto de datos para verificar
 
+            const response = await RealizarAbono(id, restData);
             if (!response) {
                 Swal.fire({
                     title: "Error",
@@ -124,7 +130,7 @@ export const AbonoSolicitud = () => {
                 <div className="bg-white p-6 rounded-md shadow-md">
                     <h1 className="text-2xl  font-bold text-center text-black mb-6">Área De Entregas</h1>
                     <div>
-                        <div className="grid grid-cols-4 md:grid-cols-4 gap-6 mb-4">
+                        <div className="grid grid-cols-4 md:grid-cols-3 gap-6 mb-4">
                             <div>
                                 <label
                                     htmlFor="folio"
@@ -172,21 +178,6 @@ export const AbonoSolicitud = () => {
                                     name="fecha"
                                     className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500 cursor-not-allowed"
                                     {...register("fecha")}
-                                />
-                            </div>
-                            <div>
-                                <label
-                                    htmlFor="NumEntregas"
-                                    className="block text-sm font-medium mb-1">
-                                    Numero De Entregas
-                                </label>
-                                <input
-                                    type="number"
-                                    disabled
-                                    id="NumEntregas"
-                                    name="NumEntregas"
-                                    className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500 cursor-not-allowed"
-                                    {...register("NumEntregas")}
                                 />
                             </div>
                         </div>
@@ -250,6 +241,24 @@ export const AbonoSolicitud = () => {
                                         />
                                         {errors.items?.[index]?.cantidadEntregada && (
                                             <p className="text-red-500 text-xs mt-1">{errors.items[index].cantidadEntregada.message}</p>
+                                        )}
+                                    </div>
+                                    <div>
+                                        <label
+                                            htmlFor="NumeroDeEntregas"
+                                            className="block text-sm font-medium mb-1">
+                                            Numero De Entregas
+                                        </label>
+                                        <input
+                                            type="number"
+                                            disabled
+                                            id="NumeroDeEntregas"
+                                            name="NumeroDeEntregas"
+                                            className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500 cursor-not-allowed"
+                                            {...register(`items.${index}.NumeroDeEntregas`)}
+                                        />
+                                        {errors.items?.[index]?.NumeroDeEntregas && (
+                                            <p className="text-red-500 text-xs mt-1">{errors.items[index].NumeroDeEntregas.message}</p>
                                         )}
                                     </div>
                                 </div>
