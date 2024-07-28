@@ -44,24 +44,6 @@ export default function AsignarTecnico() {
             setDatosCargados(true);
         }
     };
-    // const declinar = async () => {
-    //     try {
-    //         const res = await editarEstadoInfo(id)
-
-    //         if (res) {
-    //             Swal.fire({
-    //                 title: "Completado!",
-    //                 text: res.mensaje,
-    //                 icon: "success",
-    //                 confirmButtonText: "Cool",
-    //             });
-    //         } else {
-    //             Swal.fire("Error", "Error, el informe ya ha sido asignado a un técnico", "error");
-    //         }
-    //     } catch (error) {
-    //         console.error("Error al intentar declinar el informe", error)
-    //     }
-    // };
 
     const onSubmit = async (data, e) => {
         e.preventDefault();
@@ -106,52 +88,49 @@ export default function AsignarTecnico() {
                     </div>
                     <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-6">
                         <div>
-                            <label className="block text-sm font-bold mb-1">Folio:</label>
-                            <p className="w-full rounded-md">En los parrafos es donde se consulta su informacion</p>
+                            <label className="block text-sm font-bold mb-1">Folio: </label>
+                            <p className="w-full rounded-md">{unaInfo.folio}</p>
+
                         </div>
                         <div>
                             <label className="block text-sm font-bold mb-1">Solicita:</label>
-                            <p className="w-full rounded-md"></p>
+                            <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.nombre}</p>
                         </div>
                         <div>
                             <label className="block text-sm font-bold mb-1">Área solicitante:</label>
-                            <p className="w-full rounded-md"></p>
+                            <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.areaSolicitante }</p>
                         </div>
                     </div>
 
                     <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-6">
                         <div>
                             <label className="block text-sm font-bold mb-1">Fecha:</label>
-                            <p className="w-full rounded-md">{ }</p>
+                            <p className="w-full rounded-md">{ unaInfo.informe?.fecha}</p>
                         </div>
                         <div>
                             <label className="block text-sm font-bold mb-1">Tipo de Mantenimiento:</label>
-                            <p className="w-full rounded-md">{ }</p>
+                            <p className="w-full rounded-md">{unaInfo.informe?.tipoDeMantenimiento }</p>
                         </div>
                         <div>
                             <label className="block text-sm font-bold mb-1">Tipo de Trabajo:</label>
-                            <p className="w-full rounded-md">{ }</p>
+                            <p className="w-full rounded-md">{ unaInfo.informe?.tipoDeTrabajo}</p>
                         </div>
                     </div>
 
                     <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-6">
                         <div>
                             <label className="block text-sm font-bold mb-1">Tipo de Solicitud:</label>
-                            <p className="w-full rounded-md">{ }</p>
+                            <p className="w-full rounded-md">{unaInfo.informe?.tipoDeSolicitud }</p>
                         </div>
                         <div>
                             <label className="block text-sm font-bold mb-1">Edificio:</label>
-                            <p className="w-full rounded-md">{ }</p>
+                            <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.edificio }</p>
                         </div>
                     </div>
                     <label className="block text-sm font-bold mb-1">Descripción:</label>
                     <div className="mb-8 flex items-center">
-                        <p>{unaInfo.informe.descripcionDelServicio}</p>
+                        <p>{unaInfo.informe?.descripcionDelServicio}</p>
                     </div>
-
-                    {errors.observaciones && (
-                        <span className="text-red-500">{errors.observaciones.message}</span>
-                    )}
 
                     <label className="block text-sm font-bold mb-1">Encargado de la actividad:</label>
                     <select
@@ -164,9 +143,7 @@ export default function AsignarTecnico() {
                             </option>
                         ))}
                     </select>
-                    {errors.tecnico && (
-                        <span className="text-red-500">{errors.tecnico.message}</span>
-                    )}
+                    
 
                     <div className="flex gap-2 justify-center mt-4">
                         <Link

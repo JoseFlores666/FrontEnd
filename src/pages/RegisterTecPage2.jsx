@@ -23,7 +23,7 @@ export const RegisterTecPage2 = () => {
     );
     const { id } = useParams();
     const { user } = useAuth();
-    const { createDEPInforme, historialOrden, traeFolioInternoInforme, traeHistorialOrden, myFolioInternoInfo } = useSoli();
+    const { createDEPInforme, historialOrden, traeFolioInternoInforme, traerEncabezado, encabezado, traeHistorialOrden,traeUnaInfo, unaInfo, myFolioInternoInfo } = useSoli();
     const [recentSuggestions, setRecentSuggestions] = useState([]);
     const [fechaOrden, setFechaOrden] = useState(() => {
         const today = new Date();
@@ -84,6 +84,8 @@ export const RegisterTecPage2 = () => {
     useEffect(() => {
         traeHistorialOrden();
         traeFolioInternoInforme();
+        traeUnaInfo(id);
+        traerEncabezado(id);
     }, []);
 
     useEffect(() => {
@@ -131,62 +133,70 @@ export const RegisterTecPage2 = () => {
             <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-6xl">
                 <div className="bg-white p-6 rounded-md shadow-md">
                     <div className="text-center mb-4">
-                        <h1 className="text-2xl font-bold">ENCARGO DE INSUMOS</h1>
-                        <p>Rellene los Detalles De los Insumos A Encargar</p>
+                        <h1 className="text-2xl font-bold">Asignar Técnico</h1>
+                      
                     </div>
                     <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-6">
                         <div>
-                            <label className="block text-sm font-bold mb-1">Folio:</label>
-                            <p className="w-full rounded-md">En los parrafos es donde se consulta su informacion</p>
+                            <label className="block text-sm font-bold mb-1">Folio: </label>
+                            <p className="w-full rounded-md">{unaInfo.folio}</p>
+
                         </div>
                         <div>
                             <label className="block text-sm font-bold mb-1">Solicita:</label>
-                            <p className="w-full rounded-md"></p>
+                            <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.nombre}</p>
                         </div>
                         <div>
                             <label className="block text-sm font-bold mb-1">Área solicitante:</label>
-                            <p className="w-full rounded-md"></p>
+                            <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.areaSolicitante}</p>
                         </div>
                     </div>
 
                     <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-6">
                         <div>
                             <label className="block text-sm font-bold mb-1">Fecha:</label>
-                            <p className="w-full rounded-md">{ }</p>
+                            <p className="w-full rounded-md">{unaInfo.informe?.fecha}</p>
                         </div>
                         <div>
                             <label className="block text-sm font-bold mb-1">Tipo de Mantenimiento:</label>
-                            <p className="w-full rounded-md">{ }</p>
+                            <p className="w-full rounded-md">{unaInfo.informe?.tipoDeMantenimiento}</p>
                         </div>
                         <div>
                             <label className="block text-sm font-bold mb-1">Tipo de Trabajo:</label>
-                            <p className="w-full rounded-md">{ }</p>
+                            <p className="w-full rounded-md">{unaInfo.informe?.tipoDeTrabajo}</p>
                         </div>
                     </div>
 
                     <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-6">
                         <div>
                             <label className="block text-sm font-bold mb-1">Tipo de Solicitud:</label>
-                            <p className="w-full rounded-md">{ }</p>
+                            <p className="w-full rounded-md">{unaInfo.informe?.tipoDeSolicitud}</p>
                         </div>
                         <div>
                             <label className="block text-sm font-bold mb-1">Edificio:</label>
-                            <p className="w-full rounded-md">{ }</p>
+                            <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.edificio}</p>
                         </div>
                     </div>
+
+
                     <label className="block text-sm font-bold mb-1">Descripción:</label>
-                    <p className='mb-4'>En esta area se solicita esto sera la descripcion del formulario anterior</p>
+                    <p className='mb-4'>{encabezado.descripcionDelServicio}</p>
 
                     <label className="block text-sm font-bold mb-1">Técnico Encargado:</label>
-                    <p className='mb-4'>Eduardo Hernandez Hernandez igual el anterior</p>
+                    {encabezado.tecnicos && encabezado.tecnicos.length > 0 ? (
+                        <p className='mb-4'>{encabezado.tecnicos[0]?.nombreCompleto}</p>
+                    ) : (
+                        <p className='mb-4'>No asignado</p>
+                    )}
 
-                    <label className="block text-sm font-bold mb-1">Observaciones:</label>
-                    <p className='mb-4'>En esta area se solicita esto sera las Observaciones del formulario anterior</p>
-
+                    {errors.tecnicos && (
+                        <span className="text-red-500">{errors.tecnicos.message}</span>
+                    )}
                     <div className="flex items-center justify-center w-full h-11 p-3 rounded-md">
                         <p className="font-bold">Llenado Exclusivo para el DEP MSG:</p>
                     </div>
-                    <div className="p-4 space-y-5">
+                    <p className=" font-bold ">Rellene los detalles a continuación.</p>
+                    <div className="p-4 space-y-">
                         <div className="relative w-full">
                             <table className="w-full caption-bottom text-sm border">
                                 <thead className="[&_tr]:border border-gray-400">
