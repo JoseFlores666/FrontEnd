@@ -32,18 +32,15 @@ export const Evidencias = () => {
   const imagenesPares = dividirEnPares(imagenInfo);
 
   return (
-    <div className="mx-auto max-w-5xl p-4 text-black">
-      <div className="relative w-full">
-        <table className="w-full caption-bottom text-sm border border-t border-gray-400 bg-white rounded-b-lg">
+    <div className="mx-auto max-w-5xl p-4 text-center text-black">
+      <div className="bg-white p-6 rounded-md shadow-md">
+        <h1 className="text-2xl font-bold mb-4">EVIDENCIAS</h1>
+        <table className="w-full caption-bottom text-sm border border-t border-gray-400 bg-white rounded-b-lg mb-6">
           <thead className="[&_tr]:border border-gray-400">
             <tr className="border transition-colors hover:bg-gray-100 border-b border-gray-400 hover:bg-muted/50 data-[state=selected]:bg-muted">
-              <th className="h-12 text-center px-4 hover:bg-gray-100 border-b border-gray-400 align-middle font-medium text-black ">
-                Imagen 1
+              <th colSpan="2" className="h-12 text-center px-4 hover:bg-gray-100 border-b border-gray-400 align-middle font-medium text-black">
+                Solicitud: (En esta parte aparecerá la solicitud que corresponde y las imágenes que le pertenecen)
               </th>
-              <th className="h-12 text-center px-4 hover:bg-gray-100 border-b border-gray-400 align-middle font-medium text-black ">
-                Imagen 2
-              </th>
-
             </tr>
           </thead>
           <tbody className="[&_tr:last-child]:border-0 border-b border-gray-400">
@@ -69,6 +66,7 @@ export const Evidencias = () => {
             )}
           </tbody>
         </table>
+        <button type='submit' className="px-4 py-2 border border-black bg-indigo-500 text-white rounded-md hover:bg-indigo-600">Descargar Evidencias</button>
       </div>
     </div>
   );

@@ -1,18 +1,21 @@
-import React, { useEffect, useRef, useState } from 'react';
+// En el componente InformacionOrden.jsx
+
+import React, { useRef, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useParams } from 'react-router-dom';
-import { useSoli } from '../context/SolicitudContext';
+import { useParams } from "react-router-dom";
 import { asignarTecnicoSchema } from '../schemas/AsignarTecnico.js'
-import { zodResolver } from '@hookform/resolvers/zod';
-import { ImFileEmpty } from "react-icons/im";
+import { useSoli } from "../context/SolicitudContext";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Swal from "sweetalert2";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import "../css/solicitud.css";
+import "../css/Animaciones.css";
+import { Link } from "react-router-dom";
+import { AutocompleteInput } from "../components/ui/AutocompleteInput";
+import SubiendoImagenes from "../components/ui/SubiendoImagenes"
 
-//Primer Formulario Orden
+//Segundo formulario Orden
 
-export default function AsignarTecnico() {
-
+export const InformacionOrden = () => {
     const { id } = useParams();
     const { historialOrden, traeHistorialOrden, evaluarInfor, traerTecnicos, tecnicos, editarEstadoInfo } = useSoli();
     const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm({
@@ -44,6 +47,7 @@ export default function AsignarTecnico() {
             setDatosCargados(true);
         }
     };
+
     const declinar = async () => {
         try {
             const res = await editarEstadoInfo(id)
@@ -95,48 +99,52 @@ export default function AsignarTecnico() {
         }
     }
 
-    if (!datosCargados) {
-        return (
-            <div className="flex justify-center items-center h-screen">
-                <div className="text-center mt-50 text-cool-gray-50 font-bold">
-                    <div className="mb-4">Cargando...</div>
-                    <ImFileEmpty className="animate-spin text-purple-50-500 text-6xl" />
-                </div>
-            </div>
-        );
-    }
-
     return (
-        <div className="flex items-center justify-center mx-auto max-w-7xl p-4 text-black" style={{ height: '90vh' }}>
-            <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-xl">
+        <div className="flex items-center justify-center mx-auto max-w-7xl p-4 text-black">
+            <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-5xl">
                 <div className="bg-white p-6 rounded-md shadow-md">
                     <div className="text-center mb-4">
-                        <h1 className="text-2xl font-bold">Asignar Técnico</h1>
-                        <p>Rellene los detalles a continuación.</p>
+                        <h1 className="text-2xl font-bold">Información De La Orden</h1>
+                        <p>Rellene los Detalles Del Trabajo A Realizar</p>
                     </div>
                     <label className="block text-sm font-bold mb-1">Descripción:</label>
-                    <div className="mb-8 flex items-center">
-                        <p>En esta area se solicita esto</p>
-                    </div>
+                    <p className='mb-4'>En esta area se solicita esto </p>
 
                     {errors.observaciones && (
                         <span className="text-red-500">{errors.observaciones.message}</span>
                     )}
 
-                    <label className="block text-sm font-bold mb-1">Encargado de la actividad:</label>
-                    <select
-                        {...register("tecnico", { required: "Seleccionar un técnico es requerido" })}
-                        className="w-full p-3 border border-gray-400 bg-gray-50 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
-                        <option value="">Selecciona un Técnico</option>
-                        {tecnicos.map(tecnico => (
-                            <option key={tecnico._id} value={tecnico._id}>
-                                {tecnico.nombreCompleto} - {tecnico.correo}
-                            </option>
-                        ))}
-                    </select>
+                    <label className="block text-sm font-bold mb-1">Técnico Encargado:</label>
+                    <p className='mb-4'>Eduardo Hernandez Hernandez</p>
+
                     {errors.tecnico && (
                         <span className="text-red-500">{errors.tecnico.message}</span>
                     )}
+
+                    <div>
+                        <label className="block text-sm font-bold mb-1">Observaciones del servicio requerido</label>
+                        <AutocompleteInput
+                            index={3}
+                            //   value={descripcion}
+                            //   onChange={(newValue) => setDescripcion(newValue)}
+                            data={historialOrden}
+                            recentSuggestions={recentSuggestions}
+                            setRecentSuggestions={setRecentSuggestions}
+                            inputRefs={refs}
+                            placeholder="Ingrese una descripción"
+                            fieldsToCheck={['descripcionDelServicio']}
+                            inputProps={{
+                                type: "text",
+                                maxLength: 500,
+                                className: "w-full mb-2 resize-none text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
+                            }}
+                        />
+                        <input name="descripcion" id="descripcion" type="hidden" />
+                    </div>
+
+                    <div>
+                        <SubiendoImagenes ref={subiendoImagenesRef} />
+                    </div>
 
                     <div className="flex gap-2 justify-center mt-4">
                         <Link
@@ -144,13 +152,12 @@ export default function AsignarTecnico() {
                             onClick={declinar}
                             className="px-4 py-2 text-white border bg-red-500 border-black rounded-md hover:bg-red-700"
                         >
-                            Cancelar
+                            Declinar
                         </Link>
-                        <button type='submit' className="px-4 py-2 border border-black bg-indigo-500 text-white rounded-md hover:bg-indigo-600">Guardar Cambios</button>
+                        <button type='submit' className="px-4 py-2 border border-black bg-indigo-500 text-white rounded-md hover:bg-indigo-600">Continuar Proceso</button>
                     </div>
                 </div>
             </form>
         </div>
-
     );
-}
+};
