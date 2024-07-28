@@ -128,11 +128,51 @@ export const RegisterTecPage2 = () => {
 
     return (
         <div className="mx-auto max-w-5xl p-4 text-black">
-            <form onSubmit={handleSubmit(onSubmit)} className="slide-down">
+            <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-6xl">
                 <div className="bg-white p-6 rounded-md shadow-md">
                     <div className="text-center mb-4">
                         <h1 className="text-2xl font-bold">ENCARGO DE INSUMOS</h1>
                         <p>Rellene los Detalles De los Insumos A Encargar</p>
+                    </div>
+                    <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-6">
+                        <div>
+                            <label className="block text-sm font-bold mb-1">Folio:</label>
+                            <p className="w-full rounded-md">En los parrafos es donde se consulta su informacion</p>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-bold mb-1">Solicita:</label>
+                            <p className="w-full rounded-md"></p>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-bold mb-1">Área solicitante:</label>
+                            <p className="w-full rounded-md"></p>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-6">
+                        <div>
+                            <label className="block text-sm font-bold mb-1">Fecha:</label>
+                            <p className="w-full rounded-md">{ }</p>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-bold mb-1">Tipo de Mantenimiento:</label>
+                            <p className="w-full rounded-md">{ }</p>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-bold mb-1">Tipo de Trabajo:</label>
+                            <p className="w-full rounded-md">{ }</p>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-6">
+                        <div>
+                            <label className="block text-sm font-bold mb-1">Tipo de Solicitud:</label>
+                            <p className="w-full rounded-md">{ }</p>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-bold mb-1">Edificio:</label>
+                            <p className="w-full rounded-md">{ }</p>
+                        </div>
                     </div>
                     <label className="block text-sm font-bold mb-1">Descripción:</label>
                     <p className='mb-4'>En esta area se solicita esto sera la descripcion del formulario anterior</p>

@@ -108,11 +108,51 @@ export default function AsignarTecnico() {
 
     return (
         <div className="flex items-center justify-center mx-auto max-w-7xl p-4 text-black" style={{ height: '90vh' }}>
-            <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-xl">
+            <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-6xl">
                 <div className="bg-white p-6 rounded-md shadow-md">
                     <div className="text-center mb-4">
                         <h1 className="text-2xl font-bold">Asignar Técnico</h1>
                         <p>Rellene los detalles a continuación.</p>
+                    </div>
+                    <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-6">
+                        <div>
+                            <label className="block text-sm font-bold mb-1">Folio:</label>
+                            <p className="w-full rounded-md">En los parrafos es donde se consulta su informacion</p>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-bold mb-1">Solicita:</label>
+                            <p className="w-full rounded-md"></p>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-bold mb-1">Área solicitante:</label>
+                            <p className="w-full rounded-md"></p>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-6">
+                        <div>
+                            <label className="block text-sm font-bold mb-1">Fecha:</label>
+                            <p className="w-full rounded-md">{ }</p>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-bold mb-1">Tipo de Mantenimiento:</label>
+                            <p className="w-full rounded-md">{ }</p>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-bold mb-1">Tipo de Trabajo:</label>
+                            <p className="w-full rounded-md">{ }</p>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-6">
+                        <div>
+                            <label className="block text-sm font-bold mb-1">Tipo de Solicitud:</label>
+                            <p className="w-full rounded-md">{ }</p>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-bold mb-1">Edificio:</label>
+                            <p className="w-full rounded-md">{ }</p>
+                        </div>
                     </div>
                     <label className="block text-sm font-bold mb-1">Descripción:</label>
                     <div className="mb-8 flex items-center">

@@ -16,6 +16,7 @@ export const TecnicoPage = () => {
   const [solicitudesPerPage, setSolicitudesPerPage] = useState(10);
   const [sortConfig, setSortConfig] = useState({ key: 'folio', direction: 'des' });
   const [filteredSolicitudes, setFilteredSolicitudes] = useState([]);
+  const [selectedId, setSelectedId] = useState(null);
 
   const [datosCargados, setDatosCargados] = useState(false);
 
