@@ -23,13 +23,11 @@ export const InformacionOrden = () => {
         //     resolver: zodResolver(asignarTecnicoSchema),
         // }
     );
-
     const [datosCargados, setDatosCargados] = useState(false);
     const [observaciones, setObservaciones] = useState('');
     const subiendoImagenesRef = useRef(null);
     const [recentSuggestions, setRecentSuggestions] = useState([]);
     const refs = useRef([]);
-
     useEffect(() => {
         const iniciarDatos = async () => {
             try {
