@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useSoli } from "../context/SolicitudContext";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faFileAlt, faEdit, faTruck, faTimesCircle, faCopy, } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faFileAlt, faEdit, faTruck, faTimesCircle, faCopy,faHistory } from "@fortawesome/free-solid-svg-icons";
 import { ImFileEmpty } from "react-icons/im";
 import TablaVistaSolicitud from "./TablaVistaSolicitud";
 
@@ -292,6 +292,12 @@ export function SolicitudTable({ }) {
                       className="text-blue-600 hover:text-blue-800"
                     >
                       <FontAwesomeIcon icon={faCopy} />
+                    </Link>
+                    <Link
+                      to={`/historial`}
+                      className="text-blue-600 hover:text-blue-800"
+                    >
+                      <FontAwesomeIcon icon={faHistory} />
                     </Link>
                     <button
                       onClick={() => handleOpenModal(solicitud._id)}

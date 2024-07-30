@@ -44,24 +44,24 @@ export default function AsignarTecnico() {
             setDatosCargados(true);
         }
     };
-    // const declinar = async () => {
-    //     try {
-    //         const res = await editarEstadoInfo(id)
+    const declinar = async () => {
+        try {
+            const res = await editarEstadoInfo(id)
 
-    //         if (res) {
-    //             Swal.fire({
-    //                 title: "Completado!",
-    //                 text: res.mensaje,
-    //                 icon: "success",
-    //                 confirmButtonText: "Cool",
-    //             });
-    //         } else {
-    //             Swal.fire("Error", "Error, el informe ya ha sido asignado a un técnico", "error");
-    //         }
-    //     } catch (error) {
-    //         console.error("Error al intentar declinar el informe", error)
-    //     }
-    // };
+            if (res) {
+                Swal.fire({
+                    title: "Completado!",
+                    text: res.mensaje,
+                    icon: "success",
+                    confirmButtonText: "Cool",
+                });
+            } else {
+                Swal.fire("Error", "Error, el informe ya ha sido asignado a un técnico", "error");
+            }
+        } catch (error) {
+            console.error("Error al intentar declinar el informe", error)
+        }
+    };
 
     const onSubmit = async (data, e) => {
         e.preventDefault();
@@ -146,7 +146,7 @@ export default function AsignarTecnico() {
                     </div>
                     <label className="block text-sm font-bold mb-1">Descripción:</label>
                     <div className="mb-8 flex items-center">
-                        <p>{unaInfo.informe.descripcionDelServicio}</p>
+                        <p>{}</p>
                     </div>
 
                     {errors.observaciones && (
