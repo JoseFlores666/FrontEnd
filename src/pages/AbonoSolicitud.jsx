@@ -68,9 +68,10 @@ export const AbonoSolicitud = () => {
             // Eliminar propiedades no deseadas
             const { NumEntregas, ...restData } = data;
             delete restData[""];
-
+            console.log(restData.items)
             // Validar las cantidades
             for (const item of restData.items) {
+
                 const totalCantidad = item.cantidadAcumulada + parseInt(item.cantidadEntregada, 10);
                 if (totalCantidad > item.cantidad) {
                     Swal.fire({
@@ -83,13 +84,14 @@ export const AbonoSolicitud = () => {
                 }
             }
 
+
             console.log(restData); // Imprime el objeto de datos para verificar
 
             const response = await RealizarAbono(id, restData);
             if (!response) {
                 Swal.fire({
                     title: "Error",
-                    text: "Error al abonar",
+                    text: "Hubo un problema al realizar el abono",
                     icon: "error",
                     confirmButtonText: "OK",
                 });

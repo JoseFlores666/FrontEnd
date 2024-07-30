@@ -17,23 +17,24 @@ import SubiendoImagenes from "../components/ui/SubiendoImagenes"
 
 export const InformacionOrden = () => {
     const { id } = useParams();
-    const { historialOrden, traeHistorialOrden, ObservacionesDelTenico, traerDescripYTecnico, tecYDescripcion, editarEstadoInfo } = useSoli();
+    const { historialOrden, traeHistorialOrden, ObservacionesDelTenico, traerEncabezado, encabezado, editarEstadoInfo, traeUnaInfo, unaInfo } = useSoli();
     const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm(
         //     {
         //     resolver: zodResolver(asignarTecnicoSchema),
         // }
     );
-
     const [datosCargados, setDatosCargados] = useState(false);
     const [observaciones, setObservaciones] = useState('');
     const subiendoImagenesRef = useRef(null);
     const [recentSuggestions, setRecentSuggestions] = useState([]);
     const refs = useRef([]);
-
     useEffect(() => {
         const iniciarDatos = async () => {
             try {
-                await traerDescripYTecnico(id);
+                await await traeUnaInfo(id);
+                await await traerEncabezado(id);
+                console.log(unaInfo)
+                console.log(encabezado)
             } catch (error) {
                 console.error("Error al cargar los datos", error);
             }
@@ -43,7 +44,7 @@ export const InformacionOrden = () => {
 
             setDatosCargados(true);
         }
-    }, [traerDescripYTecnico, datosCargados]);
+    }, [traerEncabezado, traeUnaInfo, datosCargados]);
 
 
 
@@ -111,64 +112,66 @@ export const InformacionOrden = () => {
             <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-6xl">
                 <div className="bg-white p-6 rounded-md shadow-md">
                     <div className="text-center mb-4">
-                        <h1 className="text-2xl font-bold">Información De La Orden</h1>
-                        <p>Rellene los Detalles Del Trabajo A Realizar</p>
+                        <h1 className="text-2xl font-bold">Asignar Técnico</h1>
+                        <p>Rellene los detalles a continuación.</p>
                     </div>
                     <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-6">
                         <div>
-                            <label className="block text-sm font-bold mb-1">Folio:</label>
-                            <p className="w-full rounded-md">En los parrafos es donde se consulta su informacion</p>
+                            <label className="block text-sm font-bold mb-1">Folio: </label>
+                            <p className="w-full rounded-md">{unaInfo.folio}</p>
+
                         </div>
                         <div>
                             <label className="block text-sm font-bold mb-1">Solicita:</label>
-                            <p className="w-full rounded-md"></p>
+                            <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.nombre}</p>
                         </div>
                         <div>
                             <label className="block text-sm font-bold mb-1">Área solicitante:</label>
-                            <p className="w-full rounded-md"></p>
+                            <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.areaSolicitante}</p>
                         </div>
                     </div>
 
                     <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-6">
                         <div>
                             <label className="block text-sm font-bold mb-1">Fecha:</label>
-                            <p className="w-full rounded-md">{ }</p>
+                            <p className="w-full rounded-md">{unaInfo.informe?.fecha}</p>
                         </div>
                         <div>
                             <label className="block text-sm font-bold mb-1">Tipo de Mantenimiento:</label>
-                            <p className="w-full rounded-md">{ }</p>
+                            <p className="w-full rounded-md">{unaInfo.informe?.tipoDeMantenimiento}</p>
                         </div>
                         <div>
                             <label className="block text-sm font-bold mb-1">Tipo de Trabajo:</label>
-                            <p className="w-full rounded-md">{ }</p>
+                            <p className="w-full rounded-md">{unaInfo.informe?.tipoDeTrabajo}</p>
                         </div>
                     </div>
 
                     <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-6">
                         <div>
                             <label className="block text-sm font-bold mb-1">Tipo de Solicitud:</label>
-                            <p className="w-full rounded-md">{ }</p>
+                            <p className="w-full rounded-md">{unaInfo.informe?.tipoDeSolicitud}</p>
                         </div>
                         <div>
                             <label className="block text-sm font-bold mb-1">Edificio:</label>
-                            <p className="w-full rounded-md">{ }</p>
+                            <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.edificio}</p>
                         </div>
                     </div>
 
+
                     <label className="block text-sm font-bold mb-1">Descripción:</label>
-                    <p className='mb-4'>{tecYDescripcion.descripcionDelServicio}</p>
+                    <p className='mb-4'>{encabezado.descripcionDelServicio}</p>
 
-                    {errors.observaciones && (
-                        <span className="text-red-500">{errors.observaciones.message}</span>
-                    )}
                     <label className="block text-sm font-bold mb-1">Técnico Encargado:</label>
-                    {tecYDescripcion.tecnico && (
-                        <p className='mb-4'>{tecYDescripcion.tecnico.nombreCompleto}</p>
+                    {encabezado.tecnicos && encabezado.tecnicos.length > 0 ? (
+                        <p className='mb-4'>{encabezado.tecnicos[0]?.nombreCompleto}</p>
+                    ) : (
+                        <p className='mb-4'>No asignado</p>
                     )}
 
-                    {errors.tecnico && (
-                        <span className="text-red-500">{errors.tecnico.message}</span>
+                    {errors.tecnicos && (
+                        <span className="text-red-500">{errors.tecnicos.message}</span>
                     )}
+
 
                     <div>
                         <label className="block text-sm font-bold mb-1">Observaciones del servicio requerido</label>

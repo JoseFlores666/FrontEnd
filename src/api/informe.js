@@ -36,5 +36,5 @@ export const editarEstadoInforme = async (id) =>
 
 export const getTecnicos = async () => axios.get("/tecnicos");
 
-export const getDescripcionYTecnicos = async (id) =>
-  axios.get(`/tecnicos/descripcionYTecnico/${id}`);
+export const getEncabezado = async (id) =>
+  axios.get(`/tecnicos/Encabezado/${id}`);

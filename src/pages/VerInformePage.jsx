@@ -80,15 +80,6 @@ export const VerInforme = () => {
                     {unaInfo.estado !== "Declinada" && (
                         <>
                             <div className="mb-4">
-                                <h3 className="text-lg mb-4 text-center font-bold text-black">Evidencias:</h3>
-                                <div className="grid grid-cols-4 gap-4 flex items-center">
-                                    {unaInfo.informe.imagenes.map((imagen) => (
-                                        <img key={imagen._id} src={imagen.secure_url} alt={imagen.public_id} className="max-w-60 h-auto" />
-                                    ))}
-                                </div>
-                            </div>
-
-                            <div className="mb-4">
                                 <h2 className="text-xl font-bold text-black">Solicitud</h2>
                                 <div className="grid grid-cols-1 gap-4">
                                     <div>
