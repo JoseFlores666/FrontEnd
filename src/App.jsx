@@ -19,7 +19,7 @@ import { Evidencias } from "./pages/Evidencias"
 import AsignarTecnico from "./pages/AsignarTecnico"
 import { ProjectAndActManager } from "./pages/EditarProyects&Act"
 import { VerInforme } from "./pages/VerInformePage"
-import {InformacionOrden} from "./pages/InformacionOrden"
+import { InformacionOrden } from "./pages/InformacionOrden"
 import {Historial} from "./pages/Historial"
 
 function App() {

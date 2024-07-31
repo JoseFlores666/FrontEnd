@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { ImFileEmpty } from "react-icons/im";
-import TablaVistaSolicitud from "./TablaVistaSolicitud";
+import { TablaVistaSolicitud } from "./TablaVistaSolicitud";
 
 export function Historial() {
     const [searchTerm, setSearchTerm] = useState("");
