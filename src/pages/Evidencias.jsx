@@ -40,34 +40,70 @@ export const Evidencias = () => {
     const blob = await response.blob();
     return blob;
   };
-
   const enviarImagenes = async () => {
     try {
       const formData = new FormData();
-
+      formData.append('numero_de_imagenes', imagenInfo.length);
+  
       for (let i = 0; i < imagenInfo.length; i++) {
         const imagen = imagenInfo[i];
         const blob = await obtenerBlobDesdeUrl(imagen.secure_url);
-        formData.append(`imagenes[]`, blob, `imagen${i + 1}.jpg`); // Nombre del archivo
+        formData.append('imagenes[]', blob, `imagen${i + 1}.jpg`);
       }
-
-      const response = await axios.post('http://localhost/PlantillasWordyPdf/File/ManejoEvidencias.php', formData, {
+  
+      // Asegúrate de que el folio esté presente
+      if (solicitudInfo && solicitudInfo.folio) {
+        formData.append('folio', solicitudInfo.folio);
+        console.log('Folio enviado:', solicitudInfo.folio);
+      } else {
+        console.error('Folio no disponible');
+      }
+  
+      await axios.post('http://localhost/PlantillasWordyPdf/DescargarEvidencias.php', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
-        },
-        responseType: 'blob' // Para manejar la descarga del archivo
+        }
+      }).then(response => {
+        console.log('Imágenes enviadas correctamente', response.data);
+  
+        axios.post('http://localhost/PlantillasWordyPdf/GuardarFolio.php', {
+          folio: solicitudInfo.folio
+        }, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }).then(response => {
+          console.log(response.data.message);
+        }).catch(error => {
+          console.error('Error al guardar el folio', error);
+        });
+        
+  
+        const save_as = '';
+        const downloadUrl = `http://localhost/PlantillasWordyPdf/DescargarEvidencias.php?save_as=${save_as}`;
+  
+        window.location.href = downloadUrl;
+  
+        // Esperar 3 segundos antes de hacer la solicitud para eliminar imágenes
+        setTimeout(() => {
+          eliminarImagenes();
+        }, 3000); // 3000 milisegundos = 3 segundos
+  
+      }).catch(error => {
+        console.error('Error al enviar las imágenes', error);
       });
-
-      // Crear un enlace temporal para descargar el archivo
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', 'EvidenciasGeneradas.docx'); // Nombre del archivo de descarga
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
     } catch (error) {
       console.error('Error al enviar las imágenes', error);
+    }
+  };
+  
+
+  const eliminarImagenes = async () => {
+    try {
+      await axios.post('http://localhost/PlantillasWordyPdf/EliminarImagenes.php');
+      console.log('Imágenes eliminadas correctamente');
+    } catch (error) {
+      console.error('Error al eliminar las imágenes', error);
     }
   };
 
@@ -107,7 +143,12 @@ export const Evidencias = () => {
               )}
             </tbody>
           </table>
-          <button type='submit' className="px-4 py-2 border border-black bg-indigo-500 text-white rounded-md hover:bg-indigo-600">Descargar Evidencias</button>
+          <button
+            type='submit'
+            className="px-4 py-2 border border-black bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
+          >
+            Enviar Imágenes
+          </button>
         </div>
       </form>
     </div>
