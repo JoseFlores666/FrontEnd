@@ -1,118 +1,220 @@
 import React, { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrashAlt, faEdit } from '@fortawesome/free-solid-svg-icons';
 
 export const ProjectAndActManager = () => {
     const [projects, setProjects] = useState([]);
     const [newProject, setNewProject] = useState('');
     const [activeProject, setActiveProject] = useState(null);
     const [activities, setActivities] = useState({});
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
+    const [isActivityModalOpen, setIsActivityModalOpen] = useState(false);
+    const [selectedProject, setSelectedProject] = useState(null);
+    const [newActivity, setNewActivity] = useState('');
+    const [editingActivity, setEditingActivity] = useState({ project: null, index: null, text: '' });
 
-    const openModal = () => {
-        setIsModalOpen(true);
+    const openProjectModal = () => setIsProjectModalOpen(true);
+    const closeProjectModal = () => setIsProjectModalOpen(false);
+    const openActivityModal = (project) => {
+        setSelectedProject(project);
+        setIsActivityModalOpen(true);
     };
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-    };
+    const closeActivityModal = () => setIsActivityModalOpen(false);
 
     const addProject = () => {
         if (newProject.trim() && !projects.includes(newProject)) {
             setProjects([...projects, newProject]);
             setActivities({ ...activities, [newProject]: [] });
             setNewProject('');
-            closeModal();
+            closeProjectModal();
         }
     };
 
-    const handleAssignActivities = (project) => {
-        setActiveProject(project === activeProject ? null : project);
-    };
-
-    const addActivityToProject = (activity) => {
-        if (activeProject) {
+    const addActivityToProject = () => {
+        if (newActivity.trim() && selectedProject) {
             setActivities({
                 ...activities,
-                [activeProject]: [...(activities[activeProject] || []), activity]
+                [selectedProject]: [...(activities[selectedProject] || []), newActivity]
             });
+            setNewActivity('');
+            closeActivityModal();
         }
+    };
+
+    const editActivityInProject = () => {
+        const { project, index, text } = editingActivity;
+        if (text.trim() && project != null && index != null) {
+            const updatedActivities = [...(activities[project] || [])];
+            updatedActivities[index] = text;
+            setActivities({ ...activities, [project]: updatedActivities });
+            setEditingActivity({ project: null, index: null, text: '' });
+        }
+    };
+
+    const handleDeleteProject = (projectToDelete) => {
+        setProjects(projects.filter(project => project !== projectToDelete));
+        const newActivities = { ...activities };
+        delete newActivities[projectToDelete];
+        setActivities(newActivities);
+        if (activeProject === projectToDelete) {
+            setActiveProject(null);
+        }
+    };
+
+    const handleDeleteActivity = (project, activityIndex) => {
+        const updatedActivities = activities[project].filter((_, index) => index !== activityIndex);
+        setActivities({ ...activities, [project]: updatedActivities });
+    };
+
+    const handleEditActivity = (project, activityIndex) => {
+        setEditingActivity({ project, index: activityIndex, text: activities[project][activityIndex] });
+        setIsActivityModalOpen(true);
     };
 
     return (
-        <div className="mx-auto max-w-5xl p-4 text-black">
-            <div className="bg-white p-6 rounded-md shadow-md">
-                <div className="mb-6">
-                    <h2 className="text-2xl font-bold text-center text-black">Gestión De Proyectos</h2>
+        <div className="mx-auto max-w-7xl p-4 text-black">
+            <div className="bg-white p-8 rounded-lg shadow-lg">
+                <div className="mb-8">
+                    <h2 className="text-3xl font-bold text-center text-black">Gestión De Proyectos y Actividades</h2>
                 </div>
-                <div className='flex items-center justify-center mb-4'>
+                <div className='flex items-center justify-center'>
                     <button
-                        onClick={openModal}
-                        className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
+                        onClick={openProjectModal}
+                        className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300"
                     >
                         Agregar Proyecto
                     </button>
                 </div>
-                <ul>
+                <ul className="">
                     {projects.map((project, index) => (
-                        <li key={index} className="mb-2">
-                            <h2 className="block text-sm font-medium mb-1">Proyecto:</h2>
-                            <div className="flex items-center">
-                                <button
-                                    onClick={() => handleAssignActivities(project)}
-                                    className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 text-left flex-1"
-                                >
+                        <li key={index} className="rounded-lg p-4 bg-gray-50">
+                            <div
+                                className="flex items-center justify-between cursor-pointer"
+                                onClick={() => setActiveProject(project === activeProject ? null : project)}
+                            >
+                                <div className="flex-1 border border-gray-500 text-black bg-white-500 p-2 rounded-lg hover:bg-white-600">
                                     {project}
-                                </button>
-                                <button className='bg-green-500 hover:bg-green-600 text-left p-2 border border-black rounded'>Asignar Actividades</button>
-                                {activeProject === project && (
-                                    <div className="ml-4 bg-gray-100 p-2 rounded-md shadow-md w-64">
-                                        <ul>
-                                            {activities[project] && activities[project].map((activity, idx) => (
-                                                <li key={idx} className="py-1 px-2 hover:bg-gray-200">
-                                                    {activity}
-                                                </li>
-                                            ))}
-                                            <li>
-                                                <button
-                                                    onClick={() => addActivityToProject('Nueva Actividad')}
-                                                    className="bg-blue-500 text-white p-1 rounded-md mt-2"
-                                                >
-                                                    Añadir Actividad
-                                                </button>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                )}
+                                </div>
+                                <div className="flex-shrink-0 ml-2 flex space-x-1">
+                                    <button
+                                        onClick={() => openActivityModal(project)}
+                                        className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-lg"
+                                    >
+                                        Asignar Actividades
+                                    </button>
+                                    <button
+                                        onClick={() => handleDeleteProject(project)}
+                                        className="text-red-500 hover:text-red-700 p-2 rounded-lg"
+                                    >
+                                        <FontAwesomeIcon icon={faTrashAlt} />
+                                    </button>
+                                    <button
+                                        onClick={() => handleDeleteActivity(project, idx)}
+                                        className="text-blue-500 hover:text-blue-700 p-2 rounded-lg"
+                                    >
+                                        <FontAwesomeIcon icon={faEdit} />
+                                    </button>
+                                </div>
                             </div>
+                            {activeProject === project && (
+                                <div className="bg-gray-200 p-2">
+                                    <h3 className="text-lg font-semibold">Actividades:</h3>
+                                    <ul>
+                                        {activities[project] && activities[project].map((activity, idx) => (
+                                            <li key={idx} className="flex items-center hover:bg-gray-300 p-1 rounded-lg transition duration-300">
+                                                <span className="flex-1">{activity}</span>
+                                                <div className="space-x-2">
+                                                    <button
+                                                        onClick={() => handleEditActivity(project, idx)}
+                                                        className="text-blue-500 hover:text-blue-700 p-2 rounded-lg transition duration-300"
+                                                    >
+                                                        <FontAwesomeIcon icon={faEdit} />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDeleteActivity(project, idx)}
+                                                        className="text-red-500 hover:text-red-700 p-2 rounded-lg transition duration-300"
+                                                    >
+                                                        <FontAwesomeIcon icon={faTrashAlt} />
+                                                    </button>
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
                         </li>
                     ))}
                 </ul>
             </div>
 
-            {/* Modal para agregar proyecto */}
-            {isModalOpen && (
+            {isProjectModalOpen && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white p-6 rounded-md shadow-md">
-                        <h3 className="text-lg font-bold mb-4">Agregar Proyecto</h3>
+                    <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+                        <h3 className="text-xl font-bold mb-4">Agregar Proyecto</h3>
                         <input
                             type="text"
                             value={newProject}
                             onChange={(e) => setNewProject(e.target.value)}
                             placeholder="Nombre del nuevo proyecto"
-                            className="border p-2 rounded-md mb-4 w-full"
+                            className="border p-2 rounded-lg mb-4 w-full"
                         />
                         <div className="flex justify-end">
                             <button
-                                onClick={closeModal}
-                                className="bg-gray-300 text-gray-700 p-2 rounded-md mr-2"
+                                onClick={closeProjectModal}
+                                className="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg mr-2"
                             >
                                 Cancelar
                             </button>
                             <button
                                 onClick={addProject}
-                                className="bg-blue-500 text-white p-2 rounded-md"
+                                className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300"
                             >
                                 Agregar
                             </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {isActivityModalOpen && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+                        <h3 className="text-xl font-bold mb-4">{editingActivity.project != null ? `Editar Actividad en ${selectedProject}` : `${selectedProject}`}</h3>
+                        <input
+                            type="text"
+                            value={editingActivity.text || newActivity}
+                            onChange={(e) => {
+                                if (editingActivity.project != null) {
+                                    setEditingActivity({ ...editingActivity, text: e.target.value });
+                                } else {
+                                    setNewActivity(e.target.value);
+                                }
+                            }}
+                            placeholder="Nueva actividad"
+                            className="border p-2 rounded-lg mb-4 w-full"
+                        />
+                        <div className="flex justify-end">
+                            <button
+                                onClick={closeActivityModal}
+                                className="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg mr-2"
+                            >
+                                Cancelar
+                            </button>
+                            {editingActivity.project != null ? (
+                                <button
+                                    onClick={editActivityInProject}
+                                    className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300"
+                                >
+                                    Editar Actividad
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={addActivityToProject}
+                                    className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300"
+                                >
+                                    Añadir Actividad
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
