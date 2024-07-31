@@ -42,3 +42,6 @@ export const getVercantidadTotalEstados = async () => axios.get(`/estados/Vercan
 
 export const actualizaEstado = async ( EstadosAActualizar) =>
   axios.put(`/estados/actualizar`, EstadosAActualizar);
+
+export const declinarSoli = async ( id) =>
+  axios.put(`/solicitud/estado/${id}`);

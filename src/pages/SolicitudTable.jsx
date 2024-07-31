@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useSoli } from "../context/SolicitudContext";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faFileAlt, faEdit, faTruck, faTimesCircle, faCopy,faHistory } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faFileAlt, faEdit, faTruck, faTimesCircle, faCopy, faHistory } from "@fortawesome/free-solid-svg-icons";
 import { ImFileEmpty } from "react-icons/im";
 import { TablaVistaSolicitud } from "./TablaVistaSolicitud";
 
@@ -18,7 +18,7 @@ export function SolicitudTable({ }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef(null);
 
-  const { soli, getSoli, deleteSolitud, actializarUnEstado,
+  const { soli, getSoli, deleteSolitud, declinarmySoi,
     cantidadestados, VercantTotalEstado, verMisEstados, estados, } = useSoli();
 
   const [loading, setLoading] = useState(true);
@@ -41,6 +41,7 @@ export function SolicitudTable({ }) {
         await getSoli();
         console.log(soli)
         await verMisEstados();
+
         setSolicitudesFetched(true);
         setLoading(false);
       } catch (error) {
@@ -59,9 +60,13 @@ export function SolicitudTable({ }) {
 
   const [filteredSolicitudes, setFilteredSolicitudes] = useState(soli);
 
+  const estadoRechazada = estados.find(estado => estado.id === 5);
+
   useEffect(() => {
-    // Obtener IDs de solicitudes rechazadas al cargar las solicitudes
-    const rechazadasIds = soli.filter(solicitud => solicitud.estado === 'Rechazada').map(solicitud => solicitud._id);
+    const rechazadasIds = soli.filter(solicitud =>
+      solicitud.estado && solicitud.estado.id === estadoRechazada.id
+    ).map(solicitud => solicitud._id);
+
     setRejectedSolicitudes(rechazadasIds);
   }, [soli]);
 
@@ -142,7 +147,8 @@ export function SolicitudTable({ }) {
         // Actualizar el estado local de las solicitudes rechazadas
         setRejectedSolicitudes([...rejectedSolicitudes, solicitudToReject]);
 
-        await actializarUnEstado(solicitudToReject);
+        console.log(solicitudToReject)
+        await declinarmySoi(solicitudToReject);
 
         await getSoli();
       }
@@ -227,14 +233,14 @@ export function SolicitudTable({ }) {
       <table className="w-full min-w-full divide-y divide-white-200 text-sm text-black rounded-lg overflow-hidden">
         <thead className="bg-black text-white">
           <tr>
-            <th className="text-left font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('folio')}>FOLIO</th>
-            <th className="text-left font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('fecha')}>FECHA</th>
-            <th className="px-3 py-1 text-left font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('tipoSuministro')}>TIPO DE SUMINISTRO</th>
-            <th className="text-left font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('procesoClave')}>PROCESO CLAVE</th>
-            <th className="text-left font-medium border text-center w-2/12" >PROYECTO</th>
-            <th className="text-left font-medium border text-center w-2/12" >ACTIVIDADES</th>
-            <th className="text-left font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('estado')}>ESTADO</th>
-            <th className="text-left font-medium border text-center w-1/12">ACCIONES</th>
+            <th className=" font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('folio')}>FOLIO</th>
+            <th className=" font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('fecha')}>FECHA</th>
+            <th className="px-3 py-1 font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('tipoSuministro')}>TIPO DE SUMINISTRO</th>
+            <th className=" font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('procesoClave')}>PROCESO CLAVE</th>
+            <th className=" font-medium border text-center w-2/12" >PROYECTO</th>
+            <th className=" font-medium border text-center w-2/12" >ACTIVIDADES</th>
+            <th className=" font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('estado')}>ESTADO</th>
+            <th className=" font-medium border text-center w-1/12">ACCIONES</th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-black">

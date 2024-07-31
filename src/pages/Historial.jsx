@@ -1,6 +1,11 @@
 import React, { useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+<<<<<<< HEAD
+=======
+import { ImFileEmpty } from "react-icons/im";
+import { TablaVistaSolicitud } from "./TablaVistaSolicitud";
+>>>>>>> 582397c9d3a2c362ae03e767070ee2dcae2c75e9
 
 export function Historial() {
     const [searchTerm, setSearchTerm] = useState("");

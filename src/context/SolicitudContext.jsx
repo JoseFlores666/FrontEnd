@@ -11,7 +11,7 @@ import {
   getFiltroEstado,
   nombreFirmas, editarNombreFirmas, putAbono,
   updateSoliFolioExterno, getEstados, actualizaEstado,
-  getVercantidadTotalEstados,
+  getVercantidadTotalEstados, declinarSoli,
 } from "../api/soli";
 import {
   getInfome, createInfome, deleteInfome, llenadoDEPInforme, getUnaInfome,
@@ -114,6 +114,15 @@ export function SoliProvider({ children }) {
       } else {
         console.log("Solicitud creada con éxito");
       }
+    } catch (error) {
+      console.error("Error creating solicitud:", error);
+      setErrors(["Error creating solicitud"]);
+    }
+  };
+  const declinarmySoi = async (id) => {
+    try {
+      const res = await declinarSoli(id);
+      return res;
     } catch (error) {
       console.error("Error creating solicitud:", error);
       setErrors(["Error creating solicitud"]);
@@ -424,7 +433,7 @@ export function SoliProvider({ children }) {
         cantidadestados, VercantTotalEstado,
         traeHistorialSoli,
         historialSoli,
-        soli,
+        soli, declinarmySoi,
         traerEncabezado, encabezado,
         actualizarSoliFolioExterno,
         traeUnaInfo,
