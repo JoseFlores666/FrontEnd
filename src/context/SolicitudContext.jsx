@@ -9,9 +9,15 @@ import {
   getUnProyectYAct,
   traeUnProyectAct,
   getFiltroEstado,
-  nombreFirmas, editarNombreFirmas, putAbono, updateSoliFolioExterno, actualizaEstado,
+  nombreFirmas, editarNombreFirmas, putAbono,
+  updateSoliFolioExterno, getEstados, actualizaEstado,
+  getVercantidadTotalEstados,
 } from "../api/soli";
-import { getInfome, createInfome, deleteInfome, llenadoDEPInforme, getUnaInfome, evaluacionDelInfome, getTecnicos, editarEstadoInforme, getEncabezado, getImagenInfome, InformaciónDeLaOrden, } from "../api/informe";
+import {
+  getInfome, createInfome, deleteInfome, llenadoDEPInforme, getUnaInfome,
+  evaluacionDelInfome, getTecnicos, editarEstadoInforme, getEncabezado,
+  getImagenInfome, InformaciónDeLaOrden,
+} from "../api/informe";
 import { getfolioInterno, getfolioInternoInforme } from "../api/folio";
 import { gethistorialOrdenTrabajo, gethistorialSoli } from "../api/historialInput";
 import { CrearApi_key, VerApis_Keys, actualizaApi_key } from "../api/api_key";
@@ -46,6 +52,8 @@ export function SoliProvider({ children }) {
   const [mensaje, setMensaje] = useState("");
   const [tecnicos, setTecnicos] = useState("");
   const [encabezado, setEncabezado] = useState("");
+  const [estados, setEstados] = useState("");
+  const [cantidadestados, setCantidadEstados] = useState("");
   const [imagenInfo, setImagenInfo] = useState("");
 
   //Solicitudes
@@ -67,11 +75,20 @@ export function SoliProvider({ children }) {
       setErrors(["Error fetching solitudes"]);
     }
   };
+  const ActualizarEstados = async (estados) => {
+    try {
+      const res = await actualizaEstado(estados);
+      return res.data;
+    } catch (error) {
+      console.error("Error fetching solitudes:", error);
+      setErrors(["Error fetching solitudes"]);
+    }
+  };
 
   const deleteSolitud = async (id) => {
     try {
       const res = await deleteSoli(id);
-
+      return res;
     } catch (error) {
       console.error("Error fetching solitudes:", error);
       setErrors(["Error fetching solitudes"]);
@@ -113,16 +130,26 @@ export function SoliProvider({ children }) {
     }
   };
 
-  const actializarSoliEstado = async (id) => {
+  const verMisEstados = async (id) => {
     try {
-
-      await actualizaEstado(id);
-      console.log("Actulizado con exito");
+      const res = await getEstados();
+      setEstados(res.data)
     } catch (error) {
       console.error("Error fetching solitudes:", error);
       setErrors(["Error fetching solitudes"]);
     }
   };
+
+  const VercantTotalEstado = async (id) => {
+    try {
+      const res = await getVercantidadTotalEstados();
+      setCantidadEstados(res.data)
+    } catch (error) {
+      console.error("Error fetching solitudes:", error);
+      setErrors(["Error fetching solitudes"]);
+    }
+  };
+
 
   const actualizarSoliFolioExterno = async (id, datosSolicitud) => {
     try {
@@ -235,7 +262,7 @@ export function SoliProvider({ children }) {
     try {
       const res = await InformaciónDeLaOrden(id, observaciones);
       !res ? console.log("Error al crear el informe") : console.log("Informe creado con éxito")
-     
+
       return res.data
     } catch (error) {
       console.error("Error creating solicitud:", error);
@@ -390,6 +417,11 @@ export function SoliProvider({ children }) {
     <SoliContext.Provider
       value={{
         ObservacionesDelTenico,
+        ActualizarEstados,
+        estados,
+        verMisEstados,
+
+        cantidadestados, VercantTotalEstado,
         traeHistorialSoli,
         historialSoli,
         soli,
@@ -400,7 +432,6 @@ export function SoliProvider({ children }) {
         evaluarInfor,
         editarEstadoInfo,
         editarFirmas,
-        actializarSoliEstado,
         myFolioInterno,
         traeFolioInternoInforme,
         myFolioInternoInfo,

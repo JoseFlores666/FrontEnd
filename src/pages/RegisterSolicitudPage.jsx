@@ -33,7 +33,6 @@ export const RegisterSolicitudPage = () => {
   const duplicar = new URLSearchParams(location.search).get("duplicar");
 
   const [folioInterno, setFolioInterno] = useState("");
-  const [folioExterno, setFolioExterno] = useState("");
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -93,7 +92,6 @@ export const RegisterSolicitudPage = () => {
   const fetchProyecto = async () => {
     try {
       const datosSolicitud = {
-        folioExterno,
         fecha,
         suministro,
         pc,
@@ -136,7 +134,7 @@ export const RegisterSolicitudPage = () => {
       console.error("Error al obtener la solicitud:", error);
     }
   };
-  
+
   useEffect(() => {
     if (editar && unasoli || duplicar && unasoli) {
       console.log(unasoli)
@@ -260,7 +258,6 @@ export const RegisterSolicitudPage = () => {
 
   const limpiarDatos = () => {
     setTimeout(() => {
-      setFolioExterno("");
       setFecha(() => {
         const today = new Date();
         return today.toISOString().split("T")[0];
@@ -312,7 +309,6 @@ export const RegisterSolicitudPage = () => {
   const datosSolicitud = () => {
     return {
       id,
-      folioExterno,
       fecha,
       suministro,
       pc,
@@ -375,7 +371,7 @@ export const RegisterSolicitudPage = () => {
   const duplicarItem = async (index, e) => {
     e.preventDefault();
     const itemToDuplicate = items[index];
-    const duplicatedItem = { ...itemToDuplicate }; 
+    const duplicatedItem = { ...itemToDuplicate };
     const newItems = [...items, duplicatedItem];
     setItems(newItems);
   };
@@ -387,7 +383,7 @@ export const RegisterSolicitudPage = () => {
   };
 
   const subirDatos = (event) => {
-    event.preventDefault(); 
+    event.preventDefault();
     setIsOpen(false);
     navigate('/soli');
     const form = event.target;
@@ -413,7 +409,6 @@ export const RegisterSolicitudPage = () => {
         } else {
           descargarWORD();
         }
-        
       });
   };
 

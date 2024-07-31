@@ -2,12 +2,6 @@ import axios from "./axios";
 
 export const getSolitudes = async () => axios.get("/solicitud");
 
-export const getFiltroEstado = async (estado) =>
-  axios.get(`/solicitud/estado/${estado}`);
-
-export const actualizaEstado = async (id) =>
-  axios.put(`/solicitud/estado/${id}`);
-
 export const createSoli = async (soli) => axios.post(`/solicitud`, soli);
 
 export const updateSoli = async (id, datosSolicitud) =>
@@ -37,3 +31,14 @@ export const getUnProyectYAct = async (proyectoId, actividadId) =>
 
 //abonos
 export const putAbono = async (id, soli) => axios.put(`/abono/${id}`, soli);
+
+//estados
+export const getFiltroEstado = async (estado) =>
+  axios.get(`/solicitud/estado/${estado}`);
+
+export const getEstados = async () => axios.get(`/estados`);
+
+export const getVercantidadTotalEstados = async () => axios.get(`/estados/VercantidadTotal`);
+
+export const actualizaEstado = async ( EstadosAActualizar) =>
+  axios.put(`/estados/actualizar`, EstadosAActualizar);

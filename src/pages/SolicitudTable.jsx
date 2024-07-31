@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faFileAlt, faEdit, faTruck, faTimesCircle, faCopy, } from "@fortawesome/free-solid-svg-icons";
 import { ImFileEmpty } from "react-icons/im";
-import TablaVistaSolicitud from "./TablaVistaSolicitud";
+import { TablaVistaSolicitud } from "./TablaVistaSolicitud";
 
 export function SolicitudTable({ }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -18,7 +18,8 @@ export function SolicitudTable({ }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef(null);
 
-  const { soli, getSoli, deleteSolitud, actializarSoliEstado } = useSoli();
+  const { soli, getSoli, deleteSolitud, actializarUnEstado,
+    cantidadestados, VercantTotalEstado, verMisEstados, estados, } = useSoli();
 
   const [loading, setLoading] = useState(true);
   const [solicitudesFetched, setSolicitudesFetched] = useState(false);
@@ -34,19 +35,27 @@ export function SolicitudTable({ }) {
   };
 
   useEffect(() => {
+
+    const fetchSoliYEstados = async () => {
+      try {
+        await getSoli();
+        console.log(soli)
+        await verMisEstados();
+        setSolicitudesFetched(true);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching solicitudes:", error);
+      }
+    };
+
     if (!solicitudesFetched) {
-      const fetchSoli = async () => {
-        try {
-          await getSoli();
-          setSolicitudesFetched(true);
-          setLoading(false);
-        } catch (error) {
-          console.error("Error fetching solicitudes:", error);
-        }
-      };
-      fetchSoli();
+      fetchSoliYEstados();
     }
-  }, [solicitudesFetched, getSoli]);
+  }, [solicitudesFetched, getSoli, verMisEstados]);
+
+  const refetchData = async () => {
+    setSolicitudesFetched(false)
+  };
 
   const [filteredSolicitudes, setFilteredSolicitudes] = useState(soli);
 
@@ -133,13 +142,14 @@ export function SolicitudTable({ }) {
         // Actualizar el estado local de las solicitudes rechazadas
         setRejectedSolicitudes([...rejectedSolicitudes, solicitudToReject]);
 
-        await actializarSoliEstado(solicitudToReject);
+        await actializarUnEstado(solicitudToReject);
 
         await getSoli();
       }
       handleCloseModal();
     } catch (error) {
       console.error("Error updating solicitud state:", error);
+      alert("Hubo un error al rechazar la solicitud. Intenta nuevamente."); console.error("Error updating solicitud state:", error);
     }
   };
   // Listener para cerrar el modal al hacer clic fuera de él
@@ -156,10 +166,6 @@ export function SolicitudTable({ }) {
     };
   }, []);
 
-  const countSolicitudesByState = (solicitudes, state) => {
-    return solicitudes.filter(solicitud => solicitud.estado === state).length;
-  };
-
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -170,15 +176,6 @@ export function SolicitudTable({ }) {
       </div>
     );
   }
-
-  const data = {
-    nuevas: countSolicitudesByState(soli, 'Nueva'),
-    asignadas: countSolicitudesByState(soli, 'Asignada'),
-    pendientes: countSolicitudesByState(soli, 'Pendiente'),
-    completadas: countSolicitudesByState(soli, 'Completada'),
-    rechazadas: countSolicitudesByState(soli, 'Rechazada'),
-    total: soli.length
-  };
 
   return (
     <div className="overflow-x-auto p-4">
@@ -255,7 +252,7 @@ export function SolicitudTable({ }) {
                 {rejectedSolicitudes.includes(solicitud._id) ? (
                   <button className="text-red-500 border border-red-500 px-2 py-1 rounded-lg">Rechazado</button>
                 ) : (
-                  solicitud.estado
+                  solicitud.estado.nombre
                 )}
               </td>
               <td className="px-3 py-2 whitespace-normal break-words border border-gray-400 text-center">
@@ -377,10 +374,10 @@ export function SolicitudTable({ }) {
           className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
         >
           <div
-            className="bg-white p-6 rounded-lg shadow-lg relative absolute"
+            className="bg-white p-6 rounded-lg shadow-lg relative"
             onClick={(e) => e.stopPropagation()}
           >
-            <TablaVistaSolicitud data={data} />
+            <TablaVistaSolicitud data={estados} misSoli={soli} refetchData={refetchData} D />
             <button
               className="absolute top-2 right-2 text-red-500"
               onClick={cerrarModal}
