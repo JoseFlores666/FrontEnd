@@ -81,15 +81,22 @@ export function SolicitudTable({ }) {
 
   const [filteredSolicitudes, setFilteredSolicitudes] = useState(soli);
 
+<<<<<<< HEAD
+  const estadoRechazada = Array.isArray(estados) ? estados.find(estado => estado.id === 5) : null;
+=======
 
+>>>>>>> 4aaae3aa9bda69a31e56303b269c3528168a8d39
 
-  useEffect(() => {
+useEffect(() => {
+  if (estadoRechazada) {
     const rechazadasIds = soli.filter(solicitud =>
       solicitud.estado && solicitud.estado.id === estadoRechazada.id
     ).map(solicitud => solicitud._id);
 
     setRejectedSolicitudes(rechazadasIds);
-  }, [soli]);
+  }
+}, [soli, estadoRechazada]);
+
 
   useEffect(() => {
     const results = soli.filter((solicitud) =>

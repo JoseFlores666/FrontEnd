@@ -12,6 +12,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faClone } from '@fortawesome/free-solid-svg-icons';
 import "../css/Animaciones.css";
 import { AutocompleteInput } from "../components/ui/AutocompleteInput";
+import { GridContainer, Label, Title } from "../components/ui";
+
 
 export const RegisterSolicitudPage = () => {
   const navigate = useNavigate();
@@ -425,132 +427,125 @@ export const RegisterSolicitudPage = () => {
   };
 
   return (
-    <div className="mx-auto max-w-5xl p-4 text-black">
+    <div className="mx-auto max-w-6xl p-4 text-black">
       <form onSubmit={subirDatos} className="slide-down">
         <div className="bg-white p-6 rounded-md shadow-md">
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-center text-black">{editar ? "Actualizar Solicitud" : "Solicitud de Servicios y Bienes de Consumo Final"}</h2>
-          </div>
-          <div>
-            <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-4">
-              <div>
-                <label className="block text-sm font-bold mb-1">No. de folio:</label>
-                <input
-                  type="text"
-                  id="folio"
-                  name="folio"
-                  disabled
-                  className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                  value={folioInterno || ""}
-                  onChange={(e) => setFolioInterno(e.target.value)}
-                />
-              </div>
-              <div>
-                <label htmlFor="fecha" className="block text-sm font-bold mb-1">
-                  Selecciona la fecha:
-                </label>
-                <input
-                  type="date"
-                  id="fecha"
-                  name="fecha"
-                  required
-                  className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                  value={fecha || ""}
-                  onChange={(e) => setFecha(e.target.value)}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-bold mb-1">
-                  Tipo de Suministro:
-                </label>
-                <select
-                  id="suministro"
-                  name="suministro"
-                  required
-                  value={suministro || ""}
-                  className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                  onChange={(e) => setSuministro(e.target.value)}
-                >
-                  <option value="">Seleccione un suministro</option>
-                  <option value="Normal">Normal</option>
-                  <option value="Urgente">Urgente</option>
-                </select>
-              </div>
+          <Title>{editar ? "Actualizar Solicitud" : "Solicitud de Servicios y Bienes de Consumo Final"}</Title>
+          <GridContainer>
+            <div>
+              <Label>No. de folio:</Label>
+              <input
+                type="text"
+                id="folio"
+                name="folio"
+                disabled
+                className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                value={folioInterno || ""}
+                onChange={(e) => setFolioInterno(e.target.value)}
+              />
             </div>
-            <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-4">
-
-              <div>
-                <label className="block text-sm font-bold mb-1">
-                  Proceso Clave (PC):
-                </label>
-                <select
-                  id="PC"
-                  name="pc"
-                  required
-                  value={pc || ""}
-                  className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                  onChange={(e) => setPc(e.target.value)}
-                >
-                  <option value="">Seleccione el PC</option>
-                  <option value="Educativo">PC Educativo</option>
-                  <option value="Otro">Otro</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-bold mb-1">
-                  Proyecto:
-                </label>
-                <select
-                  id="proyecto"
-                  name="proyecto"
-                  required
-                  value={proyecto || ""}
-                  className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                  onChange={(e) => {
-                    {
-                      setProyecto(e.target.value);
-                      handleProyectoChange(e);
-                    }
-                    setFetchActivitiesFlag(true);
-                  }}
-                >
-                  <option value="">Seleccione el Proyecto</option>
-                  {ids.map((proyecto) => (
-                    <option key={proyecto._id} value={proyecto._id}>
-                      {proyecto.nombre}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-bold mb-1">
-                  Actividad:
-                </label>
-                <select
-                  id="actividad"
-                  required
-                  name="actividad"
-                  value={actividad || ""}
-                  className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                  onChange={(e) => {
-                    {
-                      setActividad(e.target.value);
-                      handleChangeActividad(e);
-                    }
-                  }}
-                >
-                  <option value="">Seleccione una Actividad</option>
-                  {idsAct.map((actividad) => (
-                    <option key={actividad._id} value={actividad._id}>
-                      {actividad.nombre}
-                    </option>
-                  ))}
-                </select>
-              </div>
+            <div>
+              <Label htmlFor="fecha">
+                Selecciona la fecha:
+              </Label>
+              <input
+                type="date"
+                id="fecha"
+                name="fecha"
+                required
+                className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                value={fecha || ""}
+                onChange={(e) => setFecha(e.target.value)}
+              />
             </div>
-            <input type="hidden" id="myProyectoInput" name="myProyecto" value={myProyecto_ || ""} />
-            <input type="hidden" id="myActividadInput" name="myActividad" value={myActividad_ || ""} />
-          </div>
+            <div>
+              <Label>
+                Tipo de Suministro:
+              </Label>
+              <select
+                id="suministro"
+                name="suministro"
+                required
+                value={suministro || ""}
+                className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                onChange={(e) => setSuministro(e.target.value)}
+              >
+                <option value="">Seleccione un suministro</option>
+                <option value="Normal">Normal</option>
+                <option value="Urgente">Urgente</option>
+              </select>
+            </div>
+          </GridContainer>
+          <GridContainer>
+            <div>
+              <Label>Proceso Clave (PC):</Label>
+              <select
+                id="PC"
+                name="pc"
+                required
+                value={pc || ""}
+                className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                onChange={(e) => setPc(e.target.value)}
+              >
+                <option value="">Seleccione el PC</option>
+                <option value="Educativo">PC Educativo</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </div>
+            <div>
+              <Label>
+                Proyecto:
+              </Label>
+              <select
+                id="proyecto"
+                name="proyecto"
+                required
+                value={proyecto || ""}
+                className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                onChange={(e) => {
+                  {
+                    setProyecto(e.target.value);
+                    handleProyectoChange(e);
+                  }
+                  setFetchActivitiesFlag(true);
+                }}
+              >
+                <option value="">Seleccione el Proyecto</option>
+                {ids.map((proyecto) => (
+                  <option key={proyecto._id} value={proyecto._id}>
+                    {proyecto.nombre}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <Label>
+                Actividad:
+              </Label>
+              <select
+                id="actividad"
+                required
+                name="actividad"
+                value={actividad || ""}
+                className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                onChange={(e) => {
+                  {
+                    setActividad(e.target.value);
+                    handleChangeActividad(e);
+                  }
+                }}
+              >
+                <option value="">Seleccione una Actividad</option>
+                {idsAct.map((actividad) => (
+                  <option key={actividad._id} value={actividad._id}>
+                    {actividad.nombre}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </GridContainer>
+          <input type="hidden" id="myProyectoInput" name="myProyecto" value={myProyecto_ || ""} />
+          <input type="hidden" id="myActividadInput" name="myActividad" value={myActividad_ || ""} />
           <div className="relative w-full">
             <table className="w-full caption-bottom text-sm border">
               <thead className="[&_tr]:border border-gray-400">
@@ -650,7 +645,7 @@ export const RegisterSolicitudPage = () => {
 
 
           <div className="mb-6">
-            <label className="block text-sm font-bold mb-1">Justificación para la adquisición:</label>
+            <Label>Justificación para la adquisición:</Label>
             <AutocompleteInput
               index={items.length}
               value={justificacion}
@@ -674,7 +669,7 @@ export const RegisterSolicitudPage = () => {
           <div>
             <div className="tablafirmas flex justify-between mt-5 text-black">
               <div className="columna w-1/4 text-center">
-                <label className="block text-sm font-bold mb-1">Solicitud</label>
+                <Label>Solicitud</Label>
                 <textarea
                   className="text-black text-center cursor-not-allowed w-full rounded-md resize-none"
                   id="solicitud"
@@ -687,8 +682,8 @@ export const RegisterSolicitudPage = () => {
                 <input type="hidden" name="solicitud" value={solicitante} />
               </div>
               <div className="columna w-1/4 text-center">
-                <label className="block text-sm font-bold mb-1">Revisión</label>
-                <label className="block text-sm font-bold mb-1">Jefe Inmediato:</label>
+                <Label>Revisión</Label>
+                <Label>Jefe Inmediato:</Label>
                 <textarea
                   className="text-black text-center cursor-not-allowed w-full rounded-md resize-none"
                   id="JefeInmediato"
@@ -701,8 +696,8 @@ export const RegisterSolicitudPage = () => {
                 <input type="hidden" name="JefeInmediato" value={jefeInmediato} />
               </div>
               <div className="columna w-1/4 text-center">
-                <label className="block text-sm font-bold mb-1">Validación:</label>
-                <label className="block text-sm font-bold mb-1">Dirección de Admón. y Finanzas:</label>
+                <Label>Validación:</Label>
+                <Label>Dirección de Admón. y Finanzas:</Label>
                 <textarea
                   className="text-black text-center cursor-not-allowed w-full rounded-md resize-none"
                   id="Validacion"
@@ -715,8 +710,8 @@ export const RegisterSolicitudPage = () => {
                 <input type="hidden" name="Validacion" value={dirrecion} />
               </div>
               <div className="columna w-1/4 text-center">
-                <label className="block text-sm font-bold mb-1">Autorizó</label>
-                <label className="block text-sm font-bold mb-1">Rectoría:</label>
+                <Label>Autorizó</Label>
+                <Label>Rectoría:</Label>
                 <textarea
                   id="Autorizo"
                   name="Autorizo"

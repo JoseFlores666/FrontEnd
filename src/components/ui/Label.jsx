@@ -1,7 +1,12 @@
-export function Label({ htmlFor, children }) {
+export function Label({ children, ...props }) {
   return (
-    <label htmlFor={htmlFor} className="text-base block my-1 text-black font-bold">
+    <label
+      className="block text-sm font-bold mb-1"
+      {...props}
+    >
       {children}
+
     </label>
+
   );
 }

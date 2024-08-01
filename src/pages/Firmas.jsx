@@ -2,11 +2,13 @@ import React, { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Swal from "sweetalert2";
-import { firmasSchema } from "../schemas/Firmas"; 
+import { firmasSchema } from "../schemas/Firmas";
 import "../css/solicitud.css";
 import { useSoli } from "../context/SolicitudContext";
 import "../css/Animaciones.css";
 import { AutocompleteInput } from '../components/ui/AutocompleteInput'
+import { Title } from "../components/ui";
+
 export const Firmas = () => {
   const {
     register,
@@ -68,9 +70,7 @@ export const Firmas = () => {
   return (
     <div className="flex items-center justify-center mx-auto max-w-7xl p-4 text-black" style={{ height: '90vh' }}>
       <div className="bg-white p-6 rounded-lg shadow-md border border-black slide-down">
-        <div className="flex items-center justify-center mb-6 w-full h-11 bg-green-600">
-          <h1 className="text-2xl font-bold text-white text-center">Editar Nombres</h1>
-        </div>
+        <Title>Editar Firmas</Title>
         <div>
           <form onSubmit={handleSubmit(guardarDatos)} >
             <div className="grid grid-cols-2 md:grid-cols-2 gap-6 mb-8 text-center">
@@ -163,7 +163,7 @@ export const Firmas = () => {
               <button
                 type="submit"
                 className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md border border-black"
-                >
+              >
                 Actualizar
               </button>
             </div>
