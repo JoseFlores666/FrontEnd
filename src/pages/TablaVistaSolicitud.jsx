@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useCallback,useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useSoli } from '../context/SolicitudContext';
 import Swal from "sweetalert2";
 
 export const TablaVistaSolicitud = ({ data, refetchData }) => {
-
     const { ActualizarEstados } = useSoli();
     const [datos, setDatos] = useState(data);
     const [isEditing, setIsEditing] = useState(false);
@@ -22,8 +21,8 @@ export const TablaVistaSolicitud = ({ data, refetchData }) => {
 
     useEffect(() => {
         setDatos(data);
-        setEditedData(data.slice());
-        datosRef.current = data.slice();
+        setEditedData(data.map(item => ({ ...item }))); // Copia profunda para edición
+        datosRef.current = data.map(item => ({ ...item }));
     }, [data]);
 
     const handleEditClick = useCallback(() => {
@@ -37,6 +36,8 @@ export const TablaVistaSolicitud = ({ data, refetchData }) => {
             if (res) {
                 Swal.fire("Datos guardados", res.mensaje, "success");
                 await refetchData();
+                setDatos(editedData.map(item => ({ ...item }))); // Sincroniza datos
+                datosRef.current = editedData.map(item => ({ ...item })); // Actualiza referencia
             }
         } catch (error) {
             console.error("Error actualizando estados:", error);
@@ -46,7 +47,7 @@ export const TablaVistaSolicitud = ({ data, refetchData }) => {
 
     const handleCancelClick = useCallback(() => {
         setIsEditing(false);
-        setEditedData(datosRef.current.slice());
+        setEditedData(datosRef.current.map(item => ({ ...item })));
     }, []);
 
     const handleChange = useCallback((index, e) => {
@@ -57,7 +58,6 @@ export const TablaVistaSolicitud = ({ data, refetchData }) => {
             return newData;
         });
     }, []);
-
 
     return (
         <div>
@@ -142,7 +142,7 @@ export const TablaVistaSolicitud = ({ data, refetchData }) => {
                         onClick={handleEditClick}
                         className="bg-blue-500 text-white px-4 py-2 rounded"
                     >
-                        <FontAwesomeIcon icon={faEdit} />
+                        <FontAwesomeIcon icon={faEdit} /> Editar
                     </button>
                 )}
             </div>
