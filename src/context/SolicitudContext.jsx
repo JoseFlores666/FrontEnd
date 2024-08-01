@@ -85,9 +85,9 @@ export function SoliProvider({ children }) {
     }
   };
 
-  const deleteSolitud = async (id) => {
-    try {
-      const res = await deleteSoli(id);
+  const deleteSolitud = async (id, user) => {
+    try { 
+      const res = await deleteSoli(id, user);
       return res;
     } catch (error) {
       console.error("Error fetching solitudes:", error);
@@ -433,7 +433,8 @@ export function SoliProvider({ children }) {
         cantidadestados, VercantTotalEstado,
         traeHistorialSoli,
         historialSoli,
-        soli, declinarmySoi,
+        soli,
+        declinarmySoi,
         traerEncabezado, encabezado,
         actualizarSoliFolioExterno,
         traeUnaInfo,

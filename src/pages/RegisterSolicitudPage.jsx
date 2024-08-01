@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSoliSchema } from "../schemas/registerSoliPage";
 import { useSoli } from "../context/SolicitudContext";
+import { useAuth } from "../context/authContext";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import imgPDF from '../img/imagenPDF.png';
@@ -64,6 +65,7 @@ export const RegisterSolicitudPage = () => {
 
   const { crearmySoli, getIdsProyect, ids, getIdsProyectYAct, idsAct = [], unasoli, traeFolioInterno, myFolioInterno, actializarSoli, getunSolitud, getFirmas, nombresFirmas, } = useSoli();
   const { traeHistorialSoli, historialSoli, } = useSoli();
+  const { user } = useAuth();
 
   const handleCloseModal = () => {
     setIsOpen(false);
@@ -100,7 +102,7 @@ export const RegisterSolicitudPage = () => {
         proyecto,
         actividad,
         justificacion,
-        items,
+        items, user
       };
 
       console.log(datosSolicitud);
