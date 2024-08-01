@@ -81,10 +81,6 @@ export function SolicitudTable({ }) {
 
   const [filteredSolicitudes, setFilteredSolicitudes] = useState(soli);
 
-<<<<<<< HEAD
-
-=======
->>>>>>> c8883812ad2a59b3f233cc82a3a9c332a81459a0
 useEffect(() => {
   if (estadoRechazada) {
     const rechazadasIds = soli.filter(solicitud =>
