@@ -60,17 +60,20 @@ export function SolicitudTable({ }) {
 
     if (!solicitudesFetched) {
       fetchSoliYEstados();
-      traerEstados()
     }
   }, [solicitudesFetched, getSoli, verMisEstados]);
 
-  const traerEstados = async () => {
-    setEstadoInicial(estados.find(estado => estado.id === 1));
-    setEstadoConfolio(estados.find(estado => estado.id === 2));
-    setEstadoAbonando(estados.find(estado => estado.id === 3));
-    setEstadoCompletado(estados.find(estado => estado.id === 4));
-    setEstadoRechazada(estados.find(estado => estado.id === 5));
-  };
+  useEffect(() => {
+    if (Array.isArray(estados)) {
+      setEstadoInicial(estados.find(estado => estado.id === 1));
+      setEstadoConfolio(estados.find(estado => estado.id === 2));
+      setEstadoAbonando(estados.find(estado => estado.id === 3));
+      setEstadoCompletado(estados.find(estado => estado.id === 4));
+      setEstadoRechazada(estados.find(estado => estado.id === 5));
+    } else {
+      console.error("estados no es un array:", estados);
+    }
+  }, [estados]);
 
   const refetchData = async () => {
     setSolicitudesFetched(false)
@@ -166,15 +169,14 @@ export function SolicitudTable({ }) {
         // Actualizar el estado local de las solicitudes rechazadas
         setRejectedSolicitudes([...rejectedSolicitudes, solicitudToReject]);
 
-        console.log(solicitudToReject)
-        await declinarmySoi(solicitudToReject);
-
+        await declinarmySoi(solicitudToReject, user);
         await getSoli();
       }
       handleCloseModal();
     } catch (error) {
       console.error("Error updating solicitud state:", error);
-      alert("Hubo un error al rechazar la solicitud. Intenta nuevamente."); console.error("Error updating solicitud state:", error);
+      alert("Hubo un error al rechazar la solicitud. Intenta nuevamente.");
+      console.error("Error updating solicitud state:", error);
     }
   };
   // Listener para cerrar el modal al hacer clic fuera de él
@@ -318,13 +320,13 @@ export function SolicitudTable({ }) {
                       <FontAwesomeIcon icon={faCopy} />
                     </Link>
                     <Link
-                      to={`/historial`}
+                      to={`/historial/${solicitud._id}`}
                       className="text-blue-600 hover:text-blue-800"
                     >
                       <FontAwesomeIcon icon={faHistory} />
                     </Link>
                     <button
-                      onClick={() => handleOpenModal(solicitud._id)}
+                      onClick={() => handleOpenModal(solicitud._id, user)}
                       className="text-red-500 border border-red-500 px-2 y-1 rounded-lg"
                     >
                       <FontAwesomeIcon icon={faTimesCircle} />

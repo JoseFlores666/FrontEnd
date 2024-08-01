@@ -1,17 +1,40 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-<<<<<<< HEAD
-=======
+import { useSoli } from '../context/SolicitudContext'
 import { ImFileEmpty } from "react-icons/im";
 import { TablaVistaSolicitud } from "./TablaVistaSolicitud";
->>>>>>> 582397c9d3a2c362ae03e767070ee2dcae2c75e9
+import { useParams } from "react-router-dom";
 
 export function Historial() {
+
+    const { id } = useParams();
+
     const [searchTerm, setSearchTerm] = useState("");
     const [solicitudesPerPage, setSolicitudesPerPage] = useState(10);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [cargarDatos, setDatosCargados] = useState(false);
+
+    const { historialUnaSoli,
+        traehisorialDeUnaSoli, } = useSoli();
+
     const modalRef = useRef(null);
+
+    useEffect(() => {
+        const iniciarDatos = async () => {
+            try {
+                await traehisorialDeUnaSoli(id);
+                console.log(historialUnaSoli)
+                setDatosCargados(true);
+            } catch (error) {
+                console.error("Error al cargar los datos", error);
+            }
+        };
+        if (!cargarDatos) {
+            iniciarDatos();
+        }
+    }, [cargarDatos, traehisorialDeUnaSoli, historialUnaSoli]);
+
 
     const abrirModal = () => {
         setIsModalOpen(true);

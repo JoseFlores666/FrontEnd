@@ -309,8 +309,9 @@ export const RegisterSolicitudPage = () => {
   };
 
   const datosSolicitud = () => {
+
     return {
-      id,
+      id, user,
       fecha,
       suministro,
       pc,
@@ -323,7 +324,7 @@ export const RegisterSolicitudPage = () => {
 
   const guardarActualizacion = () => {
     const solicitud = datosSolicitud();
-    console.log(solicitud);
+    console.log(solicitud)
     actializarSoli(id, solicitud);
 
     Swal.fire({
