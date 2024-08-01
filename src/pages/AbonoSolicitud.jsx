@@ -307,9 +307,9 @@ export const AbonoSolicitud = () => {
                             <div className="flex justify-center mt-8">
                                 <button
                                     type="submit"
-                                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md border border-black"
-                                >
-                                    Actualizar
+                                    className="bg-green-500 hover:bg-green-700 text-white font-bold mt px-6 py-3 rounded-md border border-black"
+                                    >
+                                  Realizar Entregar
                                 </button>
                             </div>
                         )}
