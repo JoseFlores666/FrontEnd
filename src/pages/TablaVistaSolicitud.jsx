@@ -1,16 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback,useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useSoli } from '../context/SolicitudContext';
 import Swal from "sweetalert2";
 
 export const TablaVistaSolicitud = ({ data, refetchData }) => {
+
     const { ActualizarEstados } = useSoli();
     const [datos, setDatos] = useState(data);
     const [isEditing, setIsEditing] = useState(false);
     const [editedData, setEditedData] = useState([]);
     const [año, setAño] = useState("");
     const [mes, setMes] = useState("");
+
+    const datosRef = useRef([]);
 
     const meses = [
         "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
@@ -19,39 +22,42 @@ export const TablaVistaSolicitud = ({ data, refetchData }) => {
 
     useEffect(() => {
         setDatos(data);
-        setEditedData(data.map(estado => ({ ...estado })));
+        setEditedData(data.slice());
+        datosRef.current = data.slice();
     }, [data]);
 
-    const handleEditClick = () => {
+    const handleEditClick = useCallback(() => {
         setIsEditing(true);
-    };
+    }, []);
 
-    const handleSaveClick = async () => {
+    const handleSaveClick = useCallback(async () => {
         setIsEditing(false);
-
         try {
             const res = await ActualizarEstados(editedData);
             if (res) {
                 Swal.fire("Datos guardados", res.mensaje, "success");
+                await refetchData();
             }
-            await refetchData();
-            setDatos(data);
         } catch (error) {
             console.error("Error actualizando estados:", error);
+            Swal.fire("Error", "No se pudieron guardar los datos. Inténtalo nuevamente.", "error");
         }
-    };
+    }, [ActualizarEstados, editedData, refetchData]);
 
-    const handleCancelClick = () => {
+    const handleCancelClick = useCallback(() => {
         setIsEditing(false);
-        setEditedData(datos.map(estado => ({ ...estado })));
-    };
+        setEditedData(datosRef.current.slice());
+    }, []);
 
-    const handleChange = (index, e) => {
+    const handleChange = useCallback((index, e) => {
         const { value } = e.target;
-        const newEditedData = [...editedData];
-        newEditedData[index] = { ...newEditedData[index], nombre: value };
-        setEditedData(newEditedData);
-    };
+        setEditedData(prevData => {
+            const newData = [...prevData];
+            newData[index] = { ...newData[index], nombre: value };
+            return newData;
+        });
+    }, []);
+
 
     return (
         <div>
