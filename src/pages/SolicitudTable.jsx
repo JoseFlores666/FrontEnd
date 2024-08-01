@@ -72,6 +72,12 @@ export function SolicitudTable({ }) {
       setEstadoRechazada(estados.find(estado => estado.id === 5));
     } else {
       console.error("estados no es un array:", estados);
+      setEstadoInicial({});
+      setEstadoConfolio({});
+      setEstadoAbonando({});
+      setEstadoCompletado({});
+      setEstadoRechazada({});
+
     }
   }, [estados]);
 
@@ -81,15 +87,15 @@ export function SolicitudTable({ }) {
 
   const [filteredSolicitudes, setFilteredSolicitudes] = useState(soli);
 
-useEffect(() => {
-  if (estadoRechazada) {
-    const rechazadasIds = soli.filter(solicitud =>
-      solicitud.estado && solicitud.estado.id === estadoRechazada.id
-    ).map(solicitud => solicitud._id);
+  useEffect(() => {
+    if (estadoRechazada) {
+      const rechazadasIds = soli.filter(solicitud =>
+        solicitud.estado && solicitud.estado.id === estadoRechazada.id
+      ).map(solicitud => solicitud._id);
 
-    setRejectedSolicitudes(rechazadasIds);
-  }
-}, [soli, estadoRechazada]);
+      setRejectedSolicitudes(rechazadasIds);
+    }
+  }, [soli, estadoRechazada]);
 
 
   useEffect(() => {
