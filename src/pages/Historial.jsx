@@ -174,12 +174,12 @@ export function Historial() {
                     {filteredHistorial.length > 0 ? filteredHistorial.slice(0, solicitudesPerPage).map((historial, index) => (
                         <tr key={index}>
                             <td className="text-center border p-2">{historial.user.username}</td>
-                            <td className="text-center border p-2">{historial.movimiento}</td>
+                            <td className="text-center border p-2">{historial.accion}</td>
                             <td className="text-center border p-2">{new Date(historial.fecha).toLocaleDateString()}</td>
                             <td className="text-center border p-2">{new Date(historial.fecha).toLocaleTimeString()}</td>
-                            <td className="text-center border p-2">{historial.no_solicitud}</td>
+                            <td className="text-center border p-2">{historial.numeroDeSolicitud.folio}</td>
                             <td className="text-center border p-2">{historial.folio}</td>
-                            <td className="text-center border p-2">{historial.numeroDeEntregas}</td>
+                            <td className="text-center border p-2">{historial.numeroDeEntrega}</td>
                             <td className="text-center border p-2">{historial.descripcion}</td>
                             <td className="text-center border p-2">
                                 <button className="text-red-600" onClick={abrirModal}>
@@ -217,18 +217,28 @@ export function Historial() {
                         ref={modalRef}
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <h3 className="text-lg font-semibold mb-4">Selecciona un Movimiento</h3>
-                        <ul>
-                            <li><button onClick={() => setSelectedFiltro("Movimiento1")}>Movimiento1</button></li>
-                            <li><button onClick={() => setSelectedFiltro("Movimiento2")}>Movimiento2</button></li>
-                            <li><button onClick={() => setSelectedFiltro("Movimiento3")}>Movimiento3</button></li>
-                            <li><button onClick={() => setSelectedFiltro("Movimiento4")}>Movimiento4</button></li>
-                        </ul>
+                        <label htmlFor="filtro-movimiento" className="mr-2 text-white">Movimiento:</label>
+                        <select
+                            id="filtro-movimiento"
+                            className="p-1 border border-black rounded-lg text-black"
+                            value={selectedFiltro}
+                            onChange={(e) => setSelectedFiltro(e.target.value)}
+                        >
+                            <option value="">Todos</option>
+                            <option value="Entrega de materiales en la solicitud">Entrega de materiales en la solicitud</option>
+                            <option value="Creación de la solicitud">Creación de la solicitud</option>
+                            <option value="Eliminación de la solicitud">Eliminación de la solicitud</option>
+                            <option value="Actualización de la solicitud">Actualización de la solicitud</option>
+                            <option value="Asignación del folio">Asignación del folio</option>
+                            <option value="Rechazo de la solicitud">Rechazo de la solicitud</option>
+                        </select>
+                  
                         <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg" onClick={aplicarFiltro}>Aplicar Filtro</button>
                         <button className="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg" onClick={cerrarModalFiltro}>Cerrar</button>
                     </div>
                 </div>
-            )}
-        </div>
+            )
+            }
+        </div >
     );
 }
