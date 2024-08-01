@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSoli } from "../context/SolicitudContext";
+import { useAuth } from "../context/authContext";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faFileAlt, faEdit, faTruck, faTimesCircle, faCopy, faHistory } from "@fortawesome/free-solid-svg-icons";
@@ -18,13 +19,21 @@ export function SolicitudTable({ }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef(null);
 
-  const { soli, getSoli, deleteSolitud, declinarmySoi,
-    cantidadestados, VercantTotalEstado, verMisEstados, estados, } = useSoli();
+  const { soli, getSoli, deleteSolitud, declinarmySoi, cantidadestados, VercantTotalEstado, verMisEstados, estados, } = useSoli();
+  const { user } = useAuth();
 
   const [loading, setLoading] = useState(true);
   const [solicitudesFetched, setSolicitudesFetched] = useState(false);
-
   const [isModalOpen2, setIsModalOpen2] = useState(false);
+
+  //estados
+  const [estadoInicial, setEstadoInicial] = useState(false);
+  const [estadoConfolio, setEstadoConfolio] = useState(false);
+  const [estadoAbonando, setEstadoAbonando] = useState(false);
+  const [estadoCompletado, setEstadoCompletado] = useState(false);
+  const [estadoRechazada, setEstadoRechazada] = useState(false);
+
+
 
   const abrirModal = () => {
     setIsModalOpen2(true);
@@ -51,8 +60,17 @@ export function SolicitudTable({ }) {
 
     if (!solicitudesFetched) {
       fetchSoliYEstados();
+      traerEstados()
     }
   }, [solicitudesFetched, getSoli, verMisEstados]);
+
+  const traerEstados = async () => {
+    setEstadoInicial(estados.find(estado => estado.id === 1));
+    setEstadoConfolio(estados.find(estado => estado.id === 2));
+    setEstadoAbonando(estados.find(estado => estado.id === 3));
+    setEstadoCompletado(estados.find(estado => estado.id === 4));
+    setEstadoRechazada(estados.find(estado => estado.id === 5));
+  };
 
   const refetchData = async () => {
     setSolicitudesFetched(false)
@@ -60,7 +78,7 @@ export function SolicitudTable({ }) {
 
   const [filteredSolicitudes, setFilteredSolicitudes] = useState(soli);
 
-  const estadoRechazada = estados.find(estado => estado.id === 5);
+
 
   useEffect(() => {
     const rechazadasIds = soli.filter(solicitud =>
@@ -122,9 +140,10 @@ export function SolicitudTable({ }) {
     setSearchTerm("");
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id, user) => {
     try {
-      await deleteSolitud(id);
+
+      await deleteSolitud(id, user);
       await getSoli();
     } catch (error) {
       console.error("Error deleting solicitud:", error);
@@ -267,7 +286,7 @@ export function SolicitudTable({ }) {
                 ) : (
                   <div className="flex justify-center items-center space-x-2">
                     <button
-                      onClick={() => handleDelete(solicitud._id)}
+                      onClick={() => handleDelete(solicitud._id, user)}
                       className="text-red-500 hover"
                     >
                       <FontAwesomeIcon icon={faTrash} />
@@ -284,12 +303,14 @@ export function SolicitudTable({ }) {
                     >
                       <FontAwesomeIcon icon={faFileAlt} />
                     </Link>
-                    <Link
-                      to={`/soli/abonar/${solicitud._id}?`}
-                      className="text-green-600 hover:text-green-800"
-                    >
-                      <FontAwesomeIcon icon={faTruck} />
-                    </Link>
+                    {solicitud.estado.id !== estadoInicial.id && (
+                      <Link
+                        to={`/soli/abonar/${solicitud._id}?`}
+                        className="text-green-600 hover:text-green-800"
+                      >
+                        <FontAwesomeIcon icon={faTruck} />
+                      </Link>
+                    )}
                     <Link
                       to={`/soli/registro/${solicitud._id}?duplicar=true`}
                       className="text-blue-600 hover:text-blue-800"
@@ -359,45 +380,49 @@ export function SolicitudTable({ }) {
           </li>
         </ul>
       </nav>
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-          <div className="bg-white text-black p-8 rounded-lg shadow-lg max-w-md w-full" ref={modalRef}>
-            <h2 className="text-xl font-semibold mb-6">Confirmar Rechazo</h2>
-            <p className="mb-6 text-gray-600">¿Estás seguro que deseas rechazar esta solicitud?</p>
-            <div className="flex justify-end space-x-4">
-              <button
-                className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors duration-300"
-                onClick={handleCloseModal}
-              >
-                Cancelar
-              </button>
-              <button
-                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors duration-300"
-                onClick={handleReject}
-              >
-                Confirmar
-              </button>
+      {
+        isModalOpen && (
+          <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+            <div className="bg-white text-black p-8 rounded-lg shadow-lg max-w-md w-full" ref={modalRef}>
+              <h2 className="text-xl font-semibold mb-6">Confirmar Rechazo</h2>
+              <p className="mb-6 text-gray-600">¿Estás seguro que deseas rechazar esta solicitud?</p>
+              <div className="flex justify-end space-x-4">
+                <button
+                  className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors duration-300"
+                  onClick={handleCloseModal}
+                >
+                  Cancelar
+                </button>
+                <button
+                  className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors duration-300"
+                  onClick={handleReject}
+                >
+                  Confirmar
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-      {isModalOpen2 && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
-        >
+        )
+      }
+      {
+        isModalOpen2 && (
           <div
-            className="bg-white p-6 rounded-lg shadow-lg relative"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
           >
-            <TablaVistaSolicitud data={estados} misSoli={soli} refetchData={refetchData} D />
-            <button
-              className="absolute top-2 right-2 text-red-500"
-              onClick={cerrarModal}
+            <div
+              className="bg-white p-6 rounded-lg shadow-lg relative"
+              onClick={(e) => e.stopPropagation()}
             >
-              X
-            </button>
-          </div>
-        </div>)}
+              <TablaVistaSolicitud data={estados} misSoli={soli} refetchData={refetchData} D />
+              <button
+                className="absolute top-2 right-2 text-red-500"
+                onClick={cerrarModal}
+              >
+                X
+              </button>
+            </div>
+          </div>)
+      }
     </div >
   );
 }

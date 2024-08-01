@@ -10,8 +10,10 @@ export const updateSoli = async (id, datosSolicitud) =>
 export const updateSoliFolioExterno = async (id, datosSolicitud) =>
   axios.put(`/solicitud/folioExterno/${id}`, datosSolicitud);
 
-export const deleteSoli = async (id) =>
-  axios.delete(`/solicitud/eliminar/${id}`);
+export const deleteSoli = async (id, user) =>
+  axios.delete(`/solicitud/eliminar/${id}`, {
+    data: { user },
+  });
 
 export const getUnaSoli = async (id) => axios.get(`/solicitud/${id}`);
 
@@ -38,10 +40,10 @@ export const getFiltroEstado = async (estado) =>
 
 export const getEstados = async () => axios.get(`/estados`);
 
-export const getVercantidadTotalEstados = async () => axios.get(`/estados/VercantidadTotal`);
+export const getVercantidadTotalEstados = async () =>
+  axios.get(`/estados/VercantidadTotal`);
 
-export const actualizaEstado = async ( EstadosAActualizar) =>
+export const actualizaEstado = async (EstadosAActualizar) =>
   axios.put(`/estados/actualizar`, EstadosAActualizar);
 
-export const declinarSoli = async ( id) =>
-  axios.put(`/solicitud/estado/${id}`);
+export const declinarSoli = async (id) => axios.put(`/solicitud/estado/${id}`);
