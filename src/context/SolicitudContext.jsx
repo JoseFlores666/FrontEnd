@@ -12,7 +12,7 @@ import {
   nombreFirmas, editarNombreFirmas, putAbono,
   updateSoliFolioExterno, getEstados, actualizaEstado,
   getVercantidadTotalEstados, declinarSoli,
-  hisorialSolicitud, hisorialDeUnaSoli
+  hisorialSolicitud, hisorialDeUnaSoli, deleteUnHistorialSoli,
 } from "../api/soli";
 import {
   getInfome, createInfome, deleteInfome, llenadoDEPInforme, getUnaInfome,
@@ -144,6 +144,15 @@ export function SoliProvider({ children }) {
   const declinarmySoi = async (id, user) => {
     try {
       const res = await declinarSoli(id, user);
+      return res;
+    } catch (error) {
+      console.error("Error creating solicitud:", error);
+      setErrors(["Error creating solicitud"]);
+    }
+  };
+  const eliminarUnHistorialSoli = async (id, data) => {
+    try {
+      const res = await deleteUnHistorialSoli(id, data);
       return res;
     } catch (error) {
       console.error("Error creating solicitud:", error);
@@ -450,6 +459,7 @@ export function SoliProvider({ children }) {
         ObservacionesDelTenico,
         ActualizarEstados,
         estados,
+        eliminarUnHistorialSoli,
         historialUnaSoli,
         traehisorialDeUnaSoli,
         verMisEstados,
