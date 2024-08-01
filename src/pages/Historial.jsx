@@ -1,30 +1,31 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { useSoli } from '../context/SolicitudContext'
-import { ImFileEmpty } from "react-icons/im";
-import { TablaVistaSolicitud } from "./TablaVistaSolicitud";
+import { useSoli } from '../context/SolicitudContext';
 import { useParams } from "react-router-dom";
 
 export function Historial() {
-
     const { id } = useParams();
-
     const [searchTerm, setSearchTerm] = useState("");
     const [solicitudesPerPage, setSolicitudesPerPage] = useState(10);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [cargarDatos, setDatosCargados] = useState(false);
 
-    const { historialUnaSoli,
-        traehisorialDeUnaSoli, } = useSoli();
+    const [filtroAno, setFiltroAno] = useState("");
+    const [filtroMes, setFiltroMes] = useState("");
+    const [filtroDia, setFiltroDia] = useState("");
 
+    const [isFiltroModalOpen, setIsFiltroModalOpen] = useState(false);
+    const [selectedFiltro, setSelectedFiltro] = useState("");
+
+    const { historialUnaSoli, traehisorialDeUnaSoli } = useSoli();
     const modalRef = useRef(null);
 
     useEffect(() => {
         const iniciarDatos = async () => {
             try {
                 await traehisorialDeUnaSoli(id);
-                console.log(historialUnaSoli)
+                console.log(historialUnaSoli);
                 setDatosCargados(true);
             } catch (error) {
                 console.error("Error al cargar los datos", error);
@@ -33,8 +34,19 @@ export function Historial() {
         if (!cargarDatos) {
             iniciarDatos();
         }
-    }, [cargarDatos, traehisorialDeUnaSoli, historialUnaSoli]);
+    }, [cargarDatos, traehisorialDeUnaSoli, id]);
 
+    const abrirModalFiltro = () => {
+        setIsFiltroModalOpen(true);
+    };
+
+    const cerrarModalFiltro = () => {
+        setIsFiltroModalOpen(false);
+    };
+
+    const aplicarFiltro = () => {
+        setIsFiltroModalOpen(false);
+    };
 
     const abrirModal = () => {
         setIsModalOpen(true);
@@ -46,11 +58,30 @@ export function Historial() {
 
     const clearSearch = () => {
         setSearchTerm("");
+        setFiltroAno("");
+        setFiltroMes("");
+        setFiltroDia("");
     };
+
+    const filteredHistorial = historialUnaSoli.filter(historial => {
+        const fecha = new Date(historial.fecha);
+        const año = fecha.getFullYear().toString();
+        const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+        const dia = fecha.getDate().toString().padStart(2, '0');
+
+        return (
+            (searchTerm === "" || historial.user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                historial.folio.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                historial.descripcion.toLowerCase().includes(searchTerm.toLowerCase())) &&
+            (filtroAno === "" || año === filtroAno) &&
+            (filtroMes === "" || mes === filtroMes) &&
+            (filtroDia === "" || dia === filtroDia)
+        );
+    });
 
     return (
         <div className="overflow-x-auto p-4">
-            <div className="mb-1 flex justify-between items-center">
+            <div className="mb-8 flex justify-between items-center">
                 <div className="relative">
                     <div className="relative">
                         <div className="absolute inset-y-0 left-0 flex items-center ps-3 pointer-events-none">
@@ -94,81 +125,107 @@ export function Historial() {
                     </select>
                 </div>
             </div>
+            <div className="mb-4">
+                <label htmlFor="filtro-ano" className="mr-2 text-white">Año:</label>
+                <input
+                    type="text"
+                    id="filtro-ano"
+                    className="p-1 border border-black rounded-lg text-black"
+                    value={filtroAno}
+                    onChange={(e) => setFiltroAno(e.target.value)}
+                    placeholder="YYYY"
+                />
+                <label htmlFor="filtro-mes" className="mr-2 text-white ml-4">Mes:</label>
+                <input
+                    type="text"
+                    id="filtro-mes"
+                    className="p-1 border border-black rounded-lg text-black"
+                    value={filtroMes}
+                    onChange={(e) => setFiltroMes(e.target.value)}
+                    placeholder="MM"
+                />
+                <label htmlFor="filtro-dia" className="mr-2 text-white ml-4">Día:</label>
+                <input
+                    type="text"
+                    id="filtro-dia"
+                    className="p-1 border border-black rounded-lg text-black"
+                    value={filtroDia}
+                    onChange={(e) => setFiltroDia(e.target.value)}
+                    placeholder="DD"
+                />
+
+                <button onClick={abrirModalFiltro} className="px-4 py-2 bg-blue-500 text-white rounded-lg">Filtrar Movimientos</button>
+            </div>
             <table className="w-full min-w-full divide-y divide-white-200 text-sm text-black rounded-lg overflow-hidden">
                 <thead className="bg-black text-white">
                     <tr>
-                        <th className="text-left font-medium border text-center cursor-pointer w-1/12">USUARIO</th>
-                        <th className="text-left font-medium border text-center cursor-pointer w-1/12">FECHA</th>
-                        <th className="text-left font-medium border text-center cursor-pointer w-1/12">HORA</th>
-                        <th className="text-left font-medium border text-center cursor-pointer w-1/12">NO. DE SOLICITUD</th>
-                        <th className="text-left font-medium border text-center w-1/12">FOLIO</th>
-                        <th className="text-left font-medium border text-center w-1/12">NÚMERO DE ENTREGAS</th>
-                        <th className="text-left font-medium border text-center cursor-pointer w-2/12">DESCRIPCIÓN</th>
-                        <th className="text-left font-medium border text-center w-1/12">ACCIONES</th>
+                        <th className="font-medium border text-center cursor-pointer w-1/12">USUARIO</th>
+                        <th className="font-medium border text-center w-1/12">MOVIMIENTO</th>
+                        <th className="font-medium border text-center cursor-pointer w-1/12">FECHA</th>
+                        <th className="font-medium border text-center cursor-pointer w-1/12">HORA</th>
+                        <th className="font-medium border text-center cursor-pointer w-1/12">NO. DE SOLICITUD</th>
+                        <th className="font-medium border text-center w-1/12">FOLIO</th>
+                        <th className="font-medium border text-center w-1/12">NÚMERO DE ENTREGAS</th>
+                        <th className="font-medium border text-center cursor-pointer w-2/12">DESCRIPCIÓN</th>
+                        <th className="font-medium border text-center w-1/12">ACCIONES</th>
                     </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-black">
-                    <tr>
-                        <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">Ejemplo Usuario</td>
-                        <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">01/01/2024</td>
-                        <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">12:00 PM</td>
-                        <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">12345</td>
-                        <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">Folio Ejemplo</td>
-                        <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">3</td>
-                        <td className="px-3 py-2 whitespace-normal break-words border border-gray-400 text-center">Descripción Ejemplo</td>
-                        <td className="px-3 py-2 whitespace-normal break-words border border-gray-400 text-center">
-                            <div className="flex justify-center items-center space-x-2">
-                                <button onClick={abrirModal} className="text-red-500 hover">
+                    {filteredHistorial.length > 0 ? filteredHistorial.slice(0, solicitudesPerPage).map((historial, index) => (
+                        <tr key={index}>
+                            <td className="text-center border p-2">{historial.user.username}</td>
+                            <td className="text-center border p-2">{historial.movimiento}</td>
+                            <td className="text-center border p-2">{new Date(historial.fecha).toLocaleDateString()}</td>
+                            <td className="text-center border p-2">{new Date(historial.fecha).toLocaleTimeString()}</td>
+                            <td className="text-center border p-2">{historial.no_solicitud}</td>
+                            <td className="text-center border p-2">{historial.folio}</td>
+                            <td className="text-center border p-2">{historial.numeroDeEntregas}</td>
+                            <td className="text-center border p-2">{historial.descripcion}</td>
+                            <td className="text-center border p-2">
+                                <button className="text-red-600" onClick={abrirModal}>
                                     <FontAwesomeIcon icon={faTrash} />
                                 </button>
-                            </div>
-                        </td>
-                    </tr>
+
+                            </td>
+                        </tr>
+                    )) : (
+                        <tr>
+                            <td colSpan="9" className="text-center border p-2">No hay registros</td>
+                        </tr>
+                    )}
                 </tbody>
             </table>
-            <nav className="flex items-center justify-between pt-2">
-                <span className="text-sm font-normal text-white dark:text-black-400">
-                    Mostrando 1-10 Total de Movimientos: <span className="font-semibold text-white dark:text-white">0</span>
-                </span>
-                <ul className="inline-flex items-center h-8 text-sm">
-                    <li>
-                        <button
-                            className="flex items-center justify-center px-3 h-8 leading-tight text-gray-400 border-gray-400 cursor-not-allowed"
-                        >
-                            <span className="sr-only">Previous</span>
-                            <svg className="w-2.5 h-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 1 1 5l4 4" />
-                            </svg>
-                        </button>
-                    </li>
-                    <li>
-                        <button
-                            className="flex items-center justify-center px-3 h-8 leading-tight text-black border border-black bg-blue-400 hover:bg-blue hover:text-black"
-                        >
-                            1
-                        </button>
-                    </li>
-                    <li>
-                        <button
-                            className="flex items-center justify-center px-3 h-8 leading-tight text-gray-400 border-gray-400 cursor-not-allowed"
-                        >
-                            <span className="sr-only">Next</span>
-                            <svg className="w-2.5 h-2.5 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 9 4-4-4-4" />
-                            </svg>
-                        </button>
-                    </li>
-                </ul>
-            </nav>
             {isModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-                    <div className="bg-white text-black p-8 rounded-lg shadow-lg">
-                        <h2 className="text-lg font-semibold">Eliminar Solicitud</h2>
-                        <p>¿Estás seguro de que deseas eliminar esta solicitud?</p>
-                        <div className="mt-4 flex justify-end">
-                            <button className="px-4 py-2 bg-blue-500 text-white rounded-lg mr-2" onClick={cerrarModal}>Cancelar</button>
-                            <button className="px-4 py-2 bg-red-500 text-white rounded-lg" onClick={cerrarModal}>Eliminar</button>
+                <div ref={modalRef} className="fixed inset-0 flex text-black items-center justify-center z-50">
+                    <div className="bg-white p-8 rounded-lg shadow-lg w-80">
+                        <h2 className="text-lg font-bold">Confirmar Acción</h2>
+                        <p>¿Estás seguro de que quieres eliminar este registro?</p>
+                        <div className="mt-4 flex justify-between">
+                            <button onClick={cerrarModal} className="px-4 py-2 bg-gray-500 text-white rounded-lg">Cancelar</button>
+                            <button className="px-4 py-2 bg-red-500 text-white rounded-lg">Eliminar</button>
                         </div>
+                    </div>
+                </div>
+            )}
+            {isFiltroModalOpen && (
+                <div
+                    className="fixed inset-0 text-black flex items-center justify-center bg-gray-800 bg-opacity-50"
+                    onClick={cerrarModalFiltro}
+                >
+                    <div
+                        className="bg-white p-4 rounded-lg w-1/2"
+                        ref={modalRef}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <h3 className="text-lg font-semibold mb-4">Selecciona un Movimiento</h3>
+                        <ul>
+                            <li><button onClick={() => setSelectedFiltro("Movimiento1")}>Movimiento1</button></li>
+                            <li><button onClick={() => setSelectedFiltro("Movimiento2")}>Movimiento2</button></li>
+                            <li><button onClick={() => setSelectedFiltro("Movimiento3")}>Movimiento3</button></li>
+                            <li><button onClick={() => setSelectedFiltro("Movimiento4")}>Movimiento4</button></li>
+                        </ul>
+                        <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg" onClick={aplicarFiltro}>Aplicar Filtro</button>
+                        <button className="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg" onClick={cerrarModalFiltro}>Cerrar</button>
                     </div>
                 </div>
             )}
