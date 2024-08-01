@@ -9,6 +9,7 @@ import { ImFileEmpty } from "react-icons/im";
 import { useForm } from "react-hook-form";
 import "../css/Animaciones.css";
 import { GridContainer, Label, Title } from "../components/ui";
+import { FaCheckCircle } from "react-icons/fa";
 
 export const AbonoSolicitud = () => {
     const { id } = useParams();
@@ -25,6 +26,8 @@ export const AbonoSolicitud = () => {
     const [datosCargados, setDatosCargados] = useState(false);
     const [showItems, setShowItems] = useState(false);
     const [items, setItems] = useState([]);
+    const [allItemsCompleted, setAllItemsCompleted] = useState(false);
+
 
     useEffect(() => {
         const cargarSolicitud = async () => {
@@ -47,6 +50,21 @@ export const AbonoSolicitud = () => {
         }
     }, [datosCargados]);
 
+    useEffect(() => {
+        verificarCompletados();
+    }, [items]); // <- Ejecuta verificarCompletados cuando items cambia
+
+
+    const verificarCompletados = () => {
+        const completados = items.every(item =>
+            item.cantidadAcumulada === item.cantidad &&
+            item.cantidadAcumulada !== undefined &&
+            item.cantidad !== undefined
+        );
+        setAllItemsCompleted(completados);
+    };
+
+
     const llenaSolicitud = () => {
         try {
             console.log(unasoli)
@@ -54,12 +72,13 @@ export const AbonoSolicitud = () => {
             setValue("folioExterno", unasoli.folioExterno || "");
             setValue("fecha", unasoli.fecha ? new Date(unasoli.fecha).toISOString().slice(0, 10) : "");
             setValue("items", unasoli.suministros || []);
-            setItems(unasoli.suministros || []);
+            const nuevosItems = unasoli.suministros || [];
+            setItems(nuevosItems);
 
             if (unasoli.folioExterno) {
                 setShowItems(true);
             }
-
+            verificarCompletados();
             setLoading(false);
         } catch (error) {
             console.error("Error al llenar los datos:", error);
@@ -73,7 +92,7 @@ export const AbonoSolicitud = () => {
             // Eliminar propiedades no deseadas
             const { NumEntregas, ...restData } = data;
             delete restData[""];
-            
+
             for (const item of restData.items) {
 
                 const totalCantidad = item.cantidadAcumulada + parseInt(item.cantidadEntregada, 10);
@@ -95,7 +114,7 @@ export const AbonoSolicitud = () => {
             if (!response) {
                 Swal.fire({
                     title: "Error",
-                    text: "Hubo un problema al realizar el abono",
+                    text: "Llena todos los campos",
                     icon: "error",
                     confirmButtonText: "OK",
                 });
@@ -181,108 +200,119 @@ export const AbonoSolicitud = () => {
                             </div>
                         </GridContainer>
                         {showItems && items.map((item, index) => (
-                            <div key={index} className="space-y-4 mb-4">
-                                <div className="flex flex-wrap space-x-4 mb-4">
-                                    <div className="flex-1 min-w-[150px]">
+                            item.cantidadAcumulada !== item.cantidad && (
+                                <div key={index} className="space-y-4 mb-4">
+                                    <div className="flex flex-wrap space-x-4 mb-4">
+                                        <div className="flex-1 min-w-[150px]">
+                                            <Label>
+                                                Cantidad:
+                                            </Label>
+                                            <input
+                                                disabled
+                                                type="number"
+                                                placeholder="Ingrese una cantidad"
+                                                className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500 cursor-not-allowed"
+                                                {...register(`items.${index}.cantidad`)}
+                                                required
+                                            />
+                                            {errors.items?.[index]?.cantidad && (
+                                                <p className="text-red-500 text-xs mt-1">{errors.items[index].cantidad.message}</p>
+                                            )}
+                                        </div>
+                                        <div className="flex-1 min-w-[150px]">
+                                            <Label>
+                                                Unidad de medida:
+                                            </Label>
+                                            <select
+                                                className="w-full cursor-not-allowed p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                                                disabled
+                                                {...register(`items.${index}.unidad`)}
+                                            >
+                                                <option value="">Seleccione una opción</option>
+                                                <option value="Paquete">Paquete</option>
+                                                <option value="Rollo">Rollo</option>
+                                                <option value="Caja">Caja</option>
+                                            </select>
+                                            {errors.items?.[index]?.unidad && (
+                                                <p className="text-red-500 text-xs mt-1">{errors.items[index].unidad.message}</p>
+                                            )}
+                                        </div>
+                                        <div className="flex-1 min-w-[150px]">
+                                            <Label>
+                                                Cantidad Acumulada:
+                                            </Label>
+                                            <input
+                                                type="number"
+                                                disabled
+                                                className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500 cursor-not-allowed"
+                                                {...register(`items.${index}.cantidadAcumulada`)}
+                                            />
+                                        </div>
+                                        <div className="flex-1 min-w-[150px]">
+                                            <Label>
+                                                Cantidad a entregar:
+                                            </Label>
+                                            <input
+                                                type="number"
+                                                className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                                                {...register(`items.${index}.cantidadEntregada`)}
+                                            />
+                                            {errors.items?.[index]?.cantidadEntregada && (
+                                                <p className="text-red-500 text-xs mt-1">{errors.items[index].cantidadEntregada.message}</p>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <Label>
+                                                Numero De Entregas
+                                            </Label>
+                                            <input
+                                                type="number"
+                                                disabled
+                                                id="NumeroDeEntregas"
+                                                name="NumeroDeEntregas"
+                                                className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500 cursor-not-allowed"
+                                                {...register(`items.${index}.NumeroDeEntregas`)}
+                                            />
+                                            {errors.items?.[index]?.NumeroDeEntregas && (
+                                                <p className="text-red-500 text-xs mt-1">{errors.items[index].NumeroDeEntregas.message}</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="min-w-[150px]">
                                         <Label>
-                                            Cantidad:
+                                            Descripción:
                                         </Label>
-                                        <input
+                                        <textarea
+                                            className="w-full p-3 cursor-not-allowed resize-none border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                                            placeholder="Ingrese la descripción"
+                                            {...register(`items.${index}.descripcion`)}
                                             disabled
-                                            type="number"
-                                            placeholder="Ingrese una cantidad"
-                                            className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500 cursor-not-allowed"
-                                            {...register(`items.${index}.cantidad`)}
-                                            required
-                                        />
-                                        {errors.items?.[index]?.cantidad && (
-                                            <p className="text-red-500 text-xs mt-1">{errors.items[index].cantidad.message}</p>
+                                        ></textarea>
+                                        {errors.items?.[index]?.descripcion && (
+                                            <p className="text-red-500 text-xs mt-1">{errors.items[index].descripcion.message}</p>
                                         )}
                                     </div>
-                                    <div className="flex-1 min-w-[150px]">
-                                        <Label>
-                                            Unidad de medida:
-                                        </Label>
-                                        <select
-                                            className="w-full cursor-not-allowed p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                                            disabled
-                                            {...register(`items.${index}.unidad`)}
-                                        >
-                                            <option value="">Seleccione una opción</option>
-                                            <option value="Paquete">Paquete</option>
-                                            <option value="Rollo">Rollo</option>
-                                            <option value="Caja">Caja</option>
-                                        </select>
-                                        {errors.items?.[index]?.unidad && (
-                                            <p className="text-red-500 text-xs mt-1">{errors.items[index].unidad.message}</p>
-                                        )}
-                                    </div>
-                                    <div className="flex-1 min-w-[150px]">
-                                        <Label>
-                                            Cantidad Acumulada:
-                                        </Label>
-                                        <input
-                                            type="number"
-                                            disabled
-                                            className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500 cursor-not-allowed"
-                                            {...register(`items.${index}.cantidadAcumulada`)}
-                                        />
-                                    </div>
-                                    <div className="flex-1 min-w-[150px]">
-                                        <Label>
-                                            Cantidad a entregar:
-                                        </Label>
-                                        <input
-                                            type="number"
-                                            className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                                            {...register(`items.${index}.cantidadEntregada`)}
-                                        />
-                                        {errors.items?.[index]?.cantidadEntregada && (
-                                            <p className="text-red-500 text-xs mt-1">{errors.items[index].cantidadEntregada.message}</p>
-                                        )}
-                                    </div>
-                                    <div>
-                                        <Label>
-                                            Numero De Entregas
-                                        </Label>
-                                        <input
-                                            type="number"
-                                            disabled
-                                            id="NumeroDeEntregas"
-                                            name="NumeroDeEntregas"
-                                            className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500 cursor-not-allowed"
-                                            {...register(`items.${index}.NumeroDeEntregas`)}
-                                        />
-                                        {errors.items?.[index]?.NumeroDeEntregas && (
-                                            <p className="text-red-500 text-xs mt-1">{errors.items[index].NumeroDeEntregas.message}</p>
-                                        )}
-                                    </div>
+                                    <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
                                 </div>
-                                <div className="min-w-[150px]">
-                                    <Label>
-                                        Descripción:
-                                    </Label>
-                                    <textarea
-                                        className="w-full p-3 cursor-not-allowed resize-none border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                                        placeholder="Ingrese la descripción"
-                                        {...register(`items.${index}.descripcion`)}
-                                        disabled
-                                    ></textarea>
-                                    {errors.items?.[index]?.descripcion && (
-                                        <p className="text-red-500 text-xs mt-1">{errors.items[index].descripcion.message}</p>
-                                    )}
-                                </div>
-                                <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
-                            </div>
+                            )
                         ))}
-                        <div className="flex justify-center mt-8">
-                            <button
-                                type="submit"
-                                className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md border border-black"
-                            >
-                                Actualizar
-                            </button>
-                        </div>
+
+                        {allItemsCompleted && (
+                            <div className="text-center mt-6">
+                                <h1 className="text-green-500 text-3xl font-bold">¡Solicitud completada!</h1>
+                                <FaCheckCircle className="text-green-500 text-5xl mt-4 mx-auto" />
+                            </div>
+                        )}
+                        {!allItemsCompleted && (
+                            <div className="flex justify-center mt-8">
+                                <button
+                                    type="submit"
+                                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md border border-black"
+                                >
+                                    Actualizar
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </form>
