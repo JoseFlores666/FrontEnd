@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import "../css/Animaciones.css";
 import { AutocompleteInput } from "../components/ui/AutocompleteInput";
 import Swal from "sweetalert2";
+import { GridContainer, Label, Title } from "../components/ui";
 
 export const RegisterTecnicoPage = () => {
   const navigate = useNavigate();
@@ -81,15 +82,13 @@ export const RegisterTecnicoPage = () => {
   };
 
   return (
-    <div className="mx-auto max-w-5xl p-4 text-black shadow-md">
+    <div className="mx-auto max-w-6xl p-4 text-black">
       <form onSubmit={handleSubmit(onSubmit)} className="slide-down">
         <div className="bg-white p-6 rounded-md shadow-md">
-          <div className="mb-6">
-            <h2 className="text-2xl  font-bold text-center text-black">Orden De Trabajo De Mantenimiento A Mobiliario E Instalaciones</h2>
-          </div>
-          <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-4">
+          <Title>Orden De Trabajo De Mantenimiento A Mobiliario E Instalaciones</Title>
+          <GridContainer>
             <div>
-              <label className="block text-sm font-bold mb-1">No. de folio Externo:</label>
+              <Label>No. de folio Externo:</Label>
               <input
                 type="text"
                 id="folio"
@@ -102,7 +101,7 @@ export const RegisterTecnicoPage = () => {
             </div>
             <div></div>
             <div>
-              <label className="block text-sm font-bold mb-1">Selecciona la fecha:</label>
+              <Label>Selecciona la fecha:</Label>
               <input
                 type="date"
                 id="fechaOrden"
@@ -112,10 +111,10 @@ export const RegisterTecnicoPage = () => {
                 onChange={(e) => setFechaOrden(e.target.value)}
               />
             </div>
-          </div>
-          <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-4">
+          </GridContainer>
+          <GridContainer>
             <div>
-              <label className="block text-sm font-bold mb-1">Area solicitante:</label>
+              <Label>Area solicitante:</Label>
               <AutocompleteInput
                 index={0}
                 value={areasoli}
@@ -137,7 +136,7 @@ export const RegisterTecnicoPage = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-bold mb-1">Solicita:</label>
+              <Label>Solicita:</Label>
               <AutocompleteInput
                 index={1}
                 value={solicita}
@@ -157,7 +156,7 @@ export const RegisterTecnicoPage = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-bold mb-1">Edificio:</label>
+              <Label>Edificio:</Label>
               <AutocompleteInput
                 index={2}
                 value={edificio}
@@ -178,10 +177,10 @@ export const RegisterTecnicoPage = () => {
                 }}
               />
             </div>
-          </div>
-          <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-4">
+          </GridContainer>
+          <GridContainer>
             <div>
-              <label className="block text-sm font-bold mb-1">Tipo de Mantenimiento:</label>
+              <Label>Tipo de Mantenimiento:</Label>
               <select
                 id="tipoMantenimiento"
                 {...register("tipoMantenimiento", { required: true })}
@@ -194,7 +193,7 @@ export const RegisterTecnicoPage = () => {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-bold mb-1">Tipo de Trabajo:</label>
+              <Label>Tipo de Trabajo:</Label>
               <select
                 id="tipoTrabajo"
                 {...register("tipoTrabajo", { required: true })}
@@ -207,7 +206,7 @@ export const RegisterTecnicoPage = () => {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-bold mb-1">Tipo de Solicitud:</label>
+              <Label>Tipo de Solicitud:</Label>
               <select
                 id="tipoSolicitud"
                 {...register("tipoSolicitud", { required: true })}
@@ -219,31 +218,28 @@ export const RegisterTecnicoPage = () => {
                 <option value="Urgente">Urgente</option>
               </select>
             </div>
-          </div>
-          <div>
-            <label className="block text-sm font-bold mb-1">Descripción (servicio requerido)</label>
-            <AutocompleteInput
-              index={3}
-              value={descripcion}
-              onChange={(newValue) => setDescripcion(newValue)}
-              data={historialOrden}
-              recentSuggestions={recentSuggestions}
-              setRecentSuggestions={setRecentSuggestions}
-              inputRefs={inputRef}
-              placeholder="Ingrese una descripción"
-              fieldsToCheck={['descripcionDelServicio']}
-              inputProps={{
-                type: "text",
-                maxLength: 500,
-                className: "w-full mb-5 resize-none text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
-              }}
-            />
-            <input name="descripcion" id="descripcion" type="hidden" value={descripcion} />
-          </div>
-          <div className="botones">
+          </GridContainer>
+          <Label>Descripción (servicio requerido)</Label>
+          <AutocompleteInput
+            index={3}
+            value={descripcion}
+            onChange={(newValue) => setDescripcion(newValue)}
+            data={historialOrden}
+            recentSuggestions={recentSuggestions}
+            setRecentSuggestions={setRecentSuggestions}
+            inputRefs={inputRef}
+            placeholder="Ingrese una descripción"
+            fieldsToCheck={['descripcionDelServicio']}
+            inputProps={{
+              type: "text",
+              maxLength: 500,
+              className: "w-full mb-5 resize-none text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
+            }}
+          />
+          <input name="descripcion" id="descripcion" type="hidden" value={descripcion} />
+          <div className="flex items-center justify-center">
             <button
               type="submit"
-
               className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md border border-black"
             >
               Guardar cambios

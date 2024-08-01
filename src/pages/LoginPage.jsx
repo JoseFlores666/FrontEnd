@@ -29,12 +29,7 @@ export function LoginPage() {
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-1">
-            <Label
-              htmlFor="email"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Ingresa tu correo:
-            </Label>
+            <Label>Ingresa tu correo:</Label>
             <div className="flex">
               <span className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border rounded-e-0 border-gray-300 border-e-0 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
                 <svg
@@ -62,12 +57,7 @@ export function LoginPage() {
           </div>
 
           <div className="mb-1">
-            <Label
-              htmlFor="password"
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Ingresa tu contraseña:
-            </Label>
+            <Label>Ingresa tu contraseña:</Label>
             <div className="flex">
               <Input
                 type="password"

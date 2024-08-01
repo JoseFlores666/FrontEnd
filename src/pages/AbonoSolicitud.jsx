@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import { ImFileEmpty } from "react-icons/im";
 import { useForm } from "react-hook-form";
 import "../css/Animaciones.css";
+import { GridContainer, Label, Title } from "../components/ui";
 
 export const AbonoSolicitud = () => {
     const { id } = useParams();
@@ -130,16 +131,13 @@ export const AbonoSolicitud = () => {
         <div className="mx-auto max-w-6xl p-4 text-black">
             <form ref={formRef} onSubmit={handleSubmit(onSubmit)} className="slide-down">
                 <div className="bg-white p-6 rounded-md shadow-md">
-                    <h1 className="text-2xl  font-bold text-center text-black mb-6">Área De Entregas</h1>
+                    <Title>Área de Entregas </Title>
                     <div>
-                        <div className="grid grid-cols-4 md:grid-cols-3 gap-6 mb-4">
+                        <GridContainer>
                             <div>
-                                <label
-                                    htmlFor="folio"
-                                    className="block text-sm font-medium mb-1"
-                                >
+                                <Label>
                                     No. de folio:
-                                </label>
+                                </Label>
                                 <input
                                     type="text"
                                     disabled
@@ -151,12 +149,9 @@ export const AbonoSolicitud = () => {
                                 {errors.folio && <p>{errors.folio.message}</p>}
                             </div>
                             <div>
-                                <label
-                                    htmlFor="folioExterno"
-                                    className="block text-sm font-medium mb-1"
-                                >
+                                <Label>
                                     No. de folio externo:
-                                </label>
+                                </Label>
                                 <input
                                     type="text"
                                     disabled
@@ -169,10 +164,9 @@ export const AbonoSolicitud = () => {
                                 {errors.folioExterno && <p>{errors.folioExterno.message}</p>}
                             </div>
                             <div>
-                                <label
-                                    className="block text-sm font-medium mb-1">
+                                <Label>
                                     Selecciona la fecha:
-                                </label>
+                                </Label>
                                 <input
                                     type="date"
                                     disabled
@@ -182,15 +176,14 @@ export const AbonoSolicitud = () => {
                                     {...register("fecha")}
                                 />
                             </div>
-                        </div>
-
+                        </GridContainer>
                         {showItems && items.map((item, index) => (
                             <div key={index} className="space-y-4 mb-4">
                                 <div className="flex flex-wrap space-x-4 mb-4">
                                     <div className="flex-1 min-w-[150px]">
-                                        <label className="block text-sm font-medium mb-1">
+                                        <Label>
                                             Cantidad:
-                                        </label>
+                                        </Label>
                                         <input
                                             disabled
                                             type="number"
@@ -204,9 +197,9 @@ export const AbonoSolicitud = () => {
                                         )}
                                     </div>
                                     <div className="flex-1 min-w-[150px]">
-                                        <label className="block text-sm font-medium mb-1">
+                                        <Label>
                                             Unidad de medida:
-                                        </label>
+                                        </Label>
                                         <select
                                             className="w-full cursor-not-allowed p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                                             disabled
@@ -222,9 +215,9 @@ export const AbonoSolicitud = () => {
                                         )}
                                     </div>
                                     <div className="flex-1 min-w-[150px]">
-                                        <label className="block text-sm font-medium mb-1">
+                                        <Label>
                                             Cantidad Acumulada:
-                                        </label>
+                                        </Label>
                                         <input
                                             type="number"
                                             disabled
@@ -233,9 +226,9 @@ export const AbonoSolicitud = () => {
                                         />
                                     </div>
                                     <div className="flex-1 min-w-[150px]">
-                                        <label className="block text-sm font-medium mb-1">
+                                        <Label>
                                             Cantidad a entregar:
-                                        </label>
+                                        </Label>
                                         <input
                                             type="number"
                                             className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
@@ -246,11 +239,9 @@ export const AbonoSolicitud = () => {
                                         )}
                                     </div>
                                     <div>
-                                        <label
-                                            htmlFor="NumeroDeEntregas"
-                                            className="block text-sm font-medium mb-1">
+                                        <Label>
                                             Numero De Entregas
-                                        </label>
+                                        </Label>
                                         <input
                                             type="number"
                                             disabled
@@ -265,9 +256,9 @@ export const AbonoSolicitud = () => {
                                     </div>
                                 </div>
                                 <div className="min-w-[150px]">
-                                    <label className="block text-sm font-medium mb-1">
+                                    <Label>
                                         Descripción:
-                                    </label>
+                                    </Label>
                                     <textarea
                                         className="w-full p-3 cursor-not-allowed resize-none border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                                         placeholder="Ingrese la descripción"

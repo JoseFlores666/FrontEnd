@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { Title } from '../components/ui';
 
 export const ProjectAndActManager = () => {
     const [projects, setProjects] = useState([]);
@@ -74,9 +75,7 @@ export const ProjectAndActManager = () => {
     return (
         <div className="mx-auto max-w-7xl p-4 text-black">
             <div className="bg-white p-8 rounded-lg shadow-lg">
-                <div className="mb-8">
-                    <h2 className="text-3xl font-bold text-center text-black">Gestión De Proyectos y Actividades</h2>
-                </div>
+               <Title>Gestión De Proyectos y Actividades</Title>
                 <div className='flex items-center justify-center'>
                     <button
                         onClick={openProjectModal}

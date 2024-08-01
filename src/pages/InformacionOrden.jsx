@@ -1,5 +1,3 @@
-// En el componente InformacionOrden.jsx
-
 import React, { useRef, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
@@ -12,6 +10,7 @@ import "../css/Animaciones.css";
 import { Link } from "react-router-dom";
 import { AutocompleteInput } from "../components/ui/AutocompleteInput";
 import SubiendoImagenes from "../components/ui/SubiendoImagenes"
+import { Title, Label, GridContainer } from "../components/ui";
 
 //Segundo formulario Orden
 
@@ -111,57 +110,51 @@ export const InformacionOrden = () => {
         <div className="flex items-center justify-center mx-auto max-w-7xl p-4 text-black">
             <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-6xl">
                 <div className="bg-white p-6 rounded-md shadow-md">
-                    <div className="text-center mb-4">
-                        <h1 className="text-2xl font-bold">Asignar Técnico</h1>
-                        <p>Rellene los detalles a continuación.</p>
-                    </div>
-                    <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-6">
+                    <Title>Informacion del encargo</Title>
+                    <GridContainer>
                         <div>
-                            <label className="block text-sm font-bold mb-1">Folio: </label>
+                            <Label>Folio: </Label>
                             <p className="w-full rounded-md">{unaInfo.folio}</p>
 
                         </div>
                         <div>
-                            <label className="block text-sm font-bold mb-1">Solicita:</label>
+                            <Label>Solicita:</Label>
                             <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.nombre}</p>
                         </div>
                         <div>
-                            <label className="block text-sm font-bold mb-1">Área solicitante:</label>
+                            <Label>Área solicitante:</Label>
                             <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.areaSolicitante}</p>
                         </div>
-                    </div>
-
-                    <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-6">
+                    </GridContainer>
+                    <GridContainer>
                         <div>
-                            <label className="block text-sm font-bold mb-1">Fecha:</label>
+                            <Label>Fecha:</Label>
                             <p className="w-full rounded-md">{unaInfo.informe?.fecha}</p>
                         </div>
                         <div>
-                            <label className="block text-sm font-bold mb-1">Tipo de Mantenimiento:</label>
+                            <Label>Tipo de Mantenimiento:</Label>
                             <p className="w-full rounded-md">{unaInfo.informe?.tipoDeMantenimiento}</p>
                         </div>
                         <div>
-                            <label className="block text-sm font-bold mb-1">Tipo de Trabajo:</label>
+                            <Label>Tipo de Trabajo:</Label>
                             <p className="w-full rounded-md">{unaInfo.informe?.tipoDeTrabajo}</p>
                         </div>
-                    </div>
-
-                    <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-6">
+                    </GridContainer>
+                    <GridContainer>
                         <div>
-                            <label className="block text-sm font-bold mb-1">Tipo de Solicitud:</label>
+                            <Label>Tipo de Solicitud:</Label>
                             <p className="w-full rounded-md">{unaInfo.informe?.tipoDeSolicitud}</p>
                         </div>
                         <div>
-                            <label className="block text-sm font-bold mb-1">Edificio:</label>
+                            <Label>Edificio:</Label>
                             <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.edificio}</p>
                         </div>
-                    </div>
+                    </GridContainer>
 
-
-                    <label className="block text-sm font-bold mb-1">Descripción:</label>
+                    <Label>Descripción:</Label>
                     <p className='mb-4'>{encabezado.descripcionDelServicio}</p>
 
-                    <label className="block text-sm font-bold mb-1">Técnico Encargado:</label>
+                    <Label>Técnico Encargado:</Label>
                     {encabezado.tecnicos && encabezado.tecnicos.length > 0 ? (
                         <p className='mb-4'>{encabezado.tecnicos[0]?.nombreCompleto}</p>
                     ) : (
@@ -171,31 +164,24 @@ export const InformacionOrden = () => {
                     {errors.tecnicos && (
                         <span className="text-red-500">{errors.tecnicos.message}</span>
                     )}
-
-
-                    <div>
-                        <label className="block text-sm font-bold mb-1">Observaciones del servicio requerido</label>
-                        <AutocompleteInput
-                            index={3}
-                            value={observaciones}
-                            onChange={(newValue) => setObservaciones(newValue)}
-                            data={historialOrden}
-                            recentSuggestions={recentSuggestions}
-                            setRecentSuggestions={setRecentSuggestions}
-                            inputRefs={refs}
-                            placeholder="Ingrese sus observaciones"
-                            fieldsToCheck={['descripcionDelServicio']}
-                            inputProps={{
-                                type: "text",
-                                maxLength: 500,
-                                className: "w-full mb-2 resize-none text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
-                            }}
-                        />
-                    </div>
-
-                    <div>
-                        <SubiendoImagenes ref={subiendoImagenesRef} />
-                    </div>
+                    <Label>Observaciones del servicio requerido</Label>
+                    <AutocompleteInput
+                        index={3}
+                        value={observaciones}
+                        onChange={(newValue) => setObservaciones(newValue)}
+                        data={historialOrden}
+                        recentSuggestions={recentSuggestions}
+                        setRecentSuggestions={setRecentSuggestions}
+                        inputRefs={refs}
+                        placeholder="Ingrese sus observaciones"
+                        fieldsToCheck={['descripcionDelServicio']}
+                        inputProps={{
+                            type: "text",
+                            maxLength: 500,
+                            className: "w-full mb-2 resize-none text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
+                        }}
+                    />
+                    <SubiendoImagenes ref={subiendoImagenesRef} />
 
                     <div className="flex gap-2 justify-center mt-4">
                         <Link

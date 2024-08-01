@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSoli } from "../context/SolicitudContext";
 import { useParams } from "react-router-dom";
 import "../css/solicitud.css";
+import { GridContainer, Title } from "../components/ui";
 
 export const VerInforme = () => {
     const { id } = useParams();
@@ -27,11 +28,10 @@ export const VerInforme = () => {
         <div className="mx-auto max-w-6xl p-4 text-black">
             {datosCargados && unaInfo ? (
                 <div className="bg-white p-6 rounded-md shadow-md">
-                    <div className="mb-6">
-                        <h2 className="text-2xl font-bold text-black">Informe de Mantenimiento</h2>
-                    </div>
 
-                    <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-6">
+                    <Title>Informe de Mantenimiento</Title>
+
+                    <GridContainer>
                         <div>
                             <label className="block text-sm font-bold mb-1">Folio:</label>
                             <p className="w-full rounded-md">{unaInfo.folio}</p>
@@ -44,9 +44,8 @@ export const VerInforme = () => {
                             <label className="block text-sm font-bold mb-1">Área solicitante:</label>
                             <p className="w-full rounded-md">{unaInfo.informe.Solicita.areaSolicitante}</p>
                         </div>
-                    </div>
-
-                    <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-6">
+                    </GridContainer>
+                    <GridContainer>
                         <div>
                             <label className="block text-sm font-bold mb-1">Fecha:</label>
                             <p className="w-full rounded-md">{new Date(unaInfo.informe.fecha).toLocaleDateString()}</p>
@@ -59,9 +58,8 @@ export const VerInforme = () => {
                             <label className="block text-sm font-bold mb-1">Tipo de Trabajo:</label>
                             <p className="w-full rounded-md">{unaInfo.informe.tipoDeTrabajo}</p>
                         </div>
-                    </div>
-
-                    <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-6">
+                    </GridContainer>
+                    <GridContainer>
                         <div>
                             <label className="block text-sm font-bold mb-1">Tipo de Solicitud:</label>
                             <p className="w-full rounded-md">{unaInfo.informe.tipoDeSolicitud}</p>
@@ -70,8 +68,7 @@ export const VerInforme = () => {
                             <label className="block text-sm font-bold mb-1">Edificio:</label>
                             <p className="w-full rounded-md">{unaInfo.informe.Solicita.edificio}</p>
                         </div>
-                    </div>
-
+                    </GridContainer>
                     <div className="mb-6">
                         <label className="block text-sm font-bold mb-1">Descripción del servicio:</label>
                         <p className="w-full">{unaInfo.informe.descripcionDelServicio}</p>

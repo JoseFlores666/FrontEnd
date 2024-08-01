@@ -6,6 +6,7 @@ import { folioExternoSchema } from '../schemas/folio.js'
 import Swal from "sweetalert2";
 import { useSoli } from "../context/SolicitudContext";
 import "../css/Animaciones.css";
+import { GridContainer, Label, Title } from "../components/ui";
 
 export const FolioExterno = () => {
     const { id: paramId } = useParams();
@@ -78,14 +79,10 @@ export const FolioExterno = () => {
         <div className="flex items-center justify-center mx-auto max-w-8xl p-4 text-black" style={{ height: '90vh' }}>
             <form ref={formRef} onSubmit={handleSubmit(onSubmit)} className="slide-down">
                 <div className="bg-white p-6 rounded-md shadow-md">
-                    <div className="titulo mb-6 bg-green-500 p-3 rounded-md text-white">
-                        <h1 className="text-2xl font-bold text-white text-center">Asignar Folio:</h1>
-                    </div>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-4">
+                    <Title>Asignar Folio</Title>
+                    <GridContainer>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Selecciona la fecha:
-                            </label>
+                            <Label>Selecciona la fecha:</Label>
                             <input
                                 type="date"
                                 disabled
@@ -95,10 +92,8 @@ export const FolioExterno = () => {
                                 value={unasoli ? new Date(unasoli.fecha).toISOString().split('T')[0] : ""}
                             />
                         </div>
-                        <div className="flex-1 min-w-[150px]">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                No. de folio:
-                            </label>
+                        <div>
+                            <Label>No. de folio:</Label>
                             <input
                                 type="text"
                                 disabled
@@ -108,13 +103,8 @@ export const FolioExterno = () => {
                                 value={unasoli?.folio || ""}
                             />
                         </div>
-                        <div className="flex-1 min-w-[150px]">
-                            <label
-                                htmlFor="folioExterno"
-                                className="block text-sm font-medium text-gray-700 mb-1"
-                            >
-                                No. de folio externo:
-                            </label>
+                        <div>
+                            <Label>No. de folio externo:</Label>
                             <input
                                 type="text"
                                 id="folioExterno"
@@ -126,34 +116,27 @@ export const FolioExterno = () => {
                                 <p className="text-red-500 text-xs mt-1">{errors.folioExterno.message}</p>
                             )}
                         </div>
-                        <div className="col-span-4">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Proyecto:
-                            </label>
-                            <input
-                                type="text"
-                                disabled
-                                className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500 cursor-not-allowed"
-                                value={unasoli?.proyecto.nombre || ""}
-                            />
-                        </div>
-                        <div className="col-span-4">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Actividades:
-                            </label>
-                            <input
-                                type="text"
-                                disabled
-                                className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500 cursor-not-allowed"
-                                value={unasoli?.actividades.map(act => act.nombre).join(", ") || ""}
-                            />
-                        </div>
-                    </div>
+                    </GridContainer>
+
+                    <Label>Proyecto:</Label>
+                    <input
+                        type="text"
+                        disabled
+                        className="w-full p-3 border mb-6 border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500 cursor-not-allowed"
+                        value={unasoli?.proyecto.nombre || ""}
+                    />
+                    <Label>Actividades:</Label>
+                    <input
+                        type="text"
+                        disabled
+                        className="w-full p-3 border mb-6 border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500 cursor-not-allowed"
+                        value={unasoli?.actividades.map(act => act.nombre).join(", ") || ""}
+                    />
                     <div className="flex justify-center items-center text-center">
                         <button
                             type="submit"
                             className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md border border-black"
-                            >
+                        >
                             Enviar
                         </button>
                     </div>

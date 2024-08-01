@@ -60,15 +60,18 @@ export function SolicitudTable({ }) {
 
   const [filteredSolicitudes, setFilteredSolicitudes] = useState(soli);
 
-  const estadoRechazada = estados.find(estado => estado.id === 5);
+  const estadoRechazada = Array.isArray(estados) ? estados.find(estado => estado.id === 5) : null;
 
-  useEffect(() => {
+useEffect(() => {
+  if (estadoRechazada) {
     const rechazadasIds = soli.filter(solicitud =>
       solicitud.estado && solicitud.estado.id === estadoRechazada.id
     ).map(solicitud => solicitud._id);
 
     setRejectedSolicitudes(rechazadasIds);
-  }, [soli]);
+  }
+}, [soli, estadoRechazada]);
+
 
   useEffect(() => {
     const results = soli.filter((solicitud) =>
