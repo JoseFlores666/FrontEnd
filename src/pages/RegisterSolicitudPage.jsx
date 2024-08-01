@@ -444,9 +444,7 @@ export const RegisterSolicitudPage = () => {
               />
             </div>
             <div>
-              <Label htmlFor="fecha">
-                Selecciona la fecha:
-              </Label>
+              <Label>Selecciona la fecha:</Label>
               <input
                 type="date"
                 id="fecha"
@@ -458,9 +456,7 @@ export const RegisterSolicitudPage = () => {
               />
             </div>
             <div>
-              <Label>
-                Tipo de Suministro:
-              </Label>
+              <Label>Tipo de Suministro:</Label>
               <select
                 id="suministro"
                 name="suministro"
@@ -492,9 +488,7 @@ export const RegisterSolicitudPage = () => {
               </select>
             </div>
             <div>
-              <Label>
-                Proyecto:
-              </Label>
+              <Label>Proyecto:</Label>
               <select
                 id="proyecto"
                 name="proyecto"
@@ -518,9 +512,7 @@ export const RegisterSolicitudPage = () => {
               </select>
             </div>
             <div>
-              <Label>
-                Actividad:
-              </Label>
+              <Label>Actividad:</Label>
               <select
                 id="actividad"
                 required

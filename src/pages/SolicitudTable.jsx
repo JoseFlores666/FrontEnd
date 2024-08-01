@@ -78,11 +78,6 @@ export function SolicitudTable({ }) {
 
   const [filteredSolicitudes, setFilteredSolicitudes] = useState(soli);
 
-<<<<<<< HEAD
-  const estadoRechazada = Array.isArray(estados) ? estados.find(estado => estado.id === 5) : null;
-=======
-
->>>>>>> 4aaae3aa9bda69a31e56303b269c3528168a8d39
 
 useEffect(() => {
   if (estadoRechazada) {
