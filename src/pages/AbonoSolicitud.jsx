@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useSoli } from "../context/SolicitudContext";
+import { useAuth } from "../context/authContext";
 import "../css/solicitud.css";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams } from "react-router-dom";
@@ -12,6 +13,9 @@ import { GridContainer, Label, Title } from "../components/ui";
 export const AbonoSolicitud = () => {
     const { id } = useParams();
 
+    const { unasoli, getunSolitud, RealizarAbono } = useSoli();
+    const { user } = useAuth();
+
 
     const { handleSubmit, register, setValue, formState: { errors } } = useForm();
 
@@ -20,7 +24,6 @@ export const AbonoSolicitud = () => {
     const [loading, setLoading] = useState(true);
     const [datosCargados, setDatosCargados] = useState(false);
     const [showItems, setShowItems] = useState(false);
-    const { unasoli, getunSolitud, RealizarAbono } = useSoli();
     const [items, setItems] = useState([]);
 
     useEffect(() => {
@@ -66,11 +69,11 @@ export const AbonoSolicitud = () => {
     const onSubmit = async (data) => {
         try {
             data.id = id;
+            data.user = user;
             // Eliminar propiedades no deseadas
             const { NumEntregas, ...restData } = data;
             delete restData[""];
-            console.log(restData.items)
-            // Validar las cantidades
+            
             for (const item of restData.items) {
 
                 const totalCantidad = item.cantidadAcumulada + parseInt(item.cantidadEntregada, 10);

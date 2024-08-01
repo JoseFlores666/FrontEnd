@@ -12,6 +12,7 @@ import {
   nombreFirmas, editarNombreFirmas, putAbono,
   updateSoliFolioExterno, getEstados, actualizaEstado,
   getVercantidadTotalEstados, declinarSoli,
+  hisorialSolicitud, hisorialDeUnaSoli
 } from "../api/soli";
 import {
   getInfome, createInfome, deleteInfome, llenadoDEPInforme, getUnaInfome,
@@ -42,12 +43,14 @@ export function SoliProvider({ children }) {
   const [info, setInfo] = useState([]);
   const [unaInfo, setUnaInfo] = useState([]);
   const [unasoli, setUnaSoli] = useState([]);
+  const [myHisorialSolicitud, setMyHisorialSolicitud] = useState([]);
   const [unProyectAct, setUnProyectAct] = useState([]);
   const [nombresFirmas, setNombresFirmas] = useState([]);
   const [myFolioInterno, setMyFolioInterno] = useState([]);
   const [myFolioInternoInfo, setMyFolioInternoInfo] = useState([]);
   const [historialOrden, setHistorialOrden] = useState([]);
   const [historialSoli, setHistorialSoli] = useState([]);
+  const [historialUnaSoli, setHistorialUnaSoli] = useState([]);
   const [api_Key, setApi_Key] = useState([]);
   const [mensaje, setMensaje] = useState("");
   const [tecnicos, setTecnicos] = useState("");
@@ -61,6 +64,24 @@ export function SoliProvider({ children }) {
     try {
       const res = await getSolitudes();
       setSoli(res.data);
+    } catch (error) {
+      console.error("Error fetching solitudes:", error);
+      setErrors(["Error fetching solitudes"]);
+    }
+  };
+  const traehistoriSoli = async () => {
+    try {
+      const res = await hisorialSolicitud();
+      setMyHisorialSolicitud(res.data);
+    } catch (error) {
+      console.error("Error fetching solitudes:", error);
+      setErrors(["Error fetching solitudes"]);
+    }
+  };
+  const traehisorialDeUnaSoli = async (id) => {
+    try {
+      const res = await hisorialDeUnaSoli(id);
+      setHistorialUnaSoli(res.data);
     } catch (error) {
       console.error("Error fetching solitudes:", error);
       setErrors(["Error fetching solitudes"]);
@@ -86,7 +107,7 @@ export function SoliProvider({ children }) {
   };
 
   const deleteSolitud = async (id, user) => {
-    try { 
+    try {
       const res = await deleteSoli(id, user);
       return res;
     } catch (error) {
@@ -119,9 +140,9 @@ export function SoliProvider({ children }) {
       setErrors(["Error creating solicitud"]);
     }
   };
-  const declinarmySoi = async (id) => {
+  const declinarmySoi = async (id, user) => {
     try {
-      const res = await declinarSoli(id);
+      const res = await declinarSoli(id, user);
       return res;
     } catch (error) {
       console.error("Error creating solicitud:", error);
@@ -428,8 +449,10 @@ export function SoliProvider({ children }) {
         ObservacionesDelTenico,
         ActualizarEstados,
         estados,
+        historialUnaSoli,
+        traehisorialDeUnaSoli,
         verMisEstados,
-
+        traehistoriSoli, myHisorialSolicitud,
         cantidadestados, VercantTotalEstado,
         traeHistorialSoli,
         historialSoli,
