@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faEdit, faCheck,faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faEdit, faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { useSoli } from "../context/SolicitudContext";
 import { Link } from 'react-router-dom';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { ImFileEmpty } from "react-icons/im";
 import TablaVistaOrden from './TablaVistaOrden';
+import { Th, Td } from '../components/ui';
 
 export const TecnicoPage = () => {
 
@@ -18,7 +19,7 @@ export const TecnicoPage = () => {
   const [filteredSolicitudes, setFilteredSolicitudes] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
 
-  const [datosCargados, setDatosCargados] = useState(false);
+  const [datosCargados, seTdatosCargados] = useState(false);
 
   const [isModalOpen2, setIsModalOpen2] = useState(false);
 
@@ -36,7 +37,7 @@ export const TecnicoPage = () => {
     const fetchInfo = async () => {
       try {
         await getInfo();
-        setDatosCargados(true)
+        seTdatosCargados(true)
         setLoading(false);
       } catch (error) {
         console.error("Error al cargar los informes:", error);
@@ -51,7 +52,7 @@ export const TecnicoPage = () => {
   const handleDelete = async (id) => {
     try {
       await eliminarInfo(id);
-      setDatosCargados(false)
+      seTdatosCargados(false)
     } catch (error) {
       console.error("Error deleting solicitud:", error);
     }
@@ -181,43 +182,44 @@ export const TecnicoPage = () => {
       <table className="w-full min-w-full divide-y divide-white-200 text-sm text-black rounded-lg overflow-hidden">
         <thead className="bg-black text-white">
           <tr>
-            <th className="text-left font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('folio')}>FOLIO</th>
-            <th className="text-left font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('fecha')}>FECHA</th>
-            <th className="text-left font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('tipoDeMantenimiento')}>TIPO DE MANTENIMIENTO</th>
-            <th className="text-left font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('tipoDeTrabajo')}>TIPO DE TRABAJO</th>
-            <th className="text-left font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('tipoDeSolicitud')}>TIPO DE SOLICITUD</th>
-            <th className="px-3 py-1 text-left font-medium uppercase tracking-wider border text-center cursor-pointer w-2/12" onClick={() => requestSort('descripcionDelServicio')}>DESCRIPCION DEL SERVICIO</th>
-            <th className="text-left font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('estado')}>ESTADO</th>
-            <th className="text-left font-medium border text-center cursor-pointer w-1/12">IMÁGENES</th>
-            <th className="text-left font-medium border text-center cursor-pointer w-1/12">ACCIONES</th>
-            <th className="text-left font-medium border text-center cursor-pointer w-1/12">INFORME</th>
+            <Th onClick={() => requestSort('folio')} sortable={true}>FOLIO</Th>
+            <Th onClick={() => requestSort('fecha')} sortable={true}>FECHA</Th>
+            <Th onClick={() => requestSort('tipoDeMantenimiento')} sortable={true}>TIPO DE MANTENIMIENTO</Th>
+            <Th onClick={() => requestSort('tipoDeTrabajo')} sortable={true}>TIPO DE TRABAJO</Th>
+            <Th onClick={() => requestSort('tipoDeSolicitud')} sortable={true}>TIPO DE SOLICITUD</Th>
+            <Th sortable={false} extraClass="w-2/12">DESCRIPCION DEL SERVICIO</Th>
+            <Th sortable={false} >EVIDENCIAS</Th>
+            <Th onClick={() => requestSort('estado')} sortable={true}>ESTADO</Th>
+            <Th sortable={false}>ACCIONES</Th>
+            <Th sortable={false}>INFORME</Th>
           </tr>
+
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white divide-y divide-gray-200">
           {currentSolicitudes.map((solicitud, index) => (
             <tr
               key={index}
               className={`text-left ${solicitud.estado === 'Declinado' ? 'border-red-500' : ''}`}
             >
-              <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">{solicitud.folio}</td>
-              <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">{new Date(solicitud.informe.fecha).toLocaleDateString()}</td>
-              <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">{solicitud.informe.tipoDeMantenimiento}</td>
-              <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">{solicitud.informe.tipoDeTrabajo}</td>
-              <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">{solicitud.informe.tipoDeSolicitud}</td>
-              <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">{solicitud.informe.descripcionDelServicio}</td>
-              <th className="p-1 whitespace-normal break-words border border-gray-400 text-center">
-                <Link to={`/evidencias/${solicitud._id}?`} className="text-black">
-                  Imágenes
+              <Td>{solicitud.folio}</Td>
+              <Td>{new Date(solicitud.informe.fecha).toLocaleDateString()}</Td>
+              <Td>{solicitud.informe.tipoDeMantenimiento}</Td>
+              <Td>{solicitud.informe.tipoDeTrabajo}</Td>
+              <Td>{solicitud.informe.tipoDeSolicitud}</Td>
+              <Td>{solicitud.informe.descripcionDelServicio}</Td>
+              <Td>
+                <Link to={`/evidencias/${solicitud._id}?`} className="text-black font-bold">
+                  VER
                 </Link>
-              </th>
-              <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">
+              </Td>
+              <Td>
                 {solicitud.estado === 'Declinada' ? (
                   <button className="text-red-500 border border-red-500 px-2 py-1 rounded-lg" disabled>Declinado</button>
                 ) : (
                   solicitud.estado
                 )}
-              </td>
-              <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">
+              </Td>
+              <Td className="p-1 whitespace-normal break-words border border-gray-400 text-center">
                 {solicitud.estado === 'Declinada' ? (
                   <button className="text-red-500 border border-red-500 px-2 py-1 rounded-lg" disabled>Declinado</button>
                 ) : (
@@ -253,13 +255,14 @@ export const TecnicoPage = () => {
                       <FontAwesomeIcon icon={faPlus} />
                     </Link>
 
-                  </div>)}
-              </td>
-              <th className="p-1 whitespace-normal break-words border border-gray-400 text-center">
-                <Link to={`/verInforme/${solicitud._id}?`} className="text-black">
-                  Ver
+                  </div>
+                )}
+              </Td>
+              <Th>
+                <Link to={`/verInforme/${solicitud._id}?`} className="text-black font-bold">
+                  CONSULTAR
                 </Link>
-              </th>
+              </Th>
             </tr>
           ))}
         </tbody>
@@ -316,7 +319,7 @@ export const TecnicoPage = () => {
             className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
           >
             <div
-              className="bg-white p-6 rounded-lg shadow-lg relative absolute"
+              className="bg-white p-6 rounded-lg shadow-lg relative"
               onClick={(e) => e.stopPropagation()}
             >
               <TablaVistaOrden data={data} />

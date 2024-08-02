@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faFileAlt, faEdit, faTruck, faTimesCircle, faCopy, faHistory } from "@fortawesome/free-solid-svg-icons";
 import { ImFileEmpty } from "react-icons/im";
 import { TablaVistaSolicitud } from "./TablaVistaSolicitud";
+import { Td, Th } from "../components/ui";
 
 export function SolicitudTable({ }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -32,8 +33,6 @@ export function SolicitudTable({ }) {
   const [estadoAbonando, setEstadoAbonando] = useState(false);
   const [estadoCompletado, setEstadoCompletado] = useState(false);
   const [estadoRechazada, setEstadoRechazada] = useState(false);
-
-
 
   const abrirModal = () => {
     setIsModalOpen2(true);
@@ -260,71 +259,75 @@ export function SolicitudTable({ }) {
       <table className="w-full min-w-full divide-y divide-white-200 text-sm text-black rounded-lg overflow-hidden">
         <thead className="bg-black text-white">
           <tr>
-            <th className=" font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('folio')}>FOLIO</th>
-            <th className=" font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('fecha')}>FECHA</th>
-            <th className="px-3 py-1 font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('tipoSuministro')}>TIPO DE SUMINISTRO</th>
-            <th className=" font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('procesoClave')}>PROCESO CLAVE</th>
-            <th className=" font-medium border text-center w-2/12" >PROYECTO</th>
-            <th className=" font-medium border text-center w-2/12" >ACTIVIDADES</th>
-            <th className=" font-medium border text-center cursor-pointer w-1/12" onClick={() => requestSort('estado')}>ESTADO</th>
-            <th className=" font-medium border text-center w-1/12">ACCIONES</th>
+            <Th sortable={true} onClick={() => requestSort('folio')}>FOLIO</Th>
+            <Th sortable={true} onClick={() => requestSort('fecha')}>FECHA</Th>
+            <Th sortable={true} onClick={() => requestSort('tipoSuministro')}>TIPO DE SUMINISTRO</Th>
+            <Th sortable={true} onClick={() => requestSort('procesoClave')}>PROCESO CLAVE</Th>
+            <Th sortable={false} extraClass="w-2/12">PROYECTO</Th>
+            <Th sortable={false} extraClass="w-2/12">ACTIVIDADES</Th>
+            <Th sortable={true} onClick={() => requestSort('estado')}>ESTADO</Th>
+            <Th sortable={false}>ACCIONES</Th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-black">
           {currentSolicitudes.map((solicitud, index) => (
             <tr key={index} className={`text-left ${rejectedSolicitudes.includes(solicitud._id) ? 'border-red-500' : ''}`}>
-              <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">{solicitud.folio}</td>
-              <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">{solicitud.fecha}</td>
-              <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">{solicitud.tipoSuministro}</td>
-              <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">{solicitud.procesoClave}</td>
-              <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">{solicitud.proyecto?.nombre}</td>
-              <td className="p-1 whitespace-normal break-words border border-gray-400 text-center">{solicitud.actividades?.map((actividad, idx) => (
+              <Td>{solicitud.folio}</Td>
+              <Td>{solicitud.fecha}</Td>
+              <Td>{solicitud.tipoSuministro}</Td>
+              <Td>{solicitud.procesoClave}</Td>
+              <Td>{solicitud.proyecto?.nombre}</Td>
+              <Td>{solicitud.actividades?.map((actividad, idx) => (
                 <span key={idx}>{actividad.nombre}{idx < solicitud.actividades.length - 1 ? ', ' : ''}</span>
-              ))}</td>
-              <td className="px-3 py-2 whitespace-normal break-words border border-gray-400 text-center">
+              ))}
+              </Td>
+              <Td>
                 {rejectedSolicitudes.includes(solicitud._id) ? (
                   <button className="text-red-500 border border-red-500 px-2 py-1 rounded-lg">Rechazado</button>
                 ) : (
                   solicitud.estado.nombre
                 )}
-              </td>
-              <td className="px-3 py-2 whitespace-normal break-words border border-gray-400 text-center">
+              </Td>
+              <Td>
                 {rejectedSolicitudes.includes(solicitud._id) ? (
-                  <button className="text-red-500 border border-red-500 px-2 py-1 rounded-lg">Rechazado</button>
-                ) : (
-                  <div className="flex justify-center items-center space-x-2">
+                  <>
+                    <button className="text-red-500 border border-red-500 px-2 py-1 rounded-lg">Rechazado</button>
                     <button
                       onClick={() => handleDelete(solicitud._id, user)}
-                      className="text-red-500 hover"
+                      className="text-red-500 hover mx-2"
                     >
                       <FontAwesomeIcon icon={faTrash} />
                     </button>
-                    <Link
-                      to={`/soli/registro/${solicitud._id}?editar=true`}
-                      className="text-blue-600 hover:text-blue-800 "
-                    >
-                      <FontAwesomeIcon icon={faEdit} />
-                    </Link>
-                    <Link
-                      to={`/soli/folioExterno/${solicitud._id}?`}
-                      className="text-blue-600 hover:text-blue-800 "
-                    >
-                      <FontAwesomeIcon icon={faFileAlt} />
-                    </Link>
-                    {solicitud.estado.id !== estadoInicial.id && (
-                      <Link
-                        to={`/soli/abonar/${solicitud._id}?`}
-                        className="text-green-600 hover:text-green-800"
-                      >
-                        <FontAwesomeIcon icon={faTruck} />
-                      </Link>
-                    )}
+                  </>
+                ) : (
+                  <div className="flex justify-center items-center space-x-4">
                     <Link
                       to={`/soli/registro/${solicitud._id}?duplicar=true`}
                       className="text-blue-600 hover:text-blue-800"
                     >
                       <FontAwesomeIcon icon={faCopy} />
                     </Link>
+                    <Link
+                      to={`/soli/folioExterno/${solicitud._id}?`}
+                      className="text-blue-600 hover:text-blue-800"
+                    >
+                      <FontAwesomeIcon icon={faFileAlt} />
+                    </Link>
+                    {solicitud.folio && solicitud.estado.id !== estadoInicial.id ? (
+                      <Link
+                        to={`/soli/abonar/${solicitud._id}?`}
+                        className="text-green-600 hover:text-green-800"
+                      >
+                        <FontAwesomeIcon icon={faTruck} />
+                      </Link>
+                    ) : (
+                      <Link
+                        to={`/soli/registro/${solicitud._id}?editar=true`}
+                        className="text-blue-600 hover:text-blue-800"
+                      >
+                        <FontAwesomeIcon icon={faEdit} />
+                      </Link>
+                    )}
                     <Link
                       to={`/historial/${solicitud._id}`}
                       className="text-blue-600 hover:text-blue-800"
@@ -333,13 +336,14 @@ export function SolicitudTable({ }) {
                     </Link>
                     <button
                       onClick={() => handleOpenModal(solicitud._id, user)}
-                      className="text-red-500 border border-red-500 px-2 y-1 rounded-lg"
+                      className="text-red-500 border border-red-500 px-2 py-1 rounded-lg"
                     >
                       <FontAwesomeIcon icon={faTimesCircle} />
                     </button>
                   </div>
                 )}
-              </td>
+              </Td>
+
             </tr>
           ))}
         </tbody>

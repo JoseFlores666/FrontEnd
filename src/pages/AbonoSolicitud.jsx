@@ -17,6 +17,7 @@ export const AbonoSolicitud = () => {
     const { unasoli, getunSolitud, RealizarAbono } = useSoli();
     const { user } = useAuth();
 
+    const [abonoCounter, setAbonoCounter] = useState(1);
 
     const { handleSubmit, register, setValue, formState: { errors } } = useForm();
 
@@ -152,169 +153,149 @@ export const AbonoSolicitud = () => {
     return (
         <div className="mx-auto max-w-6xl p-4 text-black">
             <form ref={formRef} onSubmit={handleSubmit(onSubmit)} className="slide-down">
-                <div className="bg-white p-6 rounded-md shadow-md">
+                <div className="bg-white p-6 rounded-md shadow-md mb-4">
                     <Title>Área de Entregas </Title>
-                    <div>
-                        <GridContainer>
-                            <div>
-                                <Label>
-                                    No. de folio:
-                                </Label>
-                                <input
-                                    type="text"
-                                    disabled
-                                    id="folio"
-                                    name="folio"
-                                    className="w-full cursor-not-allowed p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                                    {...register("folio")}
-                                />
-                                {errors.folio && <p>{errors.folio.message}</p>}
-                            </div>
-                            <div>
-                                <Label>
-                                    No. de folio externo:
-                                </Label>
-                                <input
-                                    type="text"
-                                    disabled
-                                    id="folioExterno"
-                                    name="folioExterno"
-                                    className="w-full cursor-not-allowed  p-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                                    {...register("folioExterno")}
-                                />
+                    <GridContainer>
+                        <div>
+                            <Label>No. de folio:</Label>
+                            <input
+                                type="text"
+                                disabled
+                                id="folio"
+                                name="folio"
+                                className="w-full cursor-not-allowed p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                                {...register("folio")}
+                            />
+                            {errors.folio && <p>{errors.folio.message}</p>}
+                        </div>
+                        <div>
+                            <Label>No. de folio externo:</Label>
+                            <input
+                                type="text"
+                                disabled
+                                id="folioExterno"
+                                name="folioExterno"
+                                className="w-full cursor-not-allowed  p-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                                {...register("folioExterno")}
+                            />
+                            {errors.folioExterno && <p>{errors.folioExterno.message}</p>}
+                        </div>
+                        <div>
+                            <Label>Selecciona la fecha:</Label>
+                            <input
+                                type="date"
+                                disabled
+                                id="fecha"
+                                name="fecha"
+                                className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500 cursor-not-allowed"
+                                {...register("fecha")}
+                            />
+                        </div>
+                    </GridContainer>
+                </div>
 
-                                {errors.folioExterno && <p>{errors.folioExterno.message}</p>}
-                            </div>
-                            <div>
-                                <Label>
-                                    Selecciona la fecha:
-                                </Label>
-                                <input
-                                    type="date"
-                                    disabled
-                                    id="fecha"
-                                    name="fecha"
-                                    className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500 cursor-not-allowed"
-                                    {...register("fecha")}
-                                />
-                            </div>
-                        </GridContainer>
-                        {showItems && items.map((item, index) => (
-                            item.cantidadAcumulada !== item.cantidad && (
-                                <div key={index} className="space-y-4 mb-4">
-                                    <div className="flex flex-wrap space-x-4 mb-4">
-                                        <div className="flex-1 min-w-[150px]">
-                                            <Label>
-                                                Cantidad:
-                                            </Label>
-                                            <input
-                                                disabled
-                                                type="number"
-                                                placeholder="Ingrese una cantidad"
-                                                className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500 cursor-not-allowed"
-                                                {...register(`items.${index}.cantidad`)}
-                                                required
-                                            />
-                                            {errors.items?.[index]?.cantidad && (
-                                                <p className="text-red-500 text-xs mt-1">{errors.items[index].cantidad.message}</p>
-                                            )}
-                                        </div>
-                                        <div className="flex-1 min-w-[150px]">
-                                            <Label>
-                                                Unidad de medida:
-                                            </Label>
-                                            <select
-                                                className="w-full cursor-not-allowed p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                                                disabled
-                                                {...register(`items.${index}.unidad`)}
-                                            >
-                                                <option value="">Seleccione una opción</option>
-                                                <option value="Paquete">Paquete</option>
-                                                <option value="Rollo">Rollo</option>
-                                                <option value="Caja">Caja</option>
-                                            </select>
-                                            {errors.items?.[index]?.unidad && (
-                                                <p className="text-red-500 text-xs mt-1">{errors.items[index].unidad.message}</p>
-                                            )}
-                                        </div>
-                                        <div className="flex-1 min-w-[150px]">
-                                            <Label>
-                                                Cantidad Acumulada:
-                                            </Label>
-                                            <input
-                                                type="number"
-                                                disabled
-                                                className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500 cursor-not-allowed"
-                                                {...register(`items.${index}.cantidadAcumulada`)}
-                                            />
-                                        </div>
-                                        <div className="flex-1 min-w-[150px]">
-                                            <Label>
-                                                Cantidad a entregar:
-                                            </Label>
-                                            <input
-                                                type="number"
-                                                className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                                                {...register(`items.${index}.cantidadEntregada`)}
-                                            />
-                                            {errors.items?.[index]?.cantidadEntregada && (
-                                                <p className="text-red-500 text-xs mt-1">{errors.items[index].cantidadEntregada.message}</p>
-                                            )}
-                                        </div>
-                                        <div>
-                                            <Label>
-                                                Numero De Entregas
-                                            </Label>
-                                            <input
-                                                type="number"
-                                                disabled
-                                                id="NumeroDeEntregas"
-                                                name="NumeroDeEntregas"
-                                                className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500 cursor-not-allowed"
-                                                {...register(`items.${index}.NumeroDeEntregas`)}
-                                            />
-                                            {errors.items?.[index]?.NumeroDeEntregas && (
-                                                <p className="text-red-500 text-xs mt-1">{errors.items[index].NumeroDeEntregas.message}</p>
-                                            )}
-                                        </div>
-                                    </div>
-                                    <div className="min-w-[150px]">
-                                        <Label>
-                                            Descripción:
-                                        </Label>
-                                        <textarea
-                                            className="w-full p-3 cursor-not-allowed resize-none border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                                            placeholder="Ingrese la descripción"
-                                            {...register(`items.${index}.descripcion`)}
+                {showItems && items.map((item, index) => (
+                    item.cantidadAcumulada !== item.cantidad && (
+                        <div key={index} className="space-y-4 mb-4">
+                            <div className="mb-1 bg-gray-100 p-4 rounded-lg shadow-lg">
+                            <Label>Abono: {abonoCounter + index}</Label>
+                            <div className="grid grid-cols-5 gap-4">
+                                    <div className="">
+                                        <Label>Cantidad:</Label>
+                                        <input
                                             disabled
-                                        ></textarea>
-                                        {errors.items?.[index]?.descripcion && (
-                                            <p className="text-red-500 text-xs mt-1">{errors.items[index].descripcion.message}</p>
+                                            type="number"
+                                            placeholder="Ingrese una cantidad"
+                                            className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500 cursor-not-allowed"
+                                            {...register(`items.${index}.cantidad`)}
+                                            required
+                                        />
+                                        {errors.items?.[index]?.cantidad && (
+                                            <p className="text-red-500 text-xs mt-1">{errors.items[index].cantidad.message}</p>
                                         )}
                                     </div>
-                                    <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
+                                    <div>
+                                        <Label>Unidad de medida:</Label>
+                                        <select
+                                            className="w-full cursor-not-allowed p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                                            disabled
+                                            {...register(`items.${index}.unidad`)}
+                                        >
+                                            <option value="">Seleccione una opción</option>
+                                            <option value="Paquete">Paquete</option>
+                                            <option value="Rollo">Rollo</option>
+                                            <option value="Caja">Caja</option>
+                                        </select>
+                                        {errors.items?.[index]?.unidad && (
+                                            <p className="text-red-500 text-xs mt-1">{errors.items[index].unidad.message}</p>
+                                        )}
+                                    </div>
+                                    <div>
+                                        <Label>Cantidad Acumulada:</Label>
+                                        <input
+                                            type="number"
+                                            disabled
+                                            className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500 cursor-not-allowed"
+                                            {...register(`items.${index}.cantidadAcumulada`)}
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label>Cantidad a entregar:</Label>
+                                        <input
+                                            type="number"
+                                            className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                                            {...register(`items.${index}.cantidadEntregada`)}
+                                        />
+                                        {errors.items?.[index]?.cantidadEntregada && (
+                                            <p className="text-red-500 text-xs mt-1">{errors.items[index].cantidadEntregada.message}</p>
+                                        )}
+                                    </div>
+                                    <div>
+                                        <Label>Número De Entregas:</Label>
+                                        <input
+                                            type="number"
+                                            disabled
+                                            id="NumeroDeEntregas"
+                                            name="NumeroDeEntregas"
+                                            className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500 cursor-not-allowed"
+                                            {...register(`items.${index}.NumeroDeEntregas`)}
+                                        />
+                                        {errors.items?.[index]?.NumeroDeEntregas && (
+                                            <p className="text-red-500 text-xs mt-1">{errors.items[index].NumeroDeEntregas.message}</p>
+                                        )}
+                                    </div>
                                 </div>
-                            )
-                        ))}
-
-                        {allItemsCompleted && (
-                            <div className="text-center mt-6">
-                                <h1 className="text-green-500 text-3xl font-bold">¡Solicitud completada!</h1>
-                                <FaCheckCircle className="text-green-500 text-5xl mt-4 mx-auto" />
+                                <Label>Descripción:</Label>
+                                <textarea
+                                    className="w-full p-3 cursor-not-allowed resize-none border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                                    placeholder="Ingrese la descripción"
+                                    {...register(`items.${index}.descripcion`)}
+                                    disabled
+                                ></textarea>
+                                {errors.items?.[index]?.descripcion && (
+                                    <p className="text-red-500 text-xs mt-1">{errors.items[index].descripcion.message}</p>
+                                )}
                             </div>
-                        )}
-                        {!allItemsCompleted && (
-                            <div className="flex justify-center mt-8">
-                                <button
-                                    type="submit"
-                                    className="bg-green-500 hover:bg-green-700 text-white font-bold mt px-6 py-3 rounded-md border border-black"
-                                    >
-                                  Realizar Entregar
-                                </button>
-                            </div>
-                        )}
+                        </div>
+                    )
+                ))}
+                {allItemsCompleted && (
+                    <div className="text-center mt-6">
+                        <h1 className="text-green-500 text-3xl font-bold">¡Solicitud completada!</h1>
+                        <FaCheckCircle className="text-green-500 text-5xl mt-4 mx-auto" />
                     </div>
-                </div>
+                )}
+                {!allItemsCompleted && (
+                    <div className="flex justify-center mt-8">
+                        <button
+                            type="submit"
+                            className="bg-green-500 hover:bg-green-700 text-white font-bold mt px-6 py-3 rounded-md border border-black"
+                        >
+                            Realizar Entregar
+                        </button>
+                    </div>
+                )}
+
             </form>
         </div>
     );

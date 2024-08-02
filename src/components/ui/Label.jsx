@@ -5,7 +5,6 @@ export function Label({ children, ...props }) {
       {...props}
     >
       {children}
-
     </label>
 
   );

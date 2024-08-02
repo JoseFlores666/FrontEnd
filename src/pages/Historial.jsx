@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faL, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useSoli } from '../context/SolicitudContext';
 import { useAuth } from '../context/authContext';
 import { useParams } from "react-router-dom";
+import { Label, Td, Th } from "../components/ui";
 
-export function Historial() {   
+export function Historial() {
     const { id } = useParams();
     const [searchTerm, setSearchTerm] = useState("");
     const [solicitudesPerPage, setSolicitudesPerPage] = useState(10);
@@ -128,7 +129,7 @@ export function Historial() {
                 </div>
                 <h1 className="text-2xl text-center font-bold">HISTORIAL DE MOVIMIENTOS</h1>
                 <div>
-                    <label htmlFor="entries-per-page" className="mr-2 text-white">Entradas por página:</label>
+                    <Label htmlFor="entries-per-page" className="mr-2 text-white">Entradas por página:</Label>
                     <select
                         id="entries-per-page"
                         className="p-1 border border-black rounded-lg text-black"
@@ -142,72 +143,79 @@ export function Historial() {
                     </select>
                 </div>
             </div>
-            <div className="mb-4">
-                <label htmlFor="filtro-ano" className="mr-2 text-white">Año:</label>
-                <input
-                    type="text"
-                    id="filtro-ano"
-                    className="p-1 border border-black rounded-lg text-black"
-                    value={filtroAno}
-                    onChange={(e) => setFiltroAno(e.target.value)}
-                    placeholder="YYYY"
-                />
-                <label htmlFor="filtro-mes" className="mr-2 text-white ml-4">Mes:</label>
-                <input
-                    type="text"
-                    id="filtro-mes"
-                    className="p-1 border border-black rounded-lg text-black"
-                    value={filtroMes}
-                    onChange={(e) => setFiltroMes(e.target.value)}
-                    placeholder="MM"
-                />
-                <label htmlFor="filtro-dia" className="mr-2 text-white ml-4">Día:</label>
-                <input
-                    type="text"
-                    id="filtro-dia"
-                    className="p-1 border border-black rounded-lg text-black"
-                    value={filtroDia}
-                    onChange={(e) => setFiltroDia(e.target.value)}
-                    placeholder="DD"
-                />
+            <div className="grid grid-cols-4 md:grid-cols-4 mb-2">
+                <div className="flex items-center space-x-1 justify-center">
+                    <Label>Año:</Label>
+                    <input
+                        type="text"
+                        id="filtro-ano"
+                        className="p-1 border border-black rounded-lg text-black"
+                        value={filtroAno}
+                        onChange={(e) => setFiltroAno(e.target.value)}
+                        placeholder="YYYY"
+                    />
+                </div>
+                <div className="flex items-center space-x-1 justify-center">
+                    <Label>Mes:</Label>
+                    <input
+                        type="text"
+                        id="filtro-mes"
+                        className="p-1 border border-black rounded-lg text-black"
+                        value={filtroMes}
+                        onChange={(e) => setFiltroMes(e.target.value)}
+                        placeholder="MM"
+                    />
+                </div>
+                <div className="flex items-center space-x-1 justify-center">
+                    <Label>Día:</Label>
+                    <input
+                        type="text"
+                        id="filtro-dia"
+                        className="p-1 border border-black rounded-lg text-black"
+                        value={filtroDia}
+                        onChange={(e) => setFiltroDia(e.target.value)}
+                        placeholder="DD"
+                    />
+                </div>
+                <div className="flex items-center justify-center">
+                    <button onClick={abrirModalFiltro} className="px-4 py-2 bg-blue-500 text-white rounded-lg">Filtrar Movimientos</button>
+                </div>
 
-                <button onClick={abrirModalFiltro} className="px-4 py-2 bg-blue-500 text-white rounded-lg">Filtrar Movimientos</button>
             </div>
             <table className="w-full min-w-full divide-y divide-white-200 text-sm text-black rounded-lg overflow-hidden">
                 <thead className="bg-black text-white">
                     <tr>
-                        <th className="font-medium border text-center cursor-pointer w-1/12">USUARIO</th>
-                        <th className="font-medium border text-center w-1/12">MOVIMIENTO</th>
-                        <th className="font-medium border text-center cursor-pointer w-1/12">FECHA</th>
-                        <th className="font-medium border text-center cursor-pointer w-1/12">HORA</th>
-                        <th className="font-medium border text-center cursor-pointer w-1/12">NO. DE SOLICITUD</th>
-                        <th className="font-medium border text-center w-1/12">FOLIO</th>
-                        <th className="font-medium border text-center w-1/12">NÚMERO DE ENTREGAS</th>
-                        <th className="font-medium border text-center cursor-pointer w-2/12">DESCRIPCIÓN</th>
-                        <th className="font-medium border text-center w-1/12">ACCIONES</th>
+                        <Th sortable={false}>USUARIO</Th>
+                        <Th sortable={false}>MOVIMIENTO</Th>
+                        <Th sortable={false}>FECHA</Th>
+                        <Th sortable={false}>HORA</Th>
+                        <Th sortable={false}>NO. DE SOLICITUD</Th>
+                        <Th sortable={false}>FOLIO</Th>
+                        <Th sortable={false}>NÚMERO DE ENTREGAS</Th>
+                        <Th sortable={false} extraClass="w-2/12">DESCRIPCIÓN</Th>
+                        <Th sortable={false}>ACCIONES</Th>
                     </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-black">
+                <tbody className="bg-white divide-y divide-gray-200">
                     {filteredHistorial.length > 0 ? filteredHistorial.slice(0, solicitudesPerPage).map((historial, index) => (
                         <tr key={index}>
-                            <td className="text-center border p-2">{historial.user.username}</td>
-                            <td className="text-center border p-2">{historial.accion}</td>
-                            <td className="text-center border p-2">{new Date(historial.fecha).toLocaleDateString()}</td>
-                            <td className="text-center border p-2">{new Date(historial.fecha).toLocaleTimeString()}</td>
-                            <td className="text-center border p-2">{historial.numeroDeSolicitud.folio}</td>
-                            <td className="text-center border p-2">{historial.folio}</td>
-                            <td className="text-center border p-2">{historial.numeroDeEntrega}</td>
-                            <td className="text-center border p-2">{historial.descripcion}</td>
-                            <td className="text-center border p-2">
+                            <Td>{historial.user.username}</Td>
+                            <Td>{historial.accion}</Td>
+                            <Td>{new Date(historial.fecha).toLocaleDateString()}</Td>
+                            <Td>{new Date(historial.fecha).toLocaleTimeString()}</Td>
+                            <Td>{historial.numeroDeSolicitud.folio}</Td>
+                            <Td>{historial.folio}</Td>
+                            <Td>{historial.numeroDeEntrega}</Td>
+                            <Td>{historial.descripcion}</Td>
+                            <Td>
                                 <button className="text-red-600" onClick={() => abrirModal(historial._id)}>
                                     <FontAwesomeIcon icon={faTrash} />
                                 </button>
-
-                            </td>
+                            </Td>
                         </tr>
                     )) : (
                         <tr>
-                            <td colSpan="9" className="text-center border p-2">No hay registros</td>
+                            <Td colSpan="9">No hay registros</Td>
                         </tr>
                     )}
                 </tbody>
@@ -248,8 +256,7 @@ export function Historial() {
                         <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg" onClick={aplicarFiltro}>Aplicar Filtro</button>
                     </div>
                 </div>
-            )
-            }
+            )}
         </div >
     );
 }
