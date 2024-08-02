@@ -12,7 +12,7 @@ import {
   nombreFirmas, editarNombreFirmas, putAbono,
   updateSoliFolioExterno, getEstados, actualizaEstado,
   getVercantidadTotalEstados, declinarSoli,
-  hisorialSolicitud, hisorialDeUnaSoli
+  hisorialSolicitud, hisorialDeUnaSoli, deleteUnHistorialSoli,
 } from "../api/soli";
 import {
   getInfome, createInfome, deleteInfome, llenadoDEPInforme, getUnaInfome,
@@ -55,7 +55,7 @@ export function SoliProvider({ children }) {
   const [mensaje, setMensaje] = useState("");
   const [tecnicos, setTecnicos] = useState("");
   const [encabezado, setEncabezado] = useState("");
-  const [estados, setEstados] = useState("");
+  const [estados, setEstados] = useState([]);
   const [cantidadestados, setCantidadEstados] = useState("");
   const [imagenInfo, setImagenInfo] = useState("");
 
@@ -150,6 +150,15 @@ export function SoliProvider({ children }) {
       setErrors(["Error creating solicitud"]);
     }
   };
+  const eliminarUnHistorialSoli = async (id, data) => {
+    try {
+      const res = await deleteUnHistorialSoli(id, data);
+      return res;
+    } catch (error) {
+      console.error("Error creating solicitud:", error);
+      setErrors(["Error creating solicitud"]);
+    }
+  };
 
   const actializarSoli = async (id, datosSolicitud) => {
     try {
@@ -164,7 +173,7 @@ export function SoliProvider({ children }) {
   const verMisEstados = async (id) => {
     try {
       const res = await getEstados();
-      setEstados(res.data)
+      setEstados(Array.isArray(res.data) ? res.data : []);
     } catch (error) {
       console.error("Error fetching solitudes:", error);
       setErrors(["Error fetching solitudes"]);
@@ -450,6 +459,7 @@ export function SoliProvider({ children }) {
         ObservacionesDelTenico,
         ActualizarEstados,
         estados,
+        eliminarUnHistorialSoli,
         historialUnaSoli,
         traehisorialDeUnaSoli,
         verMisEstados,

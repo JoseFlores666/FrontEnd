@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useSoli } from '../context/SolicitudContext';
@@ -12,6 +12,8 @@ export const TablaVistaSolicitud = ({ data, refetchData }) => {
     const [año, setAño] = useState("");
     const [mes, setMes] = useState("");
 
+    const datosRef = useRef([]);
+
     const meses = [
         "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
         "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
@@ -19,39 +21,43 @@ export const TablaVistaSolicitud = ({ data, refetchData }) => {
 
     useEffect(() => {
         setDatos(data);
-        setEditedData(data.map(estado => ({ ...estado })));
+        setEditedData(data.map(item => ({ ...item }))); // Copia profunda para edición
+        datosRef.current = data.map(item => ({ ...item }));
     }, [data]);
 
-    const handleEditClick = () => {
+    const handleEditClick = useCallback(() => {
         setIsEditing(true);
-    };
+    }, []);
 
-    const handleSaveClick = async () => {
+    const handleSaveClick = useCallback(async () => {
         setIsEditing(false);
-
         try {
             const res = await ActualizarEstados(editedData);
             if (res) {
                 Swal.fire("Datos guardados", res.mensaje, "success");
+                await refetchData();
+                setDatos(editedData.map(item => ({ ...item }))); // Sincroniza datos
+                datosRef.current = editedData.map(item => ({ ...item })); // Actualiza referencia
             }
-            await refetchData();
-            setDatos(data);
         } catch (error) {
             console.error("Error actualizando estados:", error);
+            Swal.fire("Error", "No se pudieron guardar los datos. Inténtalo nuevamente.", "error");
         }
-    };
+    }, [ActualizarEstados, editedData, refetchData]);
 
-    const handleCancelClick = () => {
+    const handleCancelClick = useCallback(() => {
         setIsEditing(false);
-        setEditedData(datos.map(estado => ({ ...estado })));
-    };
+        setEditedData(datosRef.current.map(item => ({ ...item })));
+    }, []);
 
-    const handleChange = (index, e) => {
+    const handleChange = useCallback((index, e) => {
         const { value } = e.target;
-        const newEditedData = [...editedData];
-        newEditedData[index] = { ...newEditedData[index], nombre: value };
-        setEditedData(newEditedData);
-    };
+        setEditedData(prevData => {
+            const newData = [...prevData];
+            newData[index] = { ...newData[index], nombre: value };
+            return newData;
+        });
+    }, []);
 
     return (
         <div>
@@ -136,7 +142,7 @@ export const TablaVistaSolicitud = ({ data, refetchData }) => {
                         onClick={handleEditClick}
                         className="bg-blue-500 text-white px-4 py-2 rounded"
                     >
-                        <FontAwesomeIcon icon={faEdit} />
+                        <FontAwesomeIcon icon={faEdit} /> Editar
                     </button>
                 )}
             </div>

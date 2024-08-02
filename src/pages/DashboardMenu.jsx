@@ -131,7 +131,7 @@ export const DashboardMenu = ({ isOpen, toggleMenu }) => {
 
                         <div className="flex items-center">
                             <FontAwesomeIcon icon={faKey} className="mr-2" />
-                            Your API Key
+                            Tu Api key
                         </div>
                         <input
                             id='apiKey'
@@ -187,13 +187,13 @@ export const DashboardMenu = ({ isOpen, toggleMenu }) => {
                                     />
                                     <div className="flex justify-end space-x-4">
                                         <button
-                                            className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors duration-300"
+                                            className="bg-red-500 text-white  font-bold py-2 px-4 rounded-md border border-black hover:bg-red-700 transition-colors duration-300"
                                             onClick={handleCloseModal}
                                         >
                                             Cancelar
                                         </button>
                                         <button
-                                            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors duration-300"
+                                            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md border border-black"
                                             type='submit'
                                         >
                                             Confirmar

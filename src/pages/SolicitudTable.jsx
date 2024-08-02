@@ -19,7 +19,7 @@ export function SolicitudTable({ }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef(null);
 
-  const { soli, getSoli, deleteSolitud, declinarmySoi, cantidadestados, VercantTotalEstado, verMisEstados, estados, } = useSoli();
+  const { soli, getSoli, deleteSolitud, declinarmySoi, cantidadestados, VercantTotalEstado, verMisEstados, estados = [] } = useSoli();
   const { user } = useAuth();
 
   const [loading, setLoading] = useState(true);
@@ -65,13 +65,18 @@ export function SolicitudTable({ }) {
 
   useEffect(() => {
     if (Array.isArray(estados)) {
-      setEstadoInicial(estados.find(estado => estado.id === 1));
-      setEstadoConfolio(estados.find(estado => estado.id === 2));
-      setEstadoAbonando(estados.find(estado => estado.id === 3));
-      setEstadoCompletado(estados.find(estado => estado.id === 4));
-      setEstadoRechazada(estados.find(estado => estado.id === 5));
+      setEstadoInicial(estados.find(estado => estado.id === 1) || {});
+      setEstadoConfolio(estados.find(estado => estado.id === 2) || {});
+      setEstadoAbonando(estados.find(estado => estado.id === 3) || {});
+      setEstadoCompletado(estados.find(estado => estado.id === 4) || {});
+      setEstadoRechazada(estados.find(estado => estado.id === 5) || {});
     } else {
       console.error("estados no es un array:", estados);
+      setEstadoInicial({});
+      setEstadoConfolio({});
+      setEstadoAbonando({});
+      setEstadoCompletado({});
+      setEstadoRechazada({});
     }
   }, [estados]);
 
@@ -81,15 +86,15 @@ export function SolicitudTable({ }) {
 
   const [filteredSolicitudes, setFilteredSolicitudes] = useState(soli);
 
-useEffect(() => {
-  if (estadoRechazada) {
-    const rechazadasIds = soli.filter(solicitud =>
-      solicitud.estado && solicitud.estado.id === estadoRechazada.id
-    ).map(solicitud => solicitud._id);
+  useEffect(() => {
+    if (estadoRechazada) {
+      const rechazadasIds = soli.filter(solicitud =>
+        solicitud.estado && solicitud.estado.id === estadoRechazada.id
+      ).map(solicitud => solicitud._id);
 
-    setRejectedSolicitudes(rechazadasIds);
-  }
-}, [soli, estadoRechazada]);
+      setRejectedSolicitudes(rechazadasIds);
+    }
+  }, [soli, estadoRechazada]);
 
 
   useEffect(() => {

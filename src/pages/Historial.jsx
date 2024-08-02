@@ -2,9 +2,10 @@ import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useSoli } from '../context/SolicitudContext';
+import { useAuth } from '../context/authContext';
 import { useParams } from "react-router-dom";
 
-export function Historial() {
+export function Historial() {   
     const { id } = useParams();
     const [searchTerm, setSearchTerm] = useState("");
     const [solicitudesPerPage, setSolicitudesPerPage] = useState(10);
@@ -18,42 +19,56 @@ export function Historial() {
     const [isFiltroModalOpen, setIsFiltroModalOpen] = useState(false);
     const [selectedFiltro, setSelectedFiltro] = useState("");
 
-    const { historialUnaSoli, traehisorialDeUnaSoli } = useSoli();
+    const { historialUnaSoli, traehisorialDeUnaSoli, eliminarUnHistorialSoli } = useSoli();
+    const { user } = useAuth();
     const modalRef = useRef(null);
 
+
+    const [historialAEliminar, setHistorialAEliminar] = useState(null);
+
+
     useEffect(() => {
-        const iniciarDatos = async () => {
+        const iniciarDatos = async (id) => {
             try {
                 await traehisorialDeUnaSoli(id);
-                console.log(historialUnaSoli);
                 setDatosCargados(true);
             } catch (error) {
                 console.error("Error al cargar los datos", error);
             }
         };
         if (!cargarDatos) {
-            iniciarDatos();
+            iniciarDatos(id);
         }
-    }, [cargarDatos, traehisorialDeUnaSoli, id]);
+    }, [cargarDatos, id, traehisorialDeUnaSoli,]);
 
-    const abrirModalFiltro = () => {
-        setIsFiltroModalOpen(true);
-    };
+    const abrirModalFiltro = () => setIsFiltroModalOpen(true);
+    const cerrarModalFiltro = () => setIsFiltroModalOpen(false);
 
-    const cerrarModalFiltro = () => {
+    const aplicarFiltro = (filtro) => {
+        setSelectedFiltro(filtro);
         setIsFiltroModalOpen(false);
     };
 
-    const aplicarFiltro = () => {
-        setIsFiltroModalOpen(false);
-    };
-
-    const abrirModal = () => {
+    const abrirModal = (id) => {
+        setHistorialAEliminar(id);
         setIsModalOpen(true);
     };
 
-    const cerrarModal = () => {
-        setIsModalOpen(false);
+    const cerrarModal = () => setIsModalOpen(false);
+
+    const EliminarElementoHistorial = async () => {
+        try {
+            const data = {
+                idHistorial: historialAEliminar, user
+            }
+            await eliminarUnHistorialSoli(id, data);
+            await traehisorialDeUnaSoli(id);
+            setHistorialAEliminar(null);
+            setIsModalOpen(false);
+
+        } catch (error) {
+            console.error("Error al eliminar el campo", error);
+        }
     };
 
     const clearSearch = () => {
@@ -75,7 +90,9 @@ export function Historial() {
                 historial.descripcion.toLowerCase().includes(searchTerm.toLowerCase())) &&
             (filtroAno === "" || año === filtroAno) &&
             (filtroMes === "" || mes === filtroMes) &&
-            (filtroDia === "" || dia === filtroDia)
+            (filtroDia === "" || dia === filtroDia) &&
+            (selectedFiltro === "" || historial.accion === selectedFiltro)
+
         );
     });
 
@@ -182,7 +199,7 @@ export function Historial() {
                             <td className="text-center border p-2">{historial.numeroDeEntrega}</td>
                             <td className="text-center border p-2">{historial.descripcion}</td>
                             <td className="text-center border p-2">
-                                <button className="text-red-600" onClick={abrirModal}>
+                                <button className="text-red-600" onClick={() => abrirModal(historial._id)}>
                                     <FontAwesomeIcon icon={faTrash} />
                                 </button>
 
@@ -202,7 +219,7 @@ export function Historial() {
                         <p>¿Estás seguro de que quieres eliminar este registro?</p>
                         <div className="mt-4 flex justify-between">
                             <button onClick={cerrarModal} className="px-4 py-2 bg-gray-500 text-white rounded-lg">Cancelar</button>
-                            <button className="px-4 py-2 bg-red-500 text-white rounded-lg">Eliminar</button>
+                            <button onClick={EliminarElementoHistorial} className="px-4 py-2 bg-red-500 text-white rounded-lg">Eliminar</button>
                         </div>
                     </div>
                 </div>
@@ -217,24 +234,18 @@ export function Historial() {
                         ref={modalRef}
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <label htmlFor="filtro-movimiento" className="mr-2 text-white">Movimiento:</label>
-                        <select
-                            id="filtro-movimiento"
-                            className="p-1 border border-black rounded-lg text-black"
-                            value={selectedFiltro}
-                            onChange={(e) => setSelectedFiltro(e.target.value)}
-                        >
-                            <option value="">Todos</option>
-                            <option value="Entrega de materiales en la solicitud">Entrega de materiales en la solicitud</option>
-                            <option value="Creación de la solicitud">Creación de la solicitud</option>
-                            <option value="Eliminación de la solicitud">Eliminación de la solicitud</option>
-                            <option value="Actualización de la solicitud">Actualización de la solicitud</option>
-                            <option value="Asignación del folio">Asignación del folio</option>
-                            <option value="Rechazo de la solicitud">Rechazo de la solicitud</option>
-                        </select>
-                  
-                        <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg" onClick={aplicarFiltro}>Aplicar Filtro</button>
+                        <h2 className="text-xl text-center font-bold  text-black mb-4">Seleccionar Movimiento</h2>
+                        <div className="grid grid-cols-2 gap-4">
+                            <button onClick={() => aplicarFiltro("")} className="bg-blue-500 text-white py-2 px-4 rounded">Ver Todos</button>
+                            <button onClick={() => aplicarFiltro("Entrega de materiales")} className="bg-blue-500 text-white py-2 px-4 rounded">Entrega de materiales en la solicitud</button>
+                            <button onClick={() => aplicarFiltro("Creación de la solicitud")} className="bg-blue-500 text-white py-2 px-4 rounded">Creación de la solicitud</button>
+                            <button onClick={() => aplicarFiltro("Eliminación de la solicitud")} className="bg-blue-500 text-white py-2 px-4 rounded">Eliminación de la solicitud</button>
+                            {/* <button onClick={() => aplicarFiltro("Actualización de la solicitud")} className="bg-blue-500 text-white py-2 px-4 rounded">Actualización de la solicitud</button> */}
+                            <button onClick={() => aplicarFiltro("Asignación del folio")} className="bg-blue-500 text-white py-2 px-4 rounded">Asignación del folio</button>
+                            <button onClick={() => aplicarFiltro("Rechazo de la solicitud")} className="bg-blue-500 text-white py-2 px-4 rounded">Rechazo de la solicitud</button>
+                        </div>
                         <button className="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg" onClick={cerrarModalFiltro}>Cerrar</button>
+                        <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg" onClick={aplicarFiltro}>Aplicar Filtro</button>
                     </div>
                 </div>
             )

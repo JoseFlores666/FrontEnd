@@ -17,13 +17,11 @@ export const deleteSoli = async (id, user) =>
 
 export const getUnaSoli = async (id) => axios.get(`/solicitud/${id}`);
 
-
 //consulta de las firmas
 export const nombreFirmas = async () => axios.get(`/firmas/`);
 
 export const editarNombreFirmas = async (id, nombreFirmas) =>
   axios.put(`/firmas/${id}`, nombreFirmas);
-
 
 // consultas de hacia el api para la collecion "proyectos"
 export const idsProyect = async () => axios.get(`/proyecto/ids`);
@@ -33,10 +31,8 @@ export const traeUnProyectAct = async (id) => axios.get(`/proyecto/${id}`);
 export const getUnProyectYAct = async (proyectoId, actividadId) =>
   axios.get(`/proyecto/${proyectoId}/actividad/${actividadId}`);
 
-
 //abonos
 export const putAbono = async (id, soli) => axios.put(`/abono/${id}`, soli);
-
 
 //estados
 export const getFiltroEstado = async (estado) =>
@@ -53,8 +49,13 @@ export const actualizaEstado = async (EstadosAActualizar) =>
 export const declinarSoli = async (id, user) =>
   axios.put(`/solicitud/estado/${id}`, { user });
 
-
 //historialSolicitudes
 
 export const hisorialSolicitud = async () => axios.get(`/hisorialSolicitud`);
-export const hisorialDeUnaSoli = async (id) => axios.get(`/hisorialSolicitud/verDeUnUsuario/${id}`);
+export const hisorialDeUnaSoli = async (id) =>
+  axios.get(`/hisorialSolicitud/verDeUnUsuario/${id}`);
+
+export const deleteUnHistorialSoli = async (id, data) =>
+  axios.delete(`/hisorialSolicitud/eliminarUnHistorialSoli/${id}`, {
+    data: data,
+  });
