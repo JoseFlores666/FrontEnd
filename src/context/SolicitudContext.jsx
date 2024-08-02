@@ -13,7 +13,12 @@ import {
   updateSoliFolioExterno, getEstados, actualizaEstado,
   getVercantidadTotalEstados, declinarSoli,
   hisorialSolicitud, hisorialDeUnaSoli, deleteUnHistorialSoli,
+  getActividad, postActividad, asignarActividadesProyecto,
+  getProyecto, deleteActividad, putActividad,
+  getActSinAsignar, postProyecto, deleteProyecto,
+  asignarActividadProyect, ProyectCrearActYAsignarle
 } from "../api/soli";
+
 import {
   getInfome, createInfome, deleteInfome, llenadoDEPInforme, getUnaInfome,
   evaluacionDelInfome, getTecnicos, editarEstadoInforme, getEncabezado,
@@ -58,6 +63,10 @@ export function SoliProvider({ children }) {
   const [estados, setEstados] = useState([]);
   const [cantidadestados, setCantidadEstados] = useState("");
   const [imagenInfo, setImagenInfo] = useState("");
+  const [misProyectos, setMisProyectos] = useState("");
+  const [misActividades, setMisActividades] = useState("");
+  const [actSinAsignar, setActSinAsignar] = useState("");
+
 
   //Solicitudes
   const getSoli = async () => {
@@ -352,8 +361,8 @@ export function SoliProvider({ children }) {
       const res = await getTecnicos();
       setTecnicos(res.data);
     } catch (error) {
-      console.error("Error fetching solitudes:", error);
-      setErrors(["Error fetching solitudes"]);
+      console.error("Error fetching informe:", error);
+      setErrors(["Error fetching informe"]);
     }
   };
   const traerEncabezado = async (id) => {
@@ -362,8 +371,8 @@ export function SoliProvider({ children }) {
       !res ? console.log("Error al traer el informe") : console.log("Exito al consultar el informe")
       setEncabezado(res.data);
     } catch (error) {
-      console.error("Error fetching solitudes:", error);
-      setErrors(["Error fetching solitudes"]);
+      console.error("Error fetching informe(encabezado):", error);
+      setErrors(["Error fetching informe(encabezado)"]);
     }
   };
 
@@ -379,13 +388,12 @@ export function SoliProvider({ children }) {
   };
   const editarFirmas = async (nombrefirmas) => {
     try {
-
       const id = "664d5e645db2ce15d4468548";
       await editarNombreFirmas(id, nombrefirmas);
       console.log("Actulizado con exito");
     } catch (error) {
-      console.error("Error :", error);
-      setErrors(["Error fetching firmas"]);
+      console.error("Error al editar firmas", error);
+      setErrors(["Error editar firmas"]);
     }
   };
   //Folio
@@ -394,8 +402,8 @@ export function SoliProvider({ children }) {
       const res = await getfolioInterno();
       setMyFolioInterno(res.data.folio);
     } catch (error) {
-      console.error("Error fetching firmas:", error);
-      setErrors(["Error fetching firnas"]);
+      console.error("Error fetching folioInterno:", error);
+      setErrors(["Error fetching folioInterno"]);
     }
   };
   const traeFolioInternoInforme = async () => {
@@ -403,8 +411,8 @@ export function SoliProvider({ children }) {
       const res = await getfolioInternoInforme();
       setMyFolioInternoInfo(res.data.folioInforme);
     } catch (error) {
-      console.error("Error fetching firmas:", error);
-      setErrors(["Error fetching firnas"]);
+      console.error("Error fetching folioInternoInforme:", error);
+      setErrors(["Error fetching folioInternoInforme"]);
     }
   };
 
@@ -414,8 +422,8 @@ export function SoliProvider({ children }) {
       const res = await gethistorialOrdenTrabajo();
       setHistorialOrden(res.data);
     } catch (error) {
-      console.error("Error fetching firmas:", error);
-      setErrors(["Error fetching firnas"]);
+      console.error("Error fetching historialOrden:", error);
+      setErrors(["Error fetching historialOrden"]);
     }
   };
   const traeHistorialSoli = async () => {
@@ -423,8 +431,8 @@ export function SoliProvider({ children }) {
       const res = await gethistorialSoli();
       setHistorialSoli(res.data);
     } catch (error) {
-      console.error("Error fetching firmas:", error);
-      setErrors(["Error fetching firnas"]);
+      console.error("Error fetching historialSoli:", error);
+      setErrors(["Error fetching historialSoli"]);
     }
   };
   //PARA El APY DEL PDF
@@ -442,7 +450,7 @@ export function SoliProvider({ children }) {
       await actualizaApi_key(idApiKeys, newApiKey);
     } catch (error) {
       console.error("Error al editar el api_key:", error);
-      setErrors(["Error fetching api_key"]);
+      setErrors(["Error al editar api_key"]);
     }
   };
   const CrearUnaApi_key = async (myApi_key) => {
@@ -450,12 +458,134 @@ export function SoliProvider({ children }) {
       await CrearApi_key(myApi_key);
     } catch (error) {
       console.error("Error al crear el api_key:", error);
-      setErrors(["Error fetching api_key"]);
+      setErrors(["Error crear una api_key"]);
+    }
+  }
+
+  //Actividad
+  const traerActividades = async () => {
+    try {
+      const res = await getActividad();
+      setMisActividades(res.data)
+    } catch (error) {
+      console.error("Error al consultar las actividades", error);
+      setErrors(["Error fetching actividad"]);
+    }
+  }
+  const traerActSinAsignar = async () => {
+    try {
+      const res = await getActSinAsignar();
+      setActSinAsignar(res.data)
+    } catch (error) {
+      console.error("Error al consultar las actividades", error);
+      setErrors(["Error fetching actividad"]);
+    }
+  }
+
+  const crearActividad = async (actividad) => {
+    try {
+      const res = await postActividad(actividad);
+      console.log(res.data)
+      return res;
+    } catch (error) {
+      console.log(error.response.data);
+      setErrors(error.response.data.message);
+    }
+  }
+  const actualizarAct = async (id, data) => {
+    try {
+      const res = await putActividad(id, data);
+      console.log(res.data)
+      return res;
+    } catch (error) {
+      console.log(error.response.data);
+      setErrors(error.response.data.message);
+    }
+  }
+
+  const eliminarActividad = async (id) => {
+    try {
+      const res = await deleteActividad(id);
+      console.log(res.data)
+      return res;
+    } catch (error) {
+      console.log(error.response.data);
+      setErrors(error.response.data.message);
+    }
+  }
+  //Proyecto
+  const traerProyectos = async () => {
+    try {
+      const res = await getProyecto();
+      setMisProyectos(res.data)
+    } catch (error) {
+      console.error("Error al consultar los proyectos ", error);
+      setErrors(["Error fetching actividad"]);
+    }
+  }
+  const crearProyecto = async (proyecto) => {
+    try {
+      const res = await postProyecto(proyecto);
+      return res;
+    } catch (error) {
+      console.error("Error al crear el proyecto", error);
+      setErrors(["Error al crear el proyecto"]);
+    }
+  }
+  const proyectAsignarActividades = async (id, idActividades) => {
+    try {
+      const res = await asignarActividadProyect(id, idActividades);
+      return res;
+    } catch (error) {
+      console.error("Error al asginarle las actividades a su proyecto", error);
+      setErrors(["Error al asginarle las actividades a su proyecto"]);
+    }
+  }
+  const crearActYasignarProyect = async (id, actividades) => {
+    try {
+      const res = await ProyectCrearActYAsignarle(id, actividades);
+      return res;
+    } catch (error) {
+      console.error("Error al intentar crear y asginarle las actividades a su proyecto", error);
+      setErrors(["Error al intentar crear y asginarle las actividades a su proyecto"]);
+    }
+  }
+  const eliminarProyecto = async (id) => {
+    try {
+      const res = await deleteProyecto(id);
+      return res;
+    } catch (error) {
+      console.error("Error al eliminar su proyecto", error);
+      setErrors(["Error al eliminar su proyecto"]);
+    }
+  }
+
+  const asignarActProyecto = async (actividad) => {
+    try {
+      const res = await asignarActividadesProyecto(actividad);
+      return res.data;
+    } catch (error) {
+      console.error("Error al asingar una o varias actividades a un proyecto", error);
+      setErrors(["Error al asingar una o varias actividades a un proyecto"]);
     }
   }
   return (
     <SoliContext.Provider
       value={{
+        traerActividades,
+        proyectAsignarActividades,
+        crearActYasignarProyect,
+        eliminarActividad,
+        traerActSinAsignar,
+        actSinAsignar,
+        actualizarAct,
+        crearProyecto,
+        eliminarProyecto,
+        traerProyectos,
+        asignarActProyecto,
+        misProyectos,
+        misActividades,
+        crearActividad,
         ObservacionesDelTenico,
         ActualizarEstados,
         estados,

@@ -192,14 +192,21 @@ export const AbonoSolicitud = () => {
                             />
                         </div>
                     </GridContainer>
+                    {allItemsCompleted && (
+                        <div className="text-center mt-6">
+                            <h1 className="text-green-500 text-3xl font-bold">¡Solicitud completada!</h1>
+                            <FaCheckCircle className="text-green-500 text-5xl mt-4 mx-auto" />
+                        </div>
+                    )}
+
                 </div>
 
                 {showItems && items.map((item, index) => (
                     item.cantidadAcumulada !== item.cantidad && (
                         <div key={index} className="space-y-4 mb-4">
                             <div className="mb-1 bg-gray-100 p-4 rounded-lg shadow-lg">
-                            <Label>Abono: {abonoCounter + index}</Label>
-                            <div className="grid grid-cols-5 gap-4">
+                                <Label>Abono: {abonoCounter + index}</Label>
+                                <div className="grid grid-cols-5 gap-4">
                                     <div className="">
                                         <Label>Cantidad:</Label>
                                         <input
@@ -276,16 +283,15 @@ export const AbonoSolicitud = () => {
                                     <p className="text-red-500 text-xs mt-1">{errors.items[index].descripcion.message}</p>
                                 )}
                             </div>
+
                         </div>
+
                     )
+
                 ))}
-                {allItemsCompleted && (
-                    <div className="text-center mt-6">
-                        <h1 className="text-green-500 text-3xl font-bold">¡Solicitud completada!</h1>
-                        <FaCheckCircle className="text-green-500 text-5xl mt-4 mx-auto" />
-                    </div>
-                )}
+
                 {!allItemsCompleted && (
+                    // <div className="bg-white p-6 rounded-md shadow-md mb-4">
                     <div className="flex justify-center mt-8">
                         <button
                             type="submit"
@@ -294,8 +300,8 @@ export const AbonoSolicitud = () => {
                             Realizar Entregar
                         </button>
                     </div>
+                    // </div>
                 )}
-
             </form>
         </div>
     );

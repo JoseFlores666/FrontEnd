@@ -1,223 +1,600 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt, faEdit } from '@fortawesome/free-solid-svg-icons';
-import { Title } from '../components/ui';
+import { faTrashAlt, faEdit, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { useSoli } from '../context/SolicitudContext';
+// import { useAuth } from '../context/authContext';
+import { ImFileEmpty } from "react-icons/im";
+import Swal from "sweetalert2";
+import { Card, Message, Button, Input, Label } from "../components/ui";
 
 export const ProjectAndActManager = () => {
-    const [projects, setProjects] = useState([]);
     const [newProject, setNewProject] = useState('');
-    const [activeProject, setActiveProject] = useState(null);
-    const [activities, setActivities] = useState({});
-    const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
-    const [isActivityModalOpen, setIsActivityModalOpen] = useState(false);
-    const [selectedProject, setSelectedProject] = useState(null);
-    const [newActivity, setNewActivity] = useState('');
-    const [editingActivity, setEditingActivity] = useState({ project: null, index: null, text: '' });
+    const [newActivities, setNewActivities] = useState([{ nombre: '', descripcion: '' }]);
 
-    const openProjectModal = () => setIsProjectModalOpen(true);
-    const closeProjectModal = () => setIsProjectModalOpen(false);
-    const openActivityModal = (project) => {
-        setSelectedProject(project);
-        setIsActivityModalOpen(true);
+    const [newActivity, setNewActivity] = useState({ nombre: '', descripcion: '' });
+    const [editingActivity, setEditingActivity] = useState({ index: null, nombre: '', descripcion: '' });
+    const [idActivity, setIdActivity] = useState({ index: null, nombre: '', descripcion: '' });
+    const [editingProject, setEditingProject] = useState({ index: null, nombre: '', actividades: [] });
+    const [expandedProjectIndex, setExpandedProjectIndex] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const [projectId, setProjectId] = useState("");
+
+    const [selectedActivities, setSelectedActivities] = useState([]);
+    const [showActivityModal, setShowActivityModal] = useState(false);
+    const [selectedProjectIndex, setSelectedProjectIndex] = useState(null);
+    const [modalView, setModalView] = useState('create');
+
+    const { traerActividades, traerProyectos, crearProyecto, eliminarProyecto, proyectAsignarActividades,
+        errors: ProyectActErr, misProyectos = [], crearActYasignarProyect,
+        misActividades = [], crearActividad, eliminarActividad, actualizarAct, traerActSinAsignar,
+        actSinAsignar, } = useSoli();
+
+    const [datosCargados, setDatosCargados] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        const iniciarDatos = async () => {
+            try {
+                await traerActividades();
+                await traerProyectos();
+                await traerActSinAsignar();
+                setLoading(true)
+                setDatosCargados(true);
+            } catch (error) {
+                console.error("Error al cargar los datos", error);
+                Swal.fire("Error del servidor ", "Error al intentar consultar en el servidor ", "info");
+            }
+        }
+        if (!datosCargados) {
+            iniciarDatos();
+        }
+    }, [traerActividades, traerProyectos, datosCargados]);
+
+    // Funciones para manejar Actividades
+    const CrearNuevaActividad = async () => {
+        if (newActivity.nombre.trim() && newActivity.descripcion.trim()) {
+            try {
+
+                const res = await crearActividad(newActivity);
+                if (res && res.data?.mensaje) {
+                    Swal.fire("Datos guardados", res.data?.mensaje, "success");
+                    setDatosCargados(false);
+                } else {
+                    Swal.fire("Error", res?.error || "Error desconocido", "error");
+                }
+            } catch (error) {
+                Swal.fire("Error de servidor", "Error al crear su actividad ", "info");
+            }
+            setNewActivity({ nombre: '', descripcion: '' });
+        }
     };
-    const closeActivityModal = () => setIsActivityModalOpen(false);
+    const updateActivity = async () => {
+        try {
+            console.log()
+            const res = await actualizarAct(idActivity, editingActivity);
+            if (res && res.data?.mensaje) {
+                Swal.fire("Datos actualizados", res.data?.mensaje, "success");
+                setEditingActivity(null);
+                setIsModalOpen(false);
+                setDatosCargados(false);
+            } else {
+                Swal.fire("Error", res.data?.error || "Error desconocido", "error");
+            }
+        } catch (error) {
+            console.error("Error al actualizar la actividad", error);
+            Swal.fire("Error de servidor", "Error al actualizar su actividad", "info");
+        }
+    };
+    const deleteActivity = (index, id) => {
+        console.log(id)
+        if (index !== null) {
+            eliminarActividad(id)
+            setEditingActivity({ index: null, nombre: '', descripcion: '' });
+            setDatosCargados(false);
+        }
+    };
+    const openEditModal = (activity, id) => {
+        setEditingActivity(activity);
+        setIdActivity(id)
+        setIsModalOpen(true);
+    };
 
-    const addProject = () => {
-        if (newProject.trim() && !projects.includes(newProject)) {
-            setProjects([...projects, newProject]);
-            setActivities({ ...activities, [newProject]: [] });
+    const closeEditModal = () => {
+        setEditingActivity(null);
+        setIsModalOpen(false);
+    };
+
+    // Funciones para manejar Proyectos
+    const addProject = async () => {
+        if (newProject.trim()) {
+            try {
+                console.log(newProject)
+                const res = await crearProyecto(newProject)
+                if (res && res.data?.mensaje) {
+                    Swal.fire("Proyecto creado con exito", res.data?.mensaje, "success")
+                    setDatosCargados(false);
+                } else {
+                    Swal.fire("Ups, Ocurrio un error", res.data?.error || "Error desconocido", "error")
+                }
+            } catch (error) {
+                console.error("Error al crear su proyecto", error);
+                Swal.fire("Error de servidor", "Error al crear su proyecto", "error");
+            }
             setNewProject('');
-            closeProjectModal();
+        }
+        else {
+            Swal.fire("Informativo", "proyecto no ingresado favor de intentar de nuevo", "info");
         }
     };
 
-    const addActivityToProject = () => {
-        if (newActivity.trim() && selectedProject) {
-            setActivities({
-                ...activities,
-                [selectedProject]: [...(activities[selectedProject] || []), newActivity]
-            });
-            setNewActivity('');
-            closeActivityModal();
+    const deleteProject = async (index, id) => {
+        if (index !== null && id !== null) {
+            try {
+                const res = await eliminarProyecto(id)
+                console.log(res)
+                if (res && res.data?.mensaje) {
+                    Swal.fire("Proyecto eliminado con exito", res.data?.mensaje, "success")
+                    setDatosCargados(false);
+                } else {
+                    Swal.fire("Ups, Ocurrio un error", res.data?.error || "Error desconocido", "error")
+                }
+            } catch (error) {
+                Swal.fire("Error de servidor", "Error al eliminar su proyecto", "info");
+            }
+
+        } else {
+            Swal.fire("Informativo", "proyecto no selecionado favor de intentar de nuevo", "info");
         }
     };
 
-    const editActivityInProject = () => {
-        const { project, index, text } = editingActivity;
-        if (text.trim() && project != null && index != null) {
-            const updatedActivities = [...(activities[project] || [])];
-            updatedActivities[index] = text;
-            setActivities({ ...activities, [project]: updatedActivities });
-            setEditingActivity({ project: null, index: null, text: '' });
+    const toggleProjectActivities = (index) => {
+        setExpandedProjectIndex(expandedProjectIndex === index ? null : index);
+    };
+
+    const addActivityField = () => {
+        setNewActivities([...newActivities, { nombre: '', descripcion: '' }]);
+    };
+
+    const handleActivityChange = (index, field, value) => {
+        const updatedActivities = [...newActivities];
+        updatedActivities[index][field] = value;
+        setNewActivities(updatedActivities);
+    };
+
+    const removeActivityField = (index) => {
+        const updatedActivities = newActivities.filter((_, i) => i !== index);
+        setNewActivities(updatedActivities);
+    };
+
+    const editarProyectoActividades = async () => {
+        Swal.fire("Pendiente", "Selección aun no implementada XD, Pero lo demas ya funciona ;D", "info");
+    };
+    const CrearNuevasActividades = async () => {
+        if (newActivities.length > 0) {
+            console.log('Creating new activities:', newActivities);
+            try {
+                const res = await crearActYasignarProyect(projectId, newActivities);
+                if (res && res.data?.mensaje) {
+                    Swal.fire("Actividades creadas y asignadas con exito", res.data?.mensaje, "success")
+                    setDatosCargados(false);
+                } else {
+                    Swal.fire("Ups, Ocurrio un error", res.data?.error || "Error desconocido", "error")
+                }
+            } catch (error) {
+                Swal.fire("Error de servidor", "Error al  crear y/o asignarla a su proyecto", "info");
+            }
+
+            setNewActivities([{ nombre: '', descripcion: '' }]);
+        };
+        Swal.fire("Informativo", "Llenar el campo", "info");
+    }
+
+    const assignAcvitiesToProject = async () => {
+        if (selectedActivities.length > 0) {
+            try {
+                const res = await proyectAsignarActividades(projectId, selectedActivities)
+                if (res && res.data?.mensaje) {
+                    Swal.fire("Actividades asignadas", res.data?.mensaje, "success");
+                    setDatosCargados(false);
+                    closeActivityModal()
+                } else {
+                    Swal.fire("Error", res.data?.error || "Error desconocido", "error");
+                }
+            } catch (error) {
+                console.error("Error al asignar las actividades", error);
+                Swal.fire("Error de servidor", "Error al asignar las actividades", "error");
+            }
+        } else {
+            Swal.fire("Informativo", "Por favor seleccione algún proyecto", "info");
         }
     };
 
-    const handleDeleteProject = (projectToDelete) => {
-        setProjects(projects.filter(project => project !== projectToDelete));
-        const newActivities = { ...activities };
-        delete newActivities[projectToDelete];
-        setActivities(newActivities);
-        if (activeProject === projectToDelete) {
-            setActiveProject(null);
-        }
+
+    const toggleActivitySelection = (activityId) => {
+        const isSelected = selectedActivities.includes(activityId);
+        if (isSelected) {
+            // Si la actividad ya está seleccionada, desmarcarla
+            setSelectedActivities(selectedActivities.filter(id => id !== activityId));
+        } else {
+            // Si la actividad no está seleccionada, marcarla
+            setSelectedActivities([...selectedActivities, activityId]);
+        };
+    }
+
+    const openActivityModal = (index) => {
+        setSelectedProjectIndex(index);
+        setShowActivityModal(true);
+        setModalView('create'); // Por defecto, mostrar la vista para crear nueva actividad
     };
 
-    const handleDeleteActivity = (project, activityIndex) => {
-        const updatedActivities = activities[project].filter((_, index) => index !== activityIndex);
-        setActivities({ ...activities, [project]: updatedActivities });
+    const closeActivityModal = () => {
+        setShowActivityModal(false);
+        setModalView('create'); // Restablecer vista al cerrar el modal
     };
 
-    const handleEditActivity = (project, activityIndex) => {
-        setEditingActivity({ project, index: activityIndex, text: activities[project][activityIndex] });
-        setIsActivityModalOpen(true);
-    };
+    if (!loading) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <div className="text-center mt-50 text-cool-gray-50 font-bold">
+                    <div className="mb-4">Cargando...</div>
+                    <ImFileEmpty className="animate-spin text-purple-50-500 text-6xl" />
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="mx-auto max-w-7xl p-4 text-black">
             <div className="bg-white p-8 rounded-lg shadow-lg">
-               <Title>Gestión De Proyectos y Actividades</Title>
-                <div className='flex items-center justify-center'>
-                    <button
-                        onClick={openProjectModal}
-                        className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300"
-                    >
-                        Agregar Proyecto
-                    </button>
+                <h1 className="text-2xl text-center font-bold mb-8">Gestión De Proyectos y Actividades</h1>
+                {/* Tabla de Proyectos con Actividades */}
+                <div>
+                    <h2 className="text-xl font-bold mb-4">Ver Proyectos con Actividades</h2>
+                    <table className="w-full caption-bottom text-sm border">
+                        <thead className="[&_tr]:border border-gray-400">
+                            <tr className="border transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted border-gray-400">
+                                <th className="h-12 text-center px-4 align-middle font-medium text-black border-gray-400">Nombre del Proyecto</th>
+                                <th className="h-12 px-4 text-center align-middle font-medium text-black border-gray-400">Mostrar/Ocultar Actividades</th>
+                            </tr>
+                        </thead>
+                        <tbody className="[&_tr:last-child]:border-0 border-b border-r border-l border-gray-400">
+                            {misProyectos.map((project, index) => (
+                                <React.Fragment key={index}>
+                                    <tr
+                                        className={`border-b transition-colors ${expandedProjectIndex === index ? 'bg-verde-palido' : 'hover:bg-muted/50'
+                                            } border-gray-400`}
+                                    >
+                                        <td className="align-middle border border-gray-400 px-4 text-center">
+                                            {project.nombre}
+                                        </td>
+                                        <td className="align-middle border border-gray-400 px-4 text-center">
+                                            <button
+                                                onClick={() => toggleProjectActivities(index)}
+                                                className="bg-blue-600 text-white py-1 px-2 rounded-lg hover:bg-blue-700 transition duration-300"
+                                            >
+                                                {expandedProjectIndex === index ? 'Ocultar Actividades' : 'Mostrar Actividades'}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {expandedProjectIndex === index && project.actividades && (
+                                        <tr>
+                                            <td colSpan={2} className="border border-gray-400">
+                                                <table
+                                                    className="w-full text-sm border-t border-gray-400"
+                                                >
+                                                    <thead>
+                                                        <tr className="bg-gray-200 border">
+                                                            <th className="px-4 py-2 text-center">Actividades asignadas</th>
+                                                            <th className="px-4 py-2 text-center">Descripción</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {project.actividades.map((activity, i) => (
+                                                            <tr
+                                                                key={i}
+                                                                className={`border-b transition-colors ${expandedProjectIndex === index ? 'bg-verde-clarito border border-white' : 'hover:bg-muted/50'
+                                                                    }`}
+                                                            >
+                                                                <td className="text-center text-black px-4 py-2">
+                                                                    {activity.nombre}
+                                                                </td>
+                                                                <td className="text-center px-4 py-2">
+                                                                    {activity.descripcion}
+                                                                </td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    )}
+                                </React.Fragment>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
-                <ul className="">
-                    {projects.map((project, index) => (
-                        <li key={index} className="rounded-lg p-4 bg-gray-50">
-                            <div
-                                className="flex items-center justify-between cursor-pointer"
-                                onClick={() => setActiveProject(project === activeProject ? null : project)}
-                            >
-                                <div className="flex-1 border border-gray-500 text-black bg-white-500 p-2 rounded-lg hover:bg-white-600">
-                                    {project}
-                                </div>
-                                <div className="flex-shrink-0 ml-2 flex space-x-1">
-                                    <button
-                                        onClick={() => openActivityModal(project)}
-                                        className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-lg"
-                                    >
-                                        Asignar Actividades
-                                    </button>
-                                    <button
-                                        onClick={() => handleDeleteProject(project)}
-                                        className="text-red-500 hover:text-red-700 p-2 rounded-lg"
-                                    >
-                                        <FontAwesomeIcon icon={faTrashAlt} />
-                                    </button>
-                                    <button
-                                        onClick={() => handleDeleteActivity(project, idx)}
-                                        className="text-blue-500 hover:text-blue-700 p-2 rounded-lg"
-                                    >
-                                        <FontAwesomeIcon icon={faEdit} />
-                                    </button>
-                                </div>
-                            </div>
-                            {activeProject === project && (
-                                <div className="bg-gray-200 p-2">
-                                    <h3 className="text-lg font-semibold">Actividades:</h3>
-                                    <ul>
-                                        {activities[project] && activities[project].map((activity, idx) => (
-                                            <li key={idx} className="flex items-center hover:bg-gray-300 p-1 rounded-lg transition duration-300">
-                                                <span className="flex-1">{activity}</span>
-                                                <div className="space-x-2">
-                                                    <button
-                                                        onClick={() => handleEditActivity(project, idx)}
-                                                        className="text-blue-500 hover:text-blue-700 p-2 rounded-lg transition duration-300"
-                                                    >
-                                                        <FontAwesomeIcon icon={faEdit} />
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleDeleteActivity(project, idx)}
-                                                        className="text-red-500 hover:text-red-700 p-2 rounded-lg transition duration-300"
-                                                    >
-                                                        <FontAwesomeIcon icon={faTrashAlt} />
-                                                    </button>
-                                                </div>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            )}
-                        </li>
-                    ))}
-                </ul>
-            </div>
 
-            {isProjectModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-                        <h3 className="text-xl font-bold mb-4">Agregar Proyecto</h3>
+                {/* Tabla de Proyectos */}
+                <div className="mb-8">
+                    <h2 className="text-xl font-bold mb-4">Proyectos</h2>
+                    <div className="mb-4">
                         <input
                             type="text"
+                            placeholder="Nombre del proyecto"
                             value={newProject}
                             onChange={(e) => setNewProject(e.target.value)}
-                            placeholder="Nombre del nuevo proyecto"
-                            className="border p-2 rounded-lg mb-4 w-full"
+                            className="border p-2 rounded-lg mr-2"
                         />
-                        <div className="flex justify-end">
-                            <button
-                                onClick={closeProjectModal}
-                                className="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg mr-2"
-                            >
-                                Cancelar
-                            </button>
-                            <button
-                                onClick={addProject}
-                                className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300"
-                            >
-                                Agregar
-                            </button>
+                        <button
+                            onClick={addProject}
+                            className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300"
+                        >
+                            Agregar Proyecto
+                        </button>
+                    </div>
+                    <table className="w-full caption-bottom text-sm border">
+                        <thead className="[&_tr]:border border-gray-400">
+                            <tr className="border transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted border-gray-400">
+                                <th className="h-12 text-center px-4 align-middle font-medium text-black border-gray-400">Nombre del Proyecto</th>
+                                <th className="h-12 px-4 text-center align-middle font-medium text-black border-gray-400">Actividades No Asignadas</th>
+                                <th className="h-12 px-4 align-middle font-medium text-black border-gray-400">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody className="[&_tr:last-child]:border-0 border-b border-r border-l border-gray-400">
+                            {misProyectos.map((project, index) => (
+                                <tr key={index} className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted border-gray-400">
+                                    <td className="align-middle border border-gray-400 px-4 text-center">{project.nombre}</td>
+                                    <td className="align-middle border border-gray-400 px-4 text-center">
+
+                                        <button
+                                            onClick={() => {
+                                                openActivityModal(index)
+
+                                                    , setProjectId(project._id)
+                                            }}
+                                            className="text-blue-600 hover:text-blue-800"
+                                        >
+                                            Asignar Actividades
+                                        </button>
+
+                                    </td>
+                                    <td className="align-middle border border-gray-400">
+                                        <div className="flex items-center justify-center space-x-2">
+                                            <button
+                                                onClick={() => {
+                                                    setEditingProject({ index, nombre: project.nombre, actividades: project.actividades }),
+                                                        editarProyectoActividades()
+                                                }
+                                                }
+                                                className="text-blue-500 hover:text-blue-700 p-2 rounded-lg"
+                                            >
+                                                <FontAwesomeIcon icon={faEdit} />
+                                            </button>
+                                            <button
+                                                onClick={() => deleteProject(index, project._id)}
+                                                className="text-red-500 hover:text-red-700 p-2 rounded-lg"
+                                            >
+                                                <FontAwesomeIcon icon={faTrashAlt} />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+                {showActivityModal && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
+                            <div className="mb-4 flex border-b border-gray-200">
+                                <button
+                                    onClick={() => setModalView('create')}
+                                    className={`flex-1 py-2 px-4 rounded-l-lg font-semibold ${modalView === 'create' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-black'}`}
+                                >
+                                    Crear Nueva Actividad
+                                </button>
+                                <button
+                                    onClick={() => setModalView('assign')}
+                                    className={`flex-1 py-2 px-4 rounded-r-lg font-semibold ${modalView === 'assign' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-black'}`}
+                                >
+                                    Asignar Actividades
+                                </button>
+                            </div>
+                            <div className="mt-4">
+                                {modalView === 'create' ? (
+                                    <div>
+                                        <h3 className="text-lg font-bold mb-4">Agregar Nuevas Actividades</h3>
+                                        {newActivities.map((activity, index) => (
+                                            <div key={index} className="mb-4 border p-4 rounded-lg shadow-sm">
+                                                <input
+                                                    type="text"
+                                                    placeholder="Nombre de la nueva actividad"
+                                                    value={activity.nombre}
+                                                    onChange={(e) => handleActivityChange(index, 'nombre', e.target.value)}
+                                                    className="border p-2 rounded-lg mb-2 w-full"
+                                                />
+                                                <input
+                                                    type="text"
+                                                    placeholder="Descripción de la nueva actividad"
+                                                    value={activity.descripcion}
+                                                    onChange={(e) => handleActivityChange(index, 'descripcion', e.target.value)}
+                                                    className="border p-2 rounded-lg mb-2 w-full"
+                                                />
+                                                <button
+                                                    onClick={() => removeActivityField(index)}
+                                                    className="text-red-600 hover:text-red-800"
+                                                >
+                                                    Eliminar
+                                                </button>
+                                            </div>
+                                        ))}
+                                        <button
+                                            onClick={addActivityField}
+                                            className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition duration-300 mb-2"
+                                        >
+                                            Agregar Otro Campo
+                                        </button>
+                                        <div>
+                                            <button
+                                                onClick={closeActivityModal}
+                                                className="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition duration-300"
+                                            >
+                                                Cerrar
+                                            </button>
+                                            <button
+                                                onClick={CrearNuevasActividades}
+                                                className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300"
+                                            >
+                                                Crear Actividades
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <h3 className="text-lg font-bold mb-4">Asignar Actividades al Proyecto</h3>
+                                        <div className="max-h-60 overflow-y-auto mb-4">
+                                            {Array.isArray(actSinAsignar) && actSinAsignar.map((activity, index) => (
+                                                <div key={activity._id} className="flex items-center mb-2 border p-2 rounded-lg shadow-sm hover:bg-gray-100 transition duration-300">
+                                                    <input
+                                                        type="checkbox"
+                                                        id={`activity-${index}`}
+                                                        checked={selectedActivities.includes(activity._id)}
+                                                        onChange={() => toggleActivitySelection(activity._id)}
+                                                        className="mr-3"
+                                                    />
+                                                    <label htmlFor={`activity-${index}`} className="text-gray-700 font-medium">{activity.nombre}</label>
+                                                    <span className="text-gray-500 text-sm ml-2">- {activity.descripcion}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div className="flex justify-end space-x-2">
+                                            <button
+                                                onClick={closeActivityModal}
+                                                className="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition duration-300"
+                                            >
+                                                Cerrar
+                                            </button>
+                                            <button
+                                                onClick={() => assignAcvitiesToProject()}
+                                                className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300"
+                                            >
+                                                Asignar Actividades
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                )}
+                                <button
+                                    onClick={closeActivityModal}
+                                    className="absolute top-1 right-2 text-gray-500 hover:text-gray-700"
+                                >
+                                    <FontAwesomeIcon icon={faTimes} size="xl" />
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
 
-            {isActivityModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-                        <h3 className="text-xl font-bold mb-4">{editingActivity.project != null ? `Editar Actividad en ${selectedProject}` : `${selectedProject}`}</h3>
+                {/* Tabla de Actividades */}
+                <div className="mb-8">
+                    <h2 className="text-xl font-bold mb-4">Actividades</h2>
+                    <div className="mb-4">
                         <input
                             type="text"
-                            value={editingActivity.text || newActivity}
-                            onChange={(e) => {
-                                if (editingActivity.project != null) {
-                                    setEditingActivity({ ...editingActivity, text: e.target.value });
-                                } else {
-                                    setNewActivity(e.target.value);
-                                }
-                            }}
-                            placeholder="Nueva actividad"
-                            className="border p-2 rounded-lg mb-4 w-full"
+                            placeholder="Nombre de la actividad"
+                            value={newActivity.nombre}
+                            onChange={(e) => setNewActivity({ ...newActivity, nombre: e.target.value })}
+                            className="border p-2 rounded-lg mr-2"
                         />
-                        <div className="flex justify-end">
-                            <button
-                                onClick={closeActivityModal}
-                                className="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg mr-2"
-                            >
-                                Cancelar
-                            </button>
-                            {editingActivity.project != null ? (
+                        <input
+                            type="text"
+                            placeholder="Descripción de la actividad"
+                            value={newActivity.descripcion}
+                            onChange={(e) => setNewActivity({ ...newActivity, descripcion: e.target.value })}
+                            className="border p-2 rounded-lg mr-2"
+                        />
+                        <button
+                            onClick={CrearNuevaActividad}
+                            className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300"
+                        >
+                            Agregar Actividad
+                        </button>
+                    </div>
+                    <table className="w-full caption-bottom text-sm border">
+                        <thead className="[&_tr]:border border-gray-400">
+                            <tr className="border transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted border-gray-400">
+                                <th className="h-12 text-center px-4 align-middle font-medium text-black border-gray-400">Nombre</th>
+                                <th className="h-12 px-4 text-center align-middle font-medium text-black border-gray-400">Descripción</th>
+                                <th className="h-12 px-4 align-middle font-medium text-black border-gray-400">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody className="[&_tr:last-child]:border-0 border-b border-r border-l border-gray-400">
+                            {Array.isArray(misActividades) && misActividades.map((activity, index) => (
+                                <tr key={index} className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted border-gray-400">
+                                    <td className="align-middle border border-gray-400 px-4 text-center">{activity.nombre}</td>
+                                    <td className="align-middle border border-gray-400 px-4 text-center">{activity.descripcion}</td>
+                                    <td className="align-middle border border-gray-400">
+                                        <div className="flex items-center justify-center space-x-2">
+                                            <button
+                                                onClick={() => openEditModal({ index, nombre: activity.nombre, descripcion: activity.descripcion, }, activity._id)}
+                                                className="text-blue-500 hover:text-blue-700 p-2 rounded-lg"
+                                            >
+                                                <FontAwesomeIcon icon={faEdit} />
+                                            </button>
+                                            <button
+                                                onClick={() => deleteActivity(index, activity._id)}
+                                                className="text-red-500 hover:text-red-700 p-2 rounded-lg"
+                                            >
+                                                <FontAwesomeIcon icon={faTrashAlt} />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+                {/* Modal de Edición */}
+                {isModalOpen && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50 z-50">
+                        <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+                            <h2 className="text-xl font-bold mb-4">Editar Actividad</h2>
+                            <input
+                                type="text"
+                                placeholder="Nombre"
+                                value={editingActivity?.nombre || ''}
+                                onChange={(e) => setEditingActivity({ ...editingActivity, nombre: e.target.value })}
+                                className="border p-2 rounded-lg mb-2 w-full"
+                            />
+                            <input
+                                type="text"
+                                placeholder="Descripción"
+                                value={editingActivity?.descripcion || ''}
+                                onChange={(e) => setEditingActivity({ ...editingActivity, descripcion: e.target.value })}
+                                className="border p-2 rounded-lg mb-4 w-full"
+                            />
+                            <div className="flex justify-between">
                                 <button
-                                    onClick={editActivityInProject}
+                                    onClick={updateActivity}
                                     className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300"
                                 >
-                                    Editar Actividad
+                                    Guardar
                                 </button>
-                            ) : (
                                 <button
-                                    onClick={addActivityToProject}
-                                    className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300"
+                                    onClick={closeEditModal}
+                                    className="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition duration-300"
                                 >
-                                    Añadir Actividad
+                                    Cancelar
                                 </button>
-                            )}
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                )}
+                {Array.isArray(ProyectActErr) && ProyectActErr.map((error, i) => (
+                    <Message message={error} key={i} />
+                ))}
+            </div>
         </div>
     );
 };
