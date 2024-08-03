@@ -84,49 +84,47 @@ export default function AsignarTecnico() {
                 <div className="bg-white p-6 rounded-md shadow-md">
                     <Title>Asignar tecnico</Title>
                     <GridContainer>
-                        <div>
-                            <Label>Folio: </Label>
-                            <p className="w-full rounded-md">{unaInfo.folio}</p>
-
-                        </div>
-                        <div>
-                            <Label>Solicita:</Label>
-                            <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.nombre}</p>
-                        </div>
-                        <div>
-                            <Label>Área solicitante:</Label>
-                            <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.areaSolicitante}</p>
-                        </div>
-                    </GridContainer>
-
-                    <GridContainer>
-                        <div>
+                        <div className="bg-slate-200 rounded p-2">
                             <Label>Fecha:</Label>
                             <p className="w-full rounded-md">{unaInfo.informe?.fecha}</p>
                         </div>
-                        <div>
+                        <div className="bg-slate-200 rounded p-2">
+                            <Label>Solicita:</Label>
+                            <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.nombre}</p>
+                        </div>
+                        <div className="bg-slate-200 rounded p-2">
+                            <Label>Folio: </Label>
+                            <p className="w-full rounded-md">{unaInfo.folio}</p>
+                        </div>
+                    </GridContainer>
+                    <GridContainer>
+                        <div className="bg-slate-200 rounded p-2">
+                            <Label>Tipo de Solicitud:</Label>
+                            <p className="w-full rounded-md">{unaInfo.informe?.tipoDeSolicitud}</p>
+                        </div>
+                        <div className="bg-slate-200 rounded p-2">
                             <Label>Tipo de Mantenimiento:</Label>
                             <p className="w-full rounded-md">{unaInfo.informe?.tipoDeMantenimiento}</p>
                         </div>
-                        <div>
+                        <div className="bg-slate-200 rounded p-2">
                             <Label>Tipo de Trabajo:</Label>
                             <p className="w-full rounded-md">{unaInfo.informe?.tipoDeTrabajo}</p>
                         </div>
                     </GridContainer>
-
                     <GridContainer>
-                        <div>
-                            <Label>Tipo de Solicitud:</Label>
-                            <p className="w-full rounded-md">{unaInfo.informe?.tipoDeSolicitud}</p>
+                        <div className="bg-slate-200 rounded p-2">
+                            <Label>Área solicitante:</Label>
+                            <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.areaSolicitante}</p>
                         </div>
-                        <div>
+
+                        <div className="bg-slate-200 rounded p-2">
                             <Label>Edificio:</Label>
                             <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.edificio}</p>
                         </div>
                     </GridContainer>
-                    
-                    <Label>Descripción:</Label>
-                    <div className="mb-8 flex items-center">
+
+                    <div className="bg-slate-200 rounded p-2 mb-4">
+                        <Label>Descripción:</Label>
                         <p>{unaInfo.informe?.descripcionDelServicio}</p>
                     </div>
 

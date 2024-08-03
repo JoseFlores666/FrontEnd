@@ -558,6 +558,7 @@ export const RegisterSolicitudPage = () => {
                           type="number"
                           placeholder="Ingrese la cantidad"
                           maxLength="200"
+                          min={0}
                           value={item.cantidad || ""}
                           onChange={(e) => {
                             const newItems = [...items];
@@ -635,8 +636,7 @@ export const RegisterSolicitudPage = () => {
             </div>
           </div>
 
-
-          <div className="mb-6">
+          <div className="mb-6 mt-5">
             <Label>Justificación para la adquisición:</Label>
             <AutocompleteInput
               index={items.length}
@@ -659,8 +659,8 @@ export const RegisterSolicitudPage = () => {
           </div>
 
           <div>
-            <div className="tablafirmas flex justify-between mt-5 text-black">
-              <div className="columna w-1/4 text-center">
+            <div className="grid grid-cols-4 gap-4 text-center">
+              <div>
                 <Label>Solicitud</Label>
                 <textarea
                   className="text-black text-center cursor-not-allowed w-full rounded-md resize-none"
@@ -673,9 +673,8 @@ export const RegisterSolicitudPage = () => {
                 />
                 <input type="hidden" name="solicitud" value={solicitante} />
               </div>
-              <div className="columna w-1/4 text-center">
-                <Label>Revisión</Label>
-                <Label>Jefe Inmediato:</Label>
+              <div>
+                <Label>Revisión <br />Jefe Inmediato:</Label>
                 <textarea
                   className="text-black text-center cursor-not-allowed w-full rounded-md resize-none"
                   id="JefeInmediato"
@@ -687,9 +686,8 @@ export const RegisterSolicitudPage = () => {
                 />
                 <input type="hidden" name="JefeInmediato" value={jefeInmediato} />
               </div>
-              <div className="columna w-1/4 text-center">
-                <Label>Validación:</Label>
-                <Label>Dirección de Admón. y Finanzas:</Label>
+              <div>
+                <Label>Validación <br />Dirección de Admón. y Finanzas:</Label>
                 <textarea
                   className="text-black text-center cursor-not-allowed w-full rounded-md resize-none"
                   id="Validacion"
@@ -701,9 +699,8 @@ export const RegisterSolicitudPage = () => {
                 />
                 <input type="hidden" name="Validacion" value={dirrecion} />
               </div>
-              <div className="columna w-1/4 text-center">
-                <Label>Autorizó</Label>
-                <Label>Rectoría:</Label>
+              <div>
+                <Label>Autorizó <br />Rectoría:</Label>
                 <textarea
                   id="Autorizo"
                   name="Autorizo"
@@ -716,7 +713,7 @@ export const RegisterSolicitudPage = () => {
                 <input type="hidden" name="Autorizo" value={rectoría} />
               </div>
             </div>
-            <div className="flex justify-center mt-8">
+            <div className="flex justify-center">
               <button
                 className="bg-green-500 hover:bg-green-700 text-white font-bold mt px-6 py-3 rounded-md border border-black"
                 type="button"

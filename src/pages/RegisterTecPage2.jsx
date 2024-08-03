@@ -135,58 +135,65 @@ export const RegisterTecPage2 = () => {
                 <div className="bg-white p-6 rounded-md shadow-md">
                     <Title>Asignar Técnico</Title>
                     <GridContainer>
-                        <div>
+                        <div className="bg-slate-200 rounded p-2">
+                            <Label>Fecha:</Label>
+                            <p className="w-full rounded-md">{unaInfo.informe?.fecha}</p>
+                        </div>
+
+                        <div className="bg-slate-200 rounded p-2">
+                            <Label>Solicita:</Label>
+                            <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.nombre}</p>
+                        </div>
+
+                        <div className="bg-slate-200 rounded p-2">
                             <Label>Folio: </Label>
                             <p className="w-full rounded-md">{unaInfo.folio}</p>
 
                         </div>
-                        <div>
-                            <Label>Solicita:</Label>
-                            <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.nombre}</p>
-                        </div>
-                        <div>
-                            <Label>Área solicitante:</Label>
-                            <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.areaSolicitante}</p>
-                        </div>
                     </GridContainer>
                     <GridContainer>
-                        <div>
-                            <Label>Fecha:</Label>
-                            <p className="w-full rounded-md">{unaInfo.informe?.fecha}</p>
+                        <div className="bg-slate-200 rounded p-2">
+                            <Label>Tipo de Solicitud:</Label>
+                            <p className="w-full rounded-md">{unaInfo.informe?.tipoDeSolicitud}</p>
                         </div>
-                        <div>
+                        <div className="bg-slate-200 rounded p-2">
                             <Label>Tipo de Mantenimiento:</Label>
                             <p className="w-full rounded-md">{unaInfo.informe?.tipoDeMantenimiento}</p>
                         </div>
-                        <div>
+                        <div className="bg-slate-200 rounded p-2">
                             <Label>Tipo de Trabajo:</Label>
                             <p className="w-full rounded-md">{unaInfo.informe?.tipoDeTrabajo}</p>
                         </div>
                     </GridContainer>
                     <GridContainer>
-                        <div>
-                            <Label>Tipo de Solicitud:</Label>
-                            <p className="w-full rounded-md">{unaInfo.informe?.tipoDeSolicitud}</p>
+                        <div className="bg-slate-200 rounded p-2">
+                            <Label>Área solicitante:</Label>
+                            <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.areaSolicitante}</p>
                         </div>
-                        <div>
+
+                        <div className="bg-slate-200 rounded p-2 ">
                             <Label>Edificio:</Label>
                             <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.edificio}</p>
                         </div>
                     </GridContainer>
+                    <div className="bg-slate-200 rounded p-2 mb-4">
+                        <Label>Descripción:</Label>
+                        <p>{encabezado.descripcionDelServicio}</p>
+                    </div>
 
-                    <Label>Descripción:</Label>
-                    <p className='mb-4'>{encabezado.descripcionDelServicio}</p>
+                    <div className="bg-slate-200 rounded p-2 mb-4 text-center">
+                        <Label>Técnico Encargado:</Label>
+                        {encabezado.tecnicos && encabezado.tecnicos.length > 0 ? (
+                            <p>{encabezado.tecnicos[0]?.nombreCompleto}</p>
+                        ) : (
+                            <p>No asignado</p>
+                        )}
 
-                    <Label>Técnico Encargado:</Label>
-                    {encabezado.tecnicos && encabezado.tecnicos.length > 0 ? (
-                        <p className='mb-4'>{encabezado.tecnicos[0]?.nombreCompleto}</p>
-                    ) : (
-                        <p className='mb-4'>No asignado</p>
-                    )}
+                        {errors.tecnicos && (
+                            <span className="text-red-500">{errors.tecnicos.message}</span>
+                        )}
+                    </div>
 
-                    {errors.tecnicos && (
-                        <span className="text-red-500">{errors.tecnicos.message}</span>
-                    )}
                     <div className="flex items-center justify-center w-full h-11 p-3 rounded-md">
                         <p className="font-bold">Llenado Exclusivo Para El DEP MSG:</p>
                     </div>
