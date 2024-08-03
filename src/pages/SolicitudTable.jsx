@@ -97,6 +97,11 @@ export function SolicitudTable({ }) {
 
 
   useEffect(() => {
+    if (searchTerm.trim() === "") {
+      setFilteredSolicitudes(soli);
+      return;
+    }
+    
     const results = soli.filter((solicitud) =>
       solicitud.folio.toLowerCase().includes(searchTerm.toLowerCase()) ||
       solicitud.areaSolicitante.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -104,13 +109,13 @@ export function SolicitudTable({ }) {
       solicitud.procesoClave.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (solicitud.proyecto?.nombre?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
       (solicitud.actividades?.map(a => a.nombre).join(' ').toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-      solicitud.estado.toLowerCase().includes(searchTerm.toLowerCase())
+      solicitud.estado?.nombre.toLowerCase().includes(searchTerm.toLowerCase()) 
     );
-
+  
     setFilteredSolicitudes(results);
     setCurrentPage(1);
   }, [searchTerm, soli]);
-
+  
   const sortedSolicitudes = React.useMemo(() => {
     let sortableSolicitudes = [...filteredSolicitudes];
     if (sortConfig.key !== null) {
