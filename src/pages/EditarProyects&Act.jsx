@@ -6,6 +6,7 @@ import { useSoli } from '../context/SolicitudContext';
 import { ImFileEmpty } from "react-icons/im";
 import Swal from "sweetalert2";
 import { Card, Message, Button, Input, Label } from "../components/ui";
+import { idsProyect } from '../api/soli';
 
 export const ProjectAndActManager = () => {
     const [newProject, setNewProject] = useState('');
@@ -14,7 +15,7 @@ export const ProjectAndActManager = () => {
     const [newActivity, setNewActivity] = useState({ nombre: '', descripcion: '' });
     const [editingActivity, setEditingActivity] = useState({ index: null, nombre: '', descripcion: '' });
     const [idActivity, setIdActivity] = useState({ index: null, nombre: '', descripcion: '' });
-    const [editingProject, setEditingProject] = useState({ index: null, nombre: '', actividades: [] });
+    const [editingProject, setEditingProject] = useState({ index: null, nombre: '', actividades: [], id: "" });
     const [expandedProjectIndex, setExpandedProjectIndex] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -25,13 +26,24 @@ export const ProjectAndActManager = () => {
     const [selectedProjectIndex, setSelectedProjectIndex] = useState(null);
     const [modalView, setModalView] = useState('create');
 
+    const [mostrarModalProyecto, setMostrarModalProyecto] = useState(false);
+    const [vistaModal, setVistaModal] = useState('editarProyecto');
+    const [nombreProyecto, setNombreProyecto] = useState('');
+    const [editarProyect, setEditarProyect] = useState('');
+
+
+    const [actividadesProyecto, setActividadesProyecto] = useState([]);
+
     const { traerActividades, traerProyectos, crearProyecto, eliminarProyecto, proyectAsignarActividades,
-        errors: ProyectActErr, misProyectos = [], crearActYasignarProyect,
+        errors: ProyectActErr, misProyectos = [], crearActYasignarProyect, editarMyProyect,
+        traeMyProyecActividades, miProyectoAct, desasignarActProyect,
         misActividades = [], crearActividad, eliminarActividad, actualizarAct, traerActSinAsignar,
         actSinAsignar, } = useSoli();
 
     const [datosCargados, setDatosCargados] = useState(false);
     const [loading, setLoading] = useState(false);
+
+
 
     useEffect(() => {
         const iniciarDatos = async () => {
@@ -39,6 +51,7 @@ export const ProjectAndActManager = () => {
                 await traerActividades();
                 await traerProyectos();
                 await traerActSinAsignar();
+                console.log(actSinAsignar)
                 setLoading(true)
                 setDatosCargados(true);
             } catch (error) {
@@ -167,9 +180,6 @@ export const ProjectAndActManager = () => {
         setNewActivities(updatedActivities);
     };
 
-    const editarProyectoActividades = async () => {
-        Swal.fire("Pendiente", "Selección aun no implementada XD, Pero lo demas ya funciona ;D", "info");
-    };
     const CrearNuevasActividades = async () => {
         if (newActivities.length > 0) {
             console.log('Creating new activities:', newActivities);
@@ -186,17 +196,20 @@ export const ProjectAndActManager = () => {
             }
 
             setNewActivities([{ nombre: '', descripcion: '' }]);
-        };
-        Swal.fire("Informativo", "Llenar el campo", "info");
+        } else {
+            Swal.fire("Informativo", "Llenar el campo", "info");
+        }
     }
 
     const assignAcvitiesToProject = async () => {
         if (selectedActivities.length > 0) {
             try {
+
                 const res = await proyectAsignarActividades(projectId, selectedActivities)
                 if (res && res.data?.mensaje) {
                     Swal.fire("Actividades asignadas", res.data?.mensaje, "success");
                     setDatosCargados(false);
+                    setSelectedActivities([])
                     closeActivityModal()
                 } else {
                     Swal.fire("Error", res.data?.error || "Error desconocido", "error");
@@ -219,8 +232,8 @@ export const ProjectAndActManager = () => {
         } else {
             // Si la actividad no está seleccionada, marcarla
             setSelectedActivities([...selectedActivities, activityId]);
-        };
-    }
+        }
+    };
 
     const openActivityModal = (index) => {
         setSelectedProjectIndex(index);
@@ -232,6 +245,98 @@ export const ProjectAndActManager = () => {
         setShowActivityModal(false);
         setModalView('create'); // Restablecer vista al cerrar el modal
     };
+
+    // Función para abrir el modal
+    const abrirModalProyecto = async (projectId) => {
+        try {
+            await traeMyProyecActividades(projectId)
+
+        } catch (error) {
+            Swal.fire("Error de servidor", "Error al  actualizar su proyecto", "info");
+        } finally {
+            setEditarProyect(false); // Cambia el estado de carga a falso después de la carga
+            setMostrarModalProyecto(true);
+        }
+    };
+    const desasignarActividadDelProyecto = async (actividadId, projectId) => {
+        try {
+            console.log(actividadId)
+            const res = await desasignarActProyect(projectId, actividadId);
+            if (res && res.data?.mensaje) {
+                Swal.fire("Actividades desasignada", res.data?.mensaje, "success");
+                await traeMyProyecActividades(projectId)
+                setDatosCargados(false);
+                await traerActSinAsignar();
+            } else {
+                Swal.fire("Error", res.data?.error || "Error desconocido", "error");
+            }
+        } catch (error) {
+            console.error("Error al desasignar la actividad", error);
+            Swal.fire("Error de servidor", "Error al desasignar la actividad", "error");
+        }
+
+    };
+
+    // Función para asignar una actividad al proyecto
+    const asignarActividadAlProyecto = async (actividadId) => {
+        if (actividadId.length > 0) {
+            try {
+                console.log(projectId)
+                const res = await proyectAsignarActividades(projectId, actividadId)
+                if (res && res.data?.mensaje) {
+                    Swal.fire("Actividad asignadad", res.data?.mensaje, "success");
+                    await traeMyProyecActividades(projectId)
+                    setDatosCargados(false);
+                    await traerActSinAsignar();
+                } else {
+                    Swal.fire("Error", res.data?.error || "Error desconocido", "error");
+                }
+            } catch (error) {
+                console.error("Error al asignar la actividad", error);
+                Swal.fire("Error de servidor", "Error al asignar la actividad", "error");
+            }
+        } else {
+            Swal.fire("Informativo", "Por favor seleccione alguna actividad", "info");
+        }
+    }
+
+    // Función para cerrar el modal
+    const cerrarModalProyecto = () => {
+        setMostrarModalProyecto(false);
+
+        setVistaModal('editarProyecto'); // Resetear la vista al cerrar
+    };
+
+    // Función para manejar el cambio en el nombre del proyecto
+    const manejarCambioNombreProyecto = (e) => {
+        setEditingProject(prevState => ({
+            ...prevState,
+            nombre: e.target.value
+        }));
+    };
+
+    // Función para manejar la actualización del proyecto
+    const manejarActualizacionProyecto = async (projectId) => {
+        if (editingProject.nombre.trim()) {
+            try {
+                console.log('Actualizar Proyecto:', projectId, editingProject.nombre);
+                const res = await editarMyProyect(projectId, editingProject.nombre);// Asegúrate de enviar un objeto
+                if (res && res.data?.mensaje) {
+                    Swal.fire("Proyecto Actualizado", res.data?.mensaje, "success");
+                    setDatosCargados(false);
+                } else {
+                    Swal.fire("Error", res.data?.error || "Error desconocido", "error");
+                }
+            } catch (error) {
+                Swal.fire("Error de servidor", "Error al actualizar su proyecto", "error");
+            }
+            cerrarModalProyecto();
+        } else {
+            Swal.fire("Informativo", "El nombre del proyecto no puede estar vacío", "info");
+        }
+    };
+
+
 
     if (!loading) {
         return (
@@ -350,7 +455,6 @@ export const ProjectAndActManager = () => {
                                         <button
                                             onClick={() => {
                                                 openActivityModal(index)
-
                                                     , setProjectId(project._id)
                                             }}
                                             className="text-blue-600 hover:text-blue-800"
@@ -363,10 +467,10 @@ export const ProjectAndActManager = () => {
                                         <div className="flex items-center justify-center space-x-2">
                                             <button
                                                 onClick={() => {
-                                                    setEditingProject({ index, nombre: project.nombre, actividades: project.actividades }),
-                                                        editarProyectoActividades()
-                                                }
-                                                }
+                                                    setEditingProject({ index, nombre: project.nombre, actividades: project.actividades, id: project._id })
+                                                        , setProjectId(project._id),
+                                                        abrirModalProyecto(project._id)
+                                                }}
                                                 className="text-blue-500 hover:text-blue-700 p-2 rounded-lg"
                                             >
                                                 <FontAwesomeIcon icon={faEdit} />
@@ -495,6 +599,121 @@ export const ProjectAndActManager = () => {
                         </div>
                     </div>
                 )}
+                {mostrarModalProyecto && (
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                        <div
+                            className={`bg-white p-6 rounded-lg shadow-lg w-full relative transition-all duration-300 ${vistaModal === 'editarProyecto' ? 'max-w-md' : 'max-w-4xl'
+                                }`}
+                        >
+                            <div className="mb-4 flex border-b border-gray-200">
+                                <button
+                                    onClick={() => setVistaModal('editarProyecto')}
+                                    className={`flex-1 py-2 px-4 rounded-l-lg font-semibold ${vistaModal === 'editarProyecto' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-black'}`}
+                                >
+                                    Editar Proyecto
+                                </button>
+                                <button
+                                    onClick={() => setVistaModal('editarProyectoYActividad')}
+                                    className={`flex-1 py-2 px-4 rounded-r-lg font-semibold ${vistaModal === 'editarProyectoYActividad' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-black'}`}
+                                >
+                                    Reasignar actividades
+                                </button>
+                            </div>
+                            <div className="mt-4">
+                                {vistaModal === 'editarProyecto' ? (
+                                    editingProject ? (
+                                        <div>
+
+                                            <h3 className="text-lg font-bold mb-4">Editar Proyecto</h3>
+                                            <input
+                                                type="text"
+                                                placeholder="Nombre del proyecto"
+                                                value={editingProject.nombre}
+                                                onChange={manejarCambioNombreProyecto}
+                                                className="border p-2 rounded-lg mb-4 w-full"
+                                            />
+                                            <div className="flex justify-end space-x-2">
+                                                <button
+                                                    onClick={cerrarModalProyecto}
+                                                    className="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition duration-300"
+                                                >
+                                                    Cerrar
+                                                </button>
+                                                <button
+                                                    onClick={() => manejarActualizacionProyecto(miProyectoAct._id)}
+                                                    className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300"
+                                                >
+                                                    Guardar Cambios
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <p className="text-red-500">No hay datos del proyecto.</p>
+                                    )
+                                ) : (
+                                    <div className="flex justify-between space-x-4">
+                                        {/* Columna de Actividades Asignadas */}
+                                        <div className="w-1/2">
+                                            <h3 className="text-lg font-bold mb-4">Actividades Asignadas</h3>
+                                            <div className="max-h-96 overflow-y-auto border p-4 rounded-lg shadow-sm">
+                                                {Array.isArray(miProyectoAct.actividades) && miProyectoAct.actividades.length > 0 ? (
+                                                    miProyectoAct.actividades.map((actividad, index) => (
+                                                        <div key={actividad._id} className="mb-4 p-2 rounded-lg flex justify-between items-center">
+                                                            <div>
+                                                                <p className="font-semibold">{actividad.nombre}</p>
+                                                                <p className="text-gray-600">{actividad.descripcion}</p>
+                                                            </div>
+                                                            <button
+                                                                onClick={() => desasignarActividadDelProyecto(actividad._id, miProyectoAct._id)
+                                                                } className="bg-red-500 text-white py-1 px-3 rounded-lg hover:bg-red-600 transition duration-300"
+                                                            >
+                                                                Desasignar
+                                                            </button>
+                                                        </div>
+                                                    ))
+                                                ) : (
+                                                    <p className="text-red-500">No hay actividades asignadas.</p>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Columna de Actividades Sin Asignar */}
+                                        <div className="w-1/2">
+                                            <h3 className="text-lg font-bold mb-4">Actividades Sin Asignar</h3>
+                                            <div className="max-h-96 overflow-y-auto border p-4 rounded-lg shadow-sm">
+                                                {Array.isArray(actSinAsignar) && actSinAsignar.length > 0 ? (
+                                                    actSinAsignar.map((actividad, index) => (
+                                                        <div key={actividad._id} className="mb-4 p-2 rounded-lg flex justify-between items-center">
+                                                            <div>
+                                                                <p className="font-semibold">{actividad.nombre}</p>
+                                                                <p className="text-gray-600">{actividad.descripcion}</p>
+                                                            </div>
+                                                            <button
+                                                                onClick={() => asignarActividadAlProyecto(actividad._id)}
+                                                                className="bg-green-500 text-white py-1 px-3 rounded-lg hover:bg-green-600 transition duration-300"
+                                                            >
+                                                                Asignar
+                                                            </button>
+                                                        </div>
+                                                    ))
+                                                ) : (
+                                                    <p className="text-red-500">No hay actividades sin asignar.</p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                                <button
+                                    onClick={cerrarModalProyecto}
+                                    className="absolute top-1 right-2 text-gray-500 hover:text-gray-700"
+                                >
+                                    <FontAwesomeIcon icon={faTimes} size="xl" />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
 
                 {/* Tabla de Actividades */}
                 <div className="mb-8">

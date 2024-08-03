@@ -16,7 +16,8 @@ import {
   getActividad, postActividad, asignarActividadesProyecto,
   getProyecto, deleteActividad, putActividad,
   getActSinAsignar, postProyecto, deleteProyecto,
-  asignarActividadProyect, ProyectCrearActYAsignarle
+  asignarActividadProyect, ProyectCrearActYAsignarle,
+  editarProyecto, getUnProyectoActividades, desenlazarActividadProyec,
 } from "../api/soli";
 
 import {
@@ -63,8 +64,9 @@ export function SoliProvider({ children }) {
   const [estados, setEstados] = useState([]);
   const [cantidadestados, setCantidadEstados] = useState("");
   const [imagenInfo, setImagenInfo] = useState("");
-  const [misProyectos, setMisProyectos] = useState("");
-  const [misActividades, setMisActividades] = useState("");
+  const [misProyectos, setMisProyectos] = useState([]);
+  const [miProyectoAct, setMiProyectoAct] = useState([]);
+  const [misActividades, setMisActividades] = useState([]);
   const [actSinAsignar, setActSinAsignar] = useState("");
 
 
@@ -523,6 +525,16 @@ export function SoliProvider({ children }) {
       setErrors(["Error fetching actividad"]);
     }
   }
+  const traeMyProyecActividades = async (id) => {
+    try {
+      const res = await getUnProyectoActividades(id);
+      console.log(res.data?.proyecto || [])
+      setMiProyectoAct(res.data?.proyecto || [])
+    } catch (error) {
+      console.error("Error al consultar los proyectos ", error);
+      setErrors(["Error fetching actividad"]);
+    }
+  }
   const crearProyecto = async (proyecto) => {
     try {
       const res = await postProyecto(proyecto);
@@ -539,6 +551,24 @@ export function SoliProvider({ children }) {
     } catch (error) {
       console.error("Error al asginarle las actividades a su proyecto", error);
       setErrors(["Error al asginarle las actividades a su proyecto"]);
+    }
+  }
+  const desasignarActProyect = async (id, idActividades) => {
+    try {
+      const res = await desenlazarActividadProyec(id, idActividades);
+      return res;
+    } catch (error) {
+      console.error("Error al desasginarle las actividad a su proyecto", error);
+      setErrors(["Error al desasginarle las actividad a su proyecto"]);
+    }
+  }
+  const editarMyProyect = async (id, proyecto) => {
+    try {
+      const res = await editarProyecto(id, proyecto);
+      return res;
+    } catch (error) {
+      console.error("Error al actualizar el proyecto", error);
+      setErrors(["Error al actualizar el proyecto "]);
     }
   }
   const crearActYasignarProyect = async (id, actividades) => {
@@ -560,9 +590,9 @@ export function SoliProvider({ children }) {
     }
   }
 
-  const asignarActProyecto = async (actividad) => {
+  const asignarActProyecto = async (proyectoAct) => {
     try {
-      const res = await asignarActividadesProyecto(actividad);
+      const res = await asignarActividadesProyecto(proyectoAct);
       return res.data;
     } catch (error) {
       console.error("Error al asingar una o varias actividades a un proyecto", error);
@@ -574,12 +604,14 @@ export function SoliProvider({ children }) {
       value={{
         traerActividades,
         proyectAsignarActividades,
+        desasignarActProyect,
         crearActYasignarProyect,
         eliminarActividad,
-        traerActSinAsignar,
+        traerActSinAsignar, editarMyProyect,
         actSinAsignar,
         actualizarAct,
         crearProyecto,
+        traeMyProyecActividades, miProyectoAct,
         eliminarProyecto,
         traerProyectos,
         asignarActProyecto,

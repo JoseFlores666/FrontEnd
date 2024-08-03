@@ -60,21 +60,29 @@ export const deleteUnHistorialSoli = async (id, data) =>
     data: data,
   });
 
-  
 //proyecto
 
 export const getProyecto = async () => axios.get(`/proyecto`);
+
+export const getUnProyectoActividades = async (id) =>
+  axios.get(`/proyecto/${id}`);
 
 export const asignarActividadesProyecto = async (proyectoAct) =>
   axios.post(`/proyecto`, proyectoAct);
 
 export const postProyecto = async (nombre) =>
   axios.post(`/proyecto`, { nombre });
-export const ProyectCrearActYAsignarle = async (id,) =>
-  axios.post(`/proyecto/ProyectCrearActYAsignarle/${id}`, { actividades  });
+export const ProyectCrearActYAsignarle = async (id, actividades) =>
+  axios.post(`/proyecto/ProyectCrearActYAsignarle/${id}`, { actividades });
 
-export const asignarActividadProyect = async (id, iDActividades) =>
-  axios.put(`/proyecto/asignarActividadProyect/${id}`, { iDActividades });
+export const asignarActividadProyect = async (id, idActividades) =>
+  axios.put(`/proyecto/asignarActividadProyect/${id}`, { idActividades });
+
+export const desenlazarActividadProyec = async (id, idActividad) =>
+  axios.put(`/proyecto/desenlazarActividadProyec/${id}`, { idActividad });
+
+export const editarProyecto = async (id, nombre) =>
+  axios.put(`/proyecto/editarProyecto/${id}`, { nombre });
 
 export const deleteProyecto = async (id) => axios.delete(`/proyecto/${id}`);
 
