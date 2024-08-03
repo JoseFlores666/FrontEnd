@@ -112,75 +112,79 @@ export const InformacionOrden = () => {
                 <div className="bg-white p-6 rounded-md shadow-md">
                     <Title>Informacion del encargo</Title>
                     <GridContainer>
-                        <div>
-                            <Label>Folio: </Label>
-                            <p className="w-full rounded-md">{unaInfo.folio}</p>
-
-                        </div>
-                        <div>
-                            <Label>Solicita:</Label>
-                            <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.nombre}</p>
-                        </div>
-                        <div>
-                            <Label>Área solicitante:</Label>
-                            <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.areaSolicitante}</p>
-                        </div>
-                    </GridContainer>
-                    <GridContainer>
-                        <div>
+                        <div className="bg-slate-200 rounded p-2">
                             <Label>Fecha:</Label>
                             <p className="w-full rounded-md">{unaInfo.informe?.fecha}</p>
                         </div>
-                        <div>
+                        <div className="bg-slate-200 rounded p-2">
+                            <Label>Solicita:</Label>
+                            <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.nombre}</p>
+                        </div>
+                        <div className="bg-slate-200 rounded p-2">
+                            <Label>Folio: </Label>
+                            <p className="w-full rounded-md">{unaInfo.folio}</p>
+                        </div>
+                    </GridContainer>
+                    <GridContainer>
+                        <div className="bg-slate-200 rounded p-2">
+                            <Label>Tipo de Solicitud:</Label>
+                            <p className="w-full rounded-md">{unaInfo.informe?.tipoDeSolicitud}</p>
+                        </div>
+                        <div className="bg-slate-200 rounded p-2">
                             <Label>Tipo de Mantenimiento:</Label>
                             <p className="w-full rounded-md">{unaInfo.informe?.tipoDeMantenimiento}</p>
                         </div>
-                        <div>
+                        <div className="bg-slate-200 rounded p-2">
                             <Label>Tipo de Trabajo:</Label>
                             <p className="w-full rounded-md">{unaInfo.informe?.tipoDeTrabajo}</p>
                         </div>
                     </GridContainer>
                     <GridContainer>
-                        <div>
-                            <Label>Tipo de Solicitud:</Label>
-                            <p className="w-full rounded-md">{unaInfo.informe?.tipoDeSolicitud}</p>
+                        <div className="bg-slate-200 rounded p-2">
+                            <Label>Área solicitante:</Label>
+                            <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.areaSolicitante}</p>
                         </div>
-                        <div>
+                        <div className="bg-slate-200 rounded p-2">
                             <Label>Edificio:</Label>
                             <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.edificio}</p>
                         </div>
                     </GridContainer>
+                    <div className="bg-slate-200 rounded p-2 mb-4">
+                        <Label>Descripción:</Label>
+                        <p>{encabezado.descripcionDelServicio}</p>
+                    </div>
+                    <div className="bg-slate-200 rounded p-2 mb-4 text-center">
+                        <Label>Técnico Encargado:</Label>
+                        {encabezado.tecnicos && encabezado.tecnicos.length > 0 ? (
+                            <p>{encabezado.tecnicos[0]?.nombreCompleto}</p>
+                        ) : (
+                            <p>No asignado</p>
+                        )}
+                        {errors.tecnicos && (
+                            <span className="text-red-500">{errors.tecnicos.message}</span>
+                        )}
+                    </div>
+                    <div className="bg-slate-200 rounded p-2 mb-4">
+                        <Label>Observaciones del servicio requerido</Label>
+                        <AutocompleteInput
+                            index={3}
+                            value={observaciones}
+                            onChange={(newValue) => setObservaciones(newValue)}
+                            data={historialOrden}
+                            recentSuggestions={recentSuggestions}
+                            setRecentSuggestions={setRecentSuggestions}
+                            inputRefs={refs}
+                            placeholder="Ingrese sus observaciones"
+                            fieldsToCheck={['descripcionDelServicio']}
+                            inputProps={{
+                                type: "text",
+                                maxLength: 500,
+                                className: "w-full resize-none text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
+                            }}
+                        />
 
-                    <Label>Descripción:</Label>
-                    <p className='mb-4'>{encabezado.descripcionDelServicio}</p>
+                    </div>
 
-                    <Label>Técnico Encargado:</Label>
-                    {encabezado.tecnicos && encabezado.tecnicos.length > 0 ? (
-                        <p className='mb-4'>{encabezado.tecnicos[0]?.nombreCompleto}</p>
-                    ) : (
-                        <p className='mb-4'>No asignado</p>
-                    )}
-
-                    {errors.tecnicos && (
-                        <span className="text-red-500">{errors.tecnicos.message}</span>
-                    )}
-                    <Label>Observaciones del servicio requerido</Label>
-                    <AutocompleteInput
-                        index={3}
-                        value={observaciones}
-                        onChange={(newValue) => setObservaciones(newValue)}
-                        data={historialOrden}
-                        recentSuggestions={recentSuggestions}
-                        setRecentSuggestions={setRecentSuggestions}
-                        inputRefs={refs}
-                        placeholder="Ingrese sus observaciones"
-                        fieldsToCheck={['descripcionDelServicio']}
-                        inputProps={{
-                            type: "text",
-                            maxLength: 500,
-                            className: "w-full mb-2 resize-none text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
-                        }}
-                    />
                     <SubiendoImagenes ref={subiendoImagenesRef} />
 
                     <div className="flex gap-2 justify-center mt-4">

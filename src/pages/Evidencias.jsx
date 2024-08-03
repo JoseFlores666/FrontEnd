@@ -147,7 +147,7 @@ export const Evidencias = () => {
             type='submit'
             className="px-4 py-2 border border-black bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
           >
-            Enviar Imágenes
+            Descargar Evidencias
           </button>
         </div>
       </form>

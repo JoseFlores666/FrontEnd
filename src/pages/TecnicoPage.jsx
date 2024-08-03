@@ -258,11 +258,11 @@ export const TecnicoPage = () => {
                   </div>
                 )}
               </Td>
-              <Th>
+              <Td>
                 <Link to={`/verInforme/${solicitud._id}?`} className="text-black font-bold">
                   CONSULTAR
                 </Link>
-              </Th>
+              </Td>
             </tr>
           ))}
         </tbody>

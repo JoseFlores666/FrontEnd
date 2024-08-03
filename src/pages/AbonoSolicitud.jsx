@@ -250,6 +250,7 @@ export const AbonoSolicitud = () => {
                                         <Label>Cantidad a entregar:</Label>
                                         <input
                                             type="number"
+                                            min={0}
                                             className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                                             {...register(`items.${index}.cantidadEntregada`)}
                                         />
