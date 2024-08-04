@@ -1,22 +1,21 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import {
     InformaciónDeLaOrden,
-    actualizarEstadosOrdenTrabajo,
-    crearEstadosOrdenTrabajo,
     createInfome,
-    declinarSoliOrdenTrabajo,
     deleteInfome,
     editarEstadoInforme,
     evaluacionDelInfome,
-    getCantidadTotalOrdenTrabajoEstados,
     getEncabezado,
-    getEstadosOrdenTrabajo,
     getImagenInfome,
     getInfome,
     getTecnicos,
     getUnaInfome,
     llenadoDEPInforme,
-    updateInfome
+    updateInfome,
+    actualizarEstadosOrdenTrabajo,
+    crearEstadosOrdenTrabajo, declinarSoliOrdenTrabajo,
+    getCantidadTotalOrdenTrabajoEstados,
+    getEstadosOrdenTrabajo,
 } from "../api/informe";
 
 import { gethistorialOrdenTrabajo } from '../api/historialInput'
@@ -31,9 +30,7 @@ export const useOrden = () => {
 };
 
 export const OrdenDeTrabajoProvider = ({ children }) => {
-    const [estaAutenticado, setEstaAutenticado] = useState(false);
     const [errores, setErrores] = useState([]);
-    const [cargando, setCargando] = useState(true);
     const [informes, setInformes] = useState([]);
     const [tecnicos, setTecnicos] = useState([]);
     const [estados, setEstados] = useState([]);
@@ -42,6 +39,7 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
     const [encabezado, setEncabezado] = useState([]);
     const [historialOrden, setHistorialOrden] = useState([]);
     const [miFolioInternoInfo, setMiFolioInternoInfo] = useState([]);
+    const [estadosTotales, setEstadosTotales] = useState(0);
 
     const traerOrdenesDeTrabajo = async () => {
         try {
@@ -88,7 +86,7 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
     const crearDEPInforme = async (id, info) => {
         try {
             const res = await llenadoDEPInforme(id, info);
-         
+
             return res;
         } catch (error) {
             console.error("Error al crear solicitud:", error);
@@ -199,15 +197,65 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
         }
     };
 
+    const actualizarEstadosOrdenTrabajo = async (estadosAActualizar) => {
+        try {
+            const res = await actualizarEstadosOrdenTrabajo(estadosAActualizar);
+            return res;
+        } catch (error) {
+            console.error("Error al actualizar los estados de la orden de trabajo:", error);
+            setErrores(prevErrores => [...prevErrores, "Error al actualizar los estados de la orden de trabajo"]);
+        }
+    };
+
+    const crearEstadosOrdenTrabajo = async (nuevoEstado) => {
+        try {
+            const res = await crearEstadosOrdenTrabajo(nuevoEstado);
+            return res;
+        } catch (error) {
+            console.error("Error al crear nuevo estado de la orden de trabajo:", error);
+            setErrores(prevErrores => [...prevErrores, "Error al crear nuevo estado de la orden de trabajo"]);
+        }
+    };
+
+    const declinarSoliOrdenTrabajo = async (id, user) => {
+        try {
+            const res = await declinarSoliOrdenTrabajo(id, user);
+            return res;
+        } catch (error) {
+            console.error("Error al declinar la solicitud de orden de trabajo:", error);
+            setErrores(prevErrores => [...prevErrores, "Error al declinar la solicitud de orden de trabajo"]);
+        }
+    };
+
+    const getCantidadTotalOrdenTrabajoEstados = async () => {
+        try {
+            const res = await getCantidadTotalOrdenTrabajoEstados();
+            setEstadosTotales(res.data);
+        } catch (error) {
+            console.error("Error al obtener la cantidad total de estados de la orden de trabajo:", error);
+            setErrores(prevErrores => [...prevErrores, "Error al obtener la cantidad total de estados de la orden de trabajo"]);
+        }
+    };
+
+    const getEstadosOrdenTrabajo = async () => {
+        try {
+            const res = await getEstadosOrdenTrabajo();
+            setEstados(res.data);
+        } catch (error) {
+            console.error("Error al obtener los estados de la orden de trabajo:", error);
+            setErrores(prevErrores => [...prevErrores, "Error al obtener los estados de la orden de trabajo"]);
+        }
+    };
+
+
     return (
         <OrdenTrabajoContext.Provider
             value={{
-                estaAutenticado,
                 errores,
-                cargando,
                 informes,
                 tecnicos,
                 estados,
+                estadosTotales,
                 unaInfo,
                 miFolioInternoInfo,
                 imagenInfo,
@@ -229,6 +277,12 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
                 traerEncabezado,
                 traerHistorialOrden,
                 traerFolioInternoInforme,
+                // Otras funciones y estados...
+                actualizarEstadosOrdenTrabajo,
+                crearEstadosOrdenTrabajo,
+                declinarSoliOrdenTrabajo,
+                getCantidadTotalOrdenTrabajoEstados,
+                getEstadosOrdenTrabajo,
             }}
         >
             {children}
