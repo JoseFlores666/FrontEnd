@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faL, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {  faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useSoli } from '../context/SolicitudContext';
 import { useAuth } from '../context/authContext';
 import { useParams } from "react-router-dom";

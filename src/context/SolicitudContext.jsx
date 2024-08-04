@@ -55,7 +55,7 @@ export function SoliProvider({ children }) {
   const [mensaje, setMensaje] = useState("");
 
   const [estados, setEstados] = useState([]);
-  const [cantidadestados, setCantidadEstados] = useState("");
+  const [cantidadEstados, setCantidadEstados] = useState("");
 
   const [misProyectos, setMisProyectos] = useState([]);
   const [miProyectoAct, setMiProyectoAct] = useState([]);
@@ -174,7 +174,7 @@ export function SoliProvider({ children }) {
     }
   };
 
-  const verMisEstados = async (id) => {
+  const verMisEstados = async () => {
     try {
       const res = await getEstados();
       setEstados(Array.isArray(res.data) ? res.data : []);
@@ -184,7 +184,7 @@ export function SoliProvider({ children }) {
     }
   };
 
-  const VercantTotalEstado = async (id) => {
+  const VercantTotalEstado = async () => {
     try {
       const res = await getVercantidadTotalEstados();
       setCantidadEstados(res.data)
@@ -491,7 +491,7 @@ export function SoliProvider({ children }) {
         verMisEstados,
         traehistoriSoli,
         myHisorialSolicitud,
-        cantidadestados,
+        cantidadEstados,
         VercantTotalEstado,
         traeHistorialSoli,
         historialSoli,

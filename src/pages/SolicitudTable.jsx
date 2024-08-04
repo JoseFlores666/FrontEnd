@@ -20,8 +20,8 @@ export function SolicitudTable({ }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef(null);
 
-  const { soli, getSoli, deleteSolitud, declinarmySoi, cantidadestados, 
-    VercantTotalEstado, verMisEstados, estados = [] } = useSoli();
+  const { soli, getSoli, deleteSolitud, declinarmySoi, VercantTotalEstado,
+    cantidadEstados } = useSoli();
   const { user } = useAuth();
 
   const [loading, setLoading] = useState(true);
@@ -48,7 +48,9 @@ export function SolicitudTable({ }) {
     const fetchSoliYEstados = async () => {
       try {
         await getSoli();
-        await verMisEstados();
+        await VercantTotalEstado();
+        console.log(cantidadEstados)
+        console.log(soli)
 
         setSolicitudesFetched(true);
         setLoading(false);
@@ -60,24 +62,24 @@ export function SolicitudTable({ }) {
     if (!solicitudesFetched) {
       fetchSoliYEstados();
     }
-  }, [solicitudesFetched, getSoli, verMisEstados]);
+  }, [solicitudesFetched, getSoli, VercantTotalEstado]);
 
   useEffect(() => {
-    if (Array.isArray(estados)) {
-      setEstadoInicial(estados.find(estado => estado.id === 1) || {});
-      setEstadoConfolio(estados.find(estado => estado.id === 2) || {});
-      setEstadoAbonando(estados.find(estado => estado.id === 3) || {});
-      setEstadoCompletado(estados.find(estado => estado.id === 4) || {});
-      setEstadoRechazada(estados.find(estado => estado.id === 5) || {});
+    if (Array.isArray(cantidadEstados)) {
+      setEstadoInicial(cantidadEstados.find(estado => estado.id === 1) || {});
+      setEstadoConfolio(cantidadEstados.find(estado => estado.id === 2) || {});
+      setEstadoAbonando(cantidadEstados.find(estado => estado.id === 3) || {});
+      setEstadoCompletado(cantidadEstados.find(estado => estado.id === 4) || {});
+      setEstadoRechazada(cantidadEstados.find(estado => estado.id === 5) || {});
     } else {
-      console.error("estados no es un array:", estados);
+      console.error("estados no es un array:", cantidadEstados);
       setEstadoInicial({});
       setEstadoConfolio({});
       setEstadoAbonando({});
       setEstadoCompletado({});
       setEstadoRechazada({});
     }
-  }, [estados]);
+  }, [cantidadEstados]);
 
   const refetchData = async () => {
     setSolicitudesFetched(false)
@@ -101,21 +103,24 @@ export function SolicitudTable({ }) {
       setFilteredSolicitudes(soli);
       return;
     }
-    
+
     const results = soli.filter((solicitud) =>
       solicitud.folio.toLowerCase().includes(searchTerm.toLowerCase()) ||
       solicitud.areaSolicitante.toLowerCase().includes(searchTerm.toLowerCase()) ||
       solicitud.tipoSuministro.toLowerCase().includes(searchTerm.toLowerCase()) ||
       solicitud.procesoClave.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (solicitud.proyecto?.nombre?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-      (solicitud.actividades?.map(a => a.nombre).join(' ').toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-      solicitud.estado?.nombre.toLowerCase().includes(searchTerm.toLowerCase()) 
+      (solicitud.actividades?.some(actividad =>
+        (actividad.nombreActividad?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+        (actividad.actividadRef?.nombre?.toLowerCase() || '').includes(searchTerm.toLowerCase())
+      )) ||
+      (solicitud.estado?.nombre?.toLowerCase() || '').includes(searchTerm.toLowerCase())
     );
-  
+
     setFilteredSolicitudes(results);
     setCurrentPage(1);
   }, [searchTerm, soli]);
-  
+
   const sortedSolicitudes = React.useMemo(() => {
     let sortableSolicitudes = [...filteredSolicitudes];
     if (sortConfig.key !== null) {
@@ -282,8 +287,10 @@ export function SolicitudTable({ }) {
               <Td>{solicitud.tipoSuministro}</Td>
               <Td>{solicitud.procesoClave}</Td>
               <Td>{solicitud.proyecto?.nombre}</Td>
-              <Td>{solicitud.actividades?.map((actividad, idx) => (
-                <span key={idx}>{actividad.nombre}{idx < solicitud.actividades.length - 1 ? ', ' : ''}</span>
+              <Td>  {solicitud.actividades.map((actividad, index) => (
+                <span key={actividad._id}>
+                  {actividad.nombreActividad}{index < solicitud.actividades.length - 1 ? ', ' : ''}
+                </span>
               ))}
               </Td>
               <Td>
@@ -430,7 +437,7 @@ export function SolicitudTable({ }) {
               className="bg-white p-6 rounded-lg shadow-lg relative"
               onClick={(e) => e.stopPropagation()}
             >
-              <TablaVistaSolicitud data={estados} misSoli={soli} refetchData={refetchData} D />
+              <TablaVistaSolicitud data={cantidadEstados} misSoli={soli} refetchData={refetchData} D />
               <button
                 className="absolute top-2 right-2 text-red-500"
                 onClick={cerrarModal}
