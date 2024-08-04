@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
+import INNEGO from '../../public/INNEGO.svg'
 import { DashboardMenu } from '../pages/DashboardMenu'; // Importa el componente
 
 export function Navbar() {
@@ -58,11 +59,12 @@ export function Navbar() {
     <header className="fixed top-0 left-0 right-0 z-50">
       <nav className="bg-gray-50 dark:bg-black">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-          <button 
-          to={isAuthenticated ? "/soli/registro/:id" : "/"}
-           className="flex items-center space-x-3 rtl:space-x-reverse">
+          <button
+            type="button"
+            to={isAuthenticated ? "/soli/registro/:id" : "/"}
+            className="flex items-center space-x-3 rtl:space-x-reverse">
             <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQECmkNjpPwLnbAXf3j5eavPu0QSYoOfiNA8A&s"
+              src={INNEGO}
               className="h-8 cursor-pointer"
               alt="Flowbite Logo"
             />
@@ -153,6 +155,13 @@ export function Navbar() {
                             onClick={() => setActiveLink("/proyectAndAct")}
                           >
                             Agregar Proyectos
+                          </Link>
+                          <Link
+                            to="/personalTecnicos"
+                            className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white ${activeLink === "/proyectAndAct" ? "text-blue-600" : ""}`}
+                            onClick={() => setActiveLink("/personalTecnicos")}
+                          >
+                            Tabla del personal técnico
                           </Link>
                         </li>
                       </ul>

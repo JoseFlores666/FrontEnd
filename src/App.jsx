@@ -18,6 +18,7 @@ import { RegisterTecPage2 } from "./pages/RegisterTecPage2";
 import { DashboardMenu } from "./pages/DashboardMenu";
 import { Evidencias } from "./pages/Evidencias"
 import AsignarTecnico from "./pages/AsignarTecnico"
+import {TecnicosTable} from "./pages/TecnicosTable"
 import { ProjectAndActManager } from "./pages/EditarProyects&Act"
 import { VerInforme } from "./pages/VerInformePage"
 import { InformacionOrden } from "./pages/InformacionOrden"
@@ -44,6 +45,7 @@ function App() {
                     <Route path="/soli/folioExterno/:id" element={<FolioExterno />} />
                     <Route path="/soli/editarFirmas/" element={<Firmas />} />
                     <Route path="/tecnico/:id" element={<RegisterTecnicoPage />} />
+                    <Route path="/personalTecnicos" element={<TecnicosTable />} />
                     <Route path="/tecnico/orden" element={<TecnicoPage />} />
                     <Route path="/tecnico2/:id" element={<RegisterTecPage2 />} />
                     <Route path="/evidencias/:id" element={<Evidencias />} />

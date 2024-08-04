@@ -5,7 +5,7 @@ import {
     deleteInfome,
     editarEstadoInforme,
     evaluacionDelInfome,
-    getEncabezado,
+    // getEncabezado,
     getImagenInfome,
     getInfome,
     getTecnicos,
@@ -16,6 +16,9 @@ import {
     crearEstadosOrdenTrabajo, declinarSoliOrdenTrabajo,
     getCantidadTotalOrdenTrabajoEstados,
     getEstadosOrdenTrabajo,
+    createTecnico, deleteTecnico,
+    getTecnicoPorId, getTecnicosPorInforme,
+    updateTecnico,
 } from "../api/informe";
 
 import { gethistorialOrdenTrabajo } from '../api/historialInput'
@@ -33,6 +36,8 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
     const [errores, setErrores] = useState([]);
     const [informes, setInformes] = useState([]);
     const [tecnicos, setTecnicos] = useState([]);
+    const [unTecnicos, setUnTecnicos] = useState([]);
+    const [unTecnicoinfo, setUnTecnicoinfo] = useState([]);
     const [estados, setEstados] = useState([]);
     const [unaInfo, setUnaInfo] = useState([]);
     const [imagenInfo, setImagenInfo] = useState([]);
@@ -248,6 +253,54 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
         }
     };
 
+    //TecnicosD
+    const crearTecnico = async (tecnico) => {
+        try {
+            const res = await createTecnico(tecnico);
+            return res
+        } catch (error) {
+            console.error("Error al crear técnico:", error);
+            setErrores(prevErrores => [...prevErrores, "Error al crear técnico"]);
+        }
+    };
+    const eliminarTecnico = async (id) => {
+        try {
+            const res = await deleteTecnico(id);
+            return res;
+        } catch (error) {
+            console.error("Error al eliminar técnico:", error);
+            setErrores(prevErrores => [...prevErrores, "Error al eliminar técnico"]);
+        }
+    };
+
+    const traerTecnicoPorId = async (id) => {
+        try {
+            const res = await getTecnicoPorId(id);
+            setUnTecnicos(res.data)
+        } catch (error) {
+            console.error("Error al traer técnico por ID:", error);
+            setErrores(prevErrores => [...prevErrores, "Error al traer técnico por ID"]);
+        }
+    };
+
+    const traerTecnicosPorInforme = async (informeId) => {
+        try {
+            const res = await getTecnicosPorInforme(informeId);
+            setUnTecnicoinfo(res.data);
+        } catch (error) {
+            console.error("Error al traer técnicos por informe:", error);
+            setErrores(prevErrores => [...prevErrores, "Error al traer técnicos por informe"]);
+        }
+    };
+    const actualizarTecnico = async (id, tecnico) => {
+        try {
+            const res = await updateTecnico(id, tecnico);
+            return res;
+        } catch (error) {
+            console.error("Error al actualizar técnico:", error);
+            setErrores(prevErrores => [...prevErrores, "Error al actualizar técnico"]);
+        }
+    };
 
     return (
         <OrdenTrabajoContext.Provider
@@ -262,6 +315,8 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
                 imagenInfo,
                 encabezado,
                 historialOrden,
+                unTecnicos,
+                unTecnicoinfo,
                 //funciones
                 traerOrdenesDeTrabajo,
                 crearOrdenTrabajo,
@@ -284,6 +339,11 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
                 declinarSoliOrdenTrabajo,
                 getCantidadTotalOrden,
                 getEstadosOrdenTrabajo,
+                crearTecnico,
+                eliminarTecnico,
+                traerTecnicoPorId,
+                traerTecnicosPorInforme,
+                actualizarTecnico,
             }}
         >
             {children}

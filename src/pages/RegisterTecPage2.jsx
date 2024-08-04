@@ -217,7 +217,7 @@ export const RegisterTecPage2 = () => {
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody className="[&_tr:last-child]:border-0  border-b border-r border-l border-gray-400">
+                                <tbody className="[&_tr:last-child]:border-0 border-b border-r border-l border-gray-400">
                                     {items.map((item, index) => (
                                         <tr key={index} className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted border-gray-400">
                                             <td className="align-middle border border-gray-400">
@@ -258,8 +258,7 @@ export const RegisterTecPage2 = () => {
                                                     <span className="text-red-500">{errors.items[index].descripcion.message}</span>
                                                 )}
                                             </td>
-
-                                            <td className=" border border-gray-400">
+                                            <td className="border border-gray-400">
                                                 <div className="flex items-center justify-center">
                                                     <button
                                                         onClick={(e) => eliminarItem(index, e)}
@@ -276,6 +275,7 @@ export const RegisterTecPage2 = () => {
                                     ))}
                                 </tbody>
                             </table>
+
                             <div className="p-4 bg-white mb-6 border-b border-r border-l border-gray-400 rounded-b-md">
                                 <button
                                     onClick={(e) => agregarItem(e)}
