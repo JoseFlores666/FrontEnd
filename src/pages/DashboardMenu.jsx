@@ -45,7 +45,6 @@ export const DashboardMenu = ({ isOpen, toggleMenu }) => {
 
     const llenaSolicitud = () => {
         try {
-            console.log(api_Key)
             setValue("apiKey", api_Key[0].api_key);
             const userId = api_Key && api_Key.length > 0 ? api_Key[0]._id : null; //obtenemos id
             setIDApiKeys(userId)
@@ -91,7 +90,6 @@ export const DashboardMenu = ({ isOpen, toggleMenu }) => {
     const handleUpdateApiKey = async (data) => {
         try {
             const { newApiKey } = data;
-            console.log(idApiKeys)
             await EditarApis_keys(idApiKeys, newApiKey);
             setValue("apiKey", "");
 

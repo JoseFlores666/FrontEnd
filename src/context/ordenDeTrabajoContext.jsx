@@ -189,7 +189,6 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
     const traerFolioInternoInforme = async () => {
         try {
             const res = await getfolioInternoInforme();
-            console.log(res.data)
             setMiFolioInternoInfo(res.data.folio);
         } catch (error) {
             console.error("Error al traer folio interno del informe:", error);

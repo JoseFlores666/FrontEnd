@@ -68,7 +68,6 @@ export const AbonoSolicitud = () => {
 
     const llenaSolicitud = () => {
         try {
-            console.log(unasoli)
             setValue("folio", unasoli.folio || "");
             setValue("folioExterno", unasoli.folioExterno || "");
             setValue("fecha", unasoli.fecha ? new Date(unasoli.fecha).toISOString().slice(0, 10) : "");
@@ -107,10 +106,6 @@ export const AbonoSolicitud = () => {
                     return;
                 }
             }
-
-
-            console.log(restData); // Imprime el objeto de datos para verificar
-
             const response = await RealizarAbono(id, restData);
             if (!response) {
                 Swal.fire({

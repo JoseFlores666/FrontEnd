@@ -60,7 +60,7 @@ export function SoliProvider({ children }) {
   const [misProyectos, setMisProyectos] = useState([]);
   const [miProyectoAct, setMiProyectoAct] = useState([]);
   const [misActividades, setMisActividades] = useState([]);
-  const [actSinAsignar, setActSinAsignar] = useState("");
+  const [actSinAsignar, setActSinAsignar] = useState([]);
 
 
   //Solicitudes
@@ -239,7 +239,7 @@ export function SoliProvider({ children }) {
   const getIdsProyectYAct = async (id) => {
     try {
       const res = await traeUnProyectAct(id);
-      setIdsAct(res.data.actividades);
+      setIdsAct(res.data?.proyecto?.actividades);
     } catch (error) {
       console.error("Error fetching project activities:", error);
       setErrors(["Error fetching project activities"]);
@@ -483,7 +483,6 @@ export function SoliProvider({ children }) {
         misProyectos,
         misActividades,
         crearActividad,
-      
         ActualizarEstados,
         estados,
         eliminarUnHistorialSoli,
@@ -499,7 +498,6 @@ export function SoliProvider({ children }) {
         soli,
         declinarmySoi,
         actualizarSoliFolioExterno,
-
         editarFirmas,
         myFolioInterno,
         nombresFirmas,

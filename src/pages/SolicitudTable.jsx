@@ -48,7 +48,6 @@ export function SolicitudTable({ }) {
     const fetchSoliYEstados = async () => {
       try {
         await getSoli();
-        console.log(soli)
         await verMisEstados();
 
         setSolicitudesFetched(true);

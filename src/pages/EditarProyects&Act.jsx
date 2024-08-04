@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faEdit, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useSoli } from '../context/SolicitudContext';
-// import { useAuth } from '../context/authContext';
 import { ImFileEmpty } from "react-icons/im";
 import Swal from "sweetalert2";
 import { Card, Message, Button, Input, Label } from "../components/ui";
-import { idsProyect } from '../api/soli';
+
 
 export const ProjectAndActManager = () => {
     const [newProject, setNewProject] = useState('');
@@ -28,11 +27,9 @@ export const ProjectAndActManager = () => {
 
     const [mostrarModalProyecto, setMostrarModalProyecto] = useState(false);
     const [vistaModal, setVistaModal] = useState('editarProyecto');
-    const [nombreProyecto, setNombreProyecto] = useState('');
     const [editarProyect, setEditarProyect] = useState('');
 
 
-    const [actividadesProyecto, setActividadesProyecto] = useState([]);
 
     const { traerActividades, traerProyectos, crearProyecto, eliminarProyecto, proyectAsignarActividades,
         errors: ProyectActErr, misProyectos = [], crearActYasignarProyect, editarMyProyect,
@@ -51,7 +48,6 @@ export const ProjectAndActManager = () => {
                 await traerActividades();
                 await traerProyectos();
                 await traerActSinAsignar();
-                console.log(actSinAsignar)
                 setLoading(true)
                 setDatosCargados(true);
             } catch (error) {

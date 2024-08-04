@@ -38,7 +38,6 @@ export const RegisterTecnicoPage = () => {
     const fetchData = async () => {
       try {
         await traerFolioInternoInforme();
-        console.log(miFolioInternoInfo)
         await traerHistorialOrden();
       } catch (error) {
         console.error("Error fetching data:", error);

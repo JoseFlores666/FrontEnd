@@ -253,7 +253,6 @@ export function Historial() {
                             <button onClick={() => aplicarFiltro("Rechazo de la solicitud")} className="bg-blue-500 text-white py-2 px-4 rounded">Rechazo de la solicitud</button>
                         </div>
                         <button className="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg" onClick={cerrarModalFiltro}>Cerrar</button>
-                        <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg" onClick={aplicarFiltro}>Aplicar Filtro</button>
                     </div>
                 </div>
             )}

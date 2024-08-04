@@ -141,7 +141,6 @@ export const RegisterSolicitudPage = () => {
 
   useEffect(() => {
     if (editar && unasoli || duplicar && unasoli) {
-      console.log(unasoli)
 
       setFolioInterno(unasoli.folio || "");
 
@@ -217,6 +216,7 @@ export const RegisterSolicitudPage = () => {
     const fetchActivities = async () => {
       try {
         await getIdsProyectYAct(proyecto);
+        console.log(idsAct)
         setFetchActivitiesFlag(false);
       } catch (error) {
         console.error("Error fetching activities:", error);
@@ -528,7 +528,7 @@ export const RegisterSolicitudPage = () => {
                 }}
               >
                 <option value="">Seleccione una Actividad</option>
-                {idsAct.map((actividad) => (
+                {idsAct.length > 0 && idsAct.map((actividad) => (
                   <option key={actividad._id} value={actividad._id}>
                     {actividad.nombre}
                   </option>
