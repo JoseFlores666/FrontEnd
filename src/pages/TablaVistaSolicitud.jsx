@@ -25,6 +25,22 @@ export const TablaVistaSolicitud = ({ data, refetchData }) => {
         datosRef.current = data.map(item => ({ ...item }));
     }, [data]);
 
+    useEffect(() => {
+        filtrarDatos();
+    }, [año, mes, data]);
+
+    const filtrarDatos = useCallback(() => {
+        let datosFiltrados = data;
+        if (año) {
+            datosFiltrados = datosFiltrados.filter(item => new Date(item.fecha).getFullYear() === parseInt(año, 10));
+        }
+        if (mes) {
+            const mesIndex = meses.indexOf(mes);
+            datosFiltrados = datosFiltrados.filter(item => new Date(item.fecha).getMonth() === mesIndex);
+        }
+        setDatos(datosFiltrados);
+    }, [año, mes, data, meses]);
+
     const handleEditClick = useCallback(() => {
         setIsEditing(true);
     }, []);
