@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import {
-    InformaciónDeLaOrden,
+    capturarDiagnostico,
     createInfome,
     deleteInfome,
     editarEstadoInforme,
@@ -39,7 +39,7 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
     const [encabezado, setEncabezado] = useState([]);
     const [historialOrden, setHistorialOrden] = useState([]);
     const [miFolioInternoInfo, setMiFolioInternoInfo] = useState([]);
-    const [estadosTotales, setEstadosTotales] = useState(0);
+    const [estadosTotales, setEstadosTotales] = useState([]);
 
     const traerOrdenesDeTrabajo = async () => {
         try {
@@ -104,9 +104,9 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
         }
     };
 
-    const observacionesDelTecnico = async (id, observaciones) => {
+    const diagnosticoDelTecnico = async (id, diagnostico) => {
         try {
-            const res = await InformaciónDeLaOrden(id, observaciones);
+            const res = await capturarDiagnostico(id, diagnostico);
             return res;
         } catch (error) {
             console.error("Error al crear solicitud:", error);
@@ -127,6 +127,7 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
     const traerImagenInfo = async (id) => {
         try {
             const res = await getImagenInfome(id);
+            console.log(res.data)
             setImagenInfo(res.data);
         } catch (error) {
             console.error("Error al traer imagen:", error);
@@ -196,7 +197,7 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
         }
     };
 
-    const actualizarEstadosOrdenTrabajo = async (estadosAActualizar) => {
+    const actualizarEstadosOrden = async (estadosAActualizar) => {
         try {
             const res = await actualizarEstadosOrdenTrabajo(estadosAActualizar);
             return res;
@@ -226,9 +227,10 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
         }
     };
 
-    const getCantidadTotalOrdenTrabajoEstados = async () => {
+    const getCantidadTotalOrden = async () => {
         try {
             const res = await getCantidadTotalOrdenTrabajoEstados();
+            console.log(res.data)
             setEstadosTotales(res.data);
         } catch (error) {
             console.error("Error al obtener la cantidad total de estados de la orden de trabajo:", error);
@@ -267,7 +269,7 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
                 actualizarOrdenTrabajo,
                 crearDEPInforme,
                 evaluarInforme,
-                observacionesDelTecnico,
+                diagnosticoDelTecnico,
                 traerUnaInfo,
                 traerImagenInfo,
                 eliminarInfo,
@@ -277,10 +279,10 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
                 traerHistorialOrden,
                 traerFolioInternoInforme,
                 // Otras funciones y estados...
-                actualizarEstadosOrdenTrabajo,
+                actualizarEstadosOrden,
                 crearEstadosOrdenTrabajo,
                 declinarSoliOrdenTrabajo,
-                getCantidadTotalOrdenTrabajoEstados,
+                getCantidadTotalOrden,
                 getEstadosOrdenTrabajo,
             }}
         >

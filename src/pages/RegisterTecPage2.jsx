@@ -1,9 +1,9 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
 import { AutocompleteInput } from "../components/ui/AutocompleteInput";
 import { useAuth } from "../context/authContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useParams, useNavigate } from "react-router-dom";
 import SubiendoImagenes from "../components/ui/SubiendoImagenes"
 import { faTrashAlt, faClone } from '@fortawesome/free-solid-svg-icons';
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,6 +18,7 @@ export const RegisterTecPage2 = () => {
 
     const { id } = useParams();
     const subiendoImagenesRef = useRef(null);
+    const navigate = useNavigate();
 
     const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm({
         resolver: zodResolver(formSchema),
@@ -28,7 +29,7 @@ export const RegisterTecPage2 = () => {
         }
     });
 
-    const { traerUnaInfo, unaInfo, traerEncabezado, encabezado,
+    const { traerUnaInfo, unaInfo,
         traerHistorialOrden, historialOrden, traerFolioInternoInforme,
         miFolioInternoInfo, crearDEPInforme } = useOrden();
 
@@ -41,7 +42,6 @@ export const RegisterTecPage2 = () => {
     const [folioExterno, setFolioExterno] = useState("");
     const [items, setItems] = useState([{ cantidad: "", descripcion: "" }]);
     const refs = useRef([]);
-    const [observaciones, setObservaciones] = useState("");
 
     const onSubmit = async (data) => {
         try {
@@ -59,32 +59,30 @@ export const RegisterTecPage2 = () => {
                 formData.append(`imagen-${index}`, file);
             });
 
-            // Enviar los datos al servidor
-          const res =  await crearDEPInforme(id, formData);
-        
+            const res = await crearDEPInforme(id, formData);
             if (res && res.data?.mensaje) {
                 Swal.fire("Completado", res.data?.mensaje, "success");
                 limpiar();
+                navigate('/tecnico/orden');
             } else {
                 Swal.fire("Error", res?.error || "Error desconocido", "error");
             }
         } catch (error) {
-            Swal.fire("Error","Error del servidor", "error");
+            Swal.fire("Error", "Error del servidor", "error");
         }
     };
 
     const limpiar = () => {
-        reset(); 
+        reset();
         setFechaOrden(() => {
             const today = new Date();
             return today.toISOString().split("T")[0];
         });
-        setFolioExterno(""); 
+        setFolioExterno("");
         setItems([{ cantidad: "", descripcion: "" }]);
-        setObservaciones("");
         if (subiendoImagenesRef.current) {
             subiendoImagenesRef.current.clearFiles();
-          }
+        }
     };
 
 
@@ -92,7 +90,6 @@ export const RegisterTecPage2 = () => {
         traerHistorialOrden();
         traerFolioInternoInforme();
         traerUnaInfo(id);
-        traerEncabezado(id);
     }, []);
 
     useEffect(() => {
@@ -153,7 +150,7 @@ export const RegisterTecPage2 = () => {
 
                         <div className="bg-slate-200 rounded p-2">
                             <Label>Folio: </Label>
-                            <p className="w-full rounded-md">{unaInfo.folio}</p>
+                            <p className="w-full rounded-md">{unaInfo.informe?.folio}</p>
 
                         </div>
                     </GridContainer>
@@ -184,13 +181,13 @@ export const RegisterTecPage2 = () => {
                     </GridContainer>
                     <div className="bg-slate-200 rounded p-2 mb-4">
                         <Label>Descripción:</Label>
-                        <p>{encabezado.descripcionDelServicio}</p>
+                        <p>{unaInfo.informe?.descripcion}</p>
                     </div>
 
                     <div className="bg-slate-200 rounded p-2 mb-4 text-center">
                         <Label>Técnico Encargado:</Label>
-                        {encabezado.tecnicos && encabezado.tecnicos.length > 0 ? (
-                            <p>{encabezado.tecnicos[0]?.nombreCompleto}</p>
+                        {unaInfo.informe?.solicitud?.tecnicos ? (
+                            <p>{unaInfo.informe?.solicitud?.tecnicos?.nombreCompleto}</p>
                         ) : (
                             <p>No asignado</p>
                         )}

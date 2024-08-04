@@ -4,7 +4,7 @@ import { faTrashAlt, faEdit, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useSoli } from '../context/SolicitudContext';
 import { ImFileEmpty } from "react-icons/im";
 import Swal from "sweetalert2";
-import { Card, Message, Button, Input, Label } from "../components/ui";
+import { Card, Message, Button, Input, Label, Title } from "../components/ui";
 
 
 export const ProjectAndActManager = () => {
@@ -348,7 +348,7 @@ export const ProjectAndActManager = () => {
     return (
         <div className="mx-auto max-w-7xl p-4 text-black">
             <div className="bg-white p-8 rounded-lg shadow-lg">
-                <h1 className="text-2xl text-center font-bold mb-8">Gestión De Proyectos y Actividades</h1>
+                <Title >Gestión De Proyectos y Actividades</Title>
                 {/* Tabla de Proyectos con Actividades */}
                 <div>
                     <h2 className="text-xl font-bold mb-4">Ver Proyectos con Actividades</h2>

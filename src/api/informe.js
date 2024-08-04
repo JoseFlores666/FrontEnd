@@ -20,8 +20,8 @@ export const getImagenInfome = async (id) =>
 export const evaluacionDelInfome = async (id, idTecnico) =>
   axios.put(`/informe/AsignarTecnico/${id}`, { idTecnico });
 
-export const InformaciónDeLaOrden = async (id, observaciones) =>
-  axios.put(`/informe/editarObservaciones/${id}`, observaciones);
+export const capturarDiagnostico = async (id, diagnostico) =>
+  axios.put(`/informe/capturarDiagnostico/${id}`, diagnostico);
 
 //estado
 export const editarEstadoInforme = async (id) =>
@@ -30,19 +30,17 @@ export const editarEstadoInforme = async (id) =>
 export const getEstadosOrdenTrabajo = async () =>
   axios.get(`/estadosOrdenTrabajo`);
 
-// Obtener la cantidad total de estados de orden de trabajo
 export const getCantidadTotalOrdenTrabajoEstados = async () =>
   axios.get(`/estadosOrdenTrabajo/cantidadTotal`);
 
-// Crear nuevos estados de orden de trabajo
 export const crearEstadosOrdenTrabajo = async (estados) =>
   axios.post(`/estadosOrdenTrabajo/crear`, estados);
 
-// Actualizar estados de orden de trabajo
-export const actualizarEstadosOrdenTrabajo = async (estadosAActualizar) =>
-  axios.put(`/estadosOrdenTrabajo/actualizar`, estadosAActualizar);
 
-// Declinar solicitud (ajustado si es necesario para orden de trabajo)
+export const actualizarEstadosOrdenTrabajo = async (EstadosAActualizar) =>
+  axios.put(`/estadosOrdenTrabajo/actualizar`, EstadosAActualizar);
+
+
 export const declinarSoliOrdenTrabajo = async (id, user) =>
   axios.put(`/solicitud/estado/${id}`, { user });
 

@@ -18,7 +18,7 @@ export const RegisterTecnicoPage = () => {
     formState: { errors },
   } = useForm();
 
-  const [fechaOrden, setFechaOrden] = useState(() => {
+  const [fecha, setFecha] = useState(() => {
     const today = new Date();
     return today.toISOString().split("T")[0];
   });
@@ -32,7 +32,7 @@ export const RegisterTecnicoPage = () => {
 
   const inputRef = useRef([]);
 
-  const { crearOrdenTrabajo, traerFolioInternoInforme, miFolioInternoInfo,traerHistorialOrden,historialOrden } = useOrden();
+  const { crearOrdenTrabajo, traerFolioInternoInforme, miFolioInternoInfo, traerHistorialOrden, historialOrden } = useOrden();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,20 +52,21 @@ export const RegisterTecnicoPage = () => {
 
   const onSubmit = async (data) => {
     try {
-      const formData = {
-        folio: data.folio,
-        fechaOrden: fechaOrden,
-        folioExterno: data.folioExterno,
-        areasoli: areasoli,
-        solicita: solicita,
-        edificio: edificio,
-        tipoMantenimiento: data.tipoMantenimiento,
-        tipoTrabajo: data.tipoTrabajo,
-        tipoSolicitud: data.tipoSolicitud,
-        descripcion: descripcion,
+      const informe = {
+        Solicita: {
+          nombre: solicita,
+          areaSolicitante: areasoli,
+          edificio,
+        },
+        fecha,
+        tipoDeMantenimiento: data.tipoMantenimiento,
+        tipoDeTrabajo: data.tipoTrabajo,
+        tipoDeSolicitud: data.tipoSolicitud,
+        descripcion,
       };
+      console.log("Datos del formulario:", informe);
 
-      const res = await crearOrdenTrabajo(formData);
+      const res = await crearOrdenTrabajo(informe);
       if (res) {
         Swal.fire({
           title: "Completado!",
@@ -106,8 +107,8 @@ export const RegisterTecnicoPage = () => {
                 id="fechaOrden"
                 name="fechaOrden"
                 className="w-full text-black p-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                value={fechaOrden}
-                onChange={(e) => setFechaOrden(e.target.value)}
+                value={fecha}
+                onChange={(e) => setFecha(e.target.value)}
               />
             </div>
           </GridContainer>
