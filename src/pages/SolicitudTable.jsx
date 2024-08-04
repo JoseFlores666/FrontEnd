@@ -15,6 +15,7 @@ export function SolicitudTable({ }) {
   const [sortConfig, setSortConfig] = useState({ key: 'folio', direction: 'des' });
   const [selectedId, setSelectedId] = useState(null);
   const [rejectedSolicitudes, setRejectedSolicitudes] = useState([]);
+  const [actividades, setActividades] = useState({});
 
   const [solicitudToReject, setSolicitudToReject] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -104,8 +105,8 @@ export function SolicitudTable({ }) {
       solicitud.procesoClave.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (solicitud.proyecto?.nombre?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
       (solicitud.actividades?.some(actividad =>
-        (actividad.nombreActividad?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-        (actividad.actividadRef?.nombre?.toLowerCase() || '').includes(searchTerm.toLowerCase())
+        (actividad.actividadRef?.nombre?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+        (actividad.nombreActividad?.toLowerCase() || '').includes(searchTerm.toLowerCase())
       )) ||
       (solicitud.estado?.nombre?.toLowerCase() || '').includes(searchTerm.toLowerCase())
     );
@@ -161,8 +162,10 @@ export function SolicitudTable({ }) {
     }
   };
 
-  const handleOpenModal = (id) => {
+  const handleOpenModal = (id, actividades) => {
     setSolicitudToReject(id);
+    console.log(actividades)
+    setActividades(actividades.actividades)
     setIsModalOpen(true);
   };
 
@@ -176,8 +179,8 @@ export function SolicitudTable({ }) {
       if (solicitudToReject) {
         // Actualizar el estado local de las solicitudes rechazadas
         setRejectedSolicitudes([...rejectedSolicitudes, solicitudToReject]);
-
-        await declinarmySoi(solicitudToReject, user);
+        // console.log(solicitudToReject, actividades)
+        await declinarmySoi(solicitudToReject, actividades);
         await getSoli();
       }
       handleCloseModal();
@@ -297,7 +300,8 @@ export function SolicitudTable({ }) {
                   <>
                     <button className="text-red-500 border font-semibold border-red-500 px-2 py-1 rounded-lg">Rechazado</button>
                     <button
-                      onClick={() => handleDelete(solicitud._id, user)}
+                      onClick={() => handleDelete(solicitud._id, user)
+                      }
                       className="text-red-500 hover mx-2"
                     >
                       <FontAwesomeIcon icon={faTrash} />
@@ -344,7 +348,7 @@ export function SolicitudTable({ }) {
                       <FontAwesomeIcon icon={faHistory} />
                     </Link>
                     <button
-                      onClick={() => handleOpenModal(solicitud._id, user)}
+                      onClick={() => { handleOpenModal(solicitud._id, solicitud) }}
                       className="text-red-500 border border-red-500 px-2 py-1 rounded-lg"
                       title="Cancelar solicitud"
                     >
