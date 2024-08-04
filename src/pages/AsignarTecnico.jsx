@@ -1,12 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
 import { Link, useParams } from 'react-router-dom';
 import { asignarTecnicoSchema } from '../schemas/AsignarTecnico.js'
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ImFileEmpty } from "react-icons/im";
 import Swal from "sweetalert2";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { Title, Label, GridContainer } from '../components/ui';
 import { useOrden } from '../context/ordenDeTrabajoContext';
 

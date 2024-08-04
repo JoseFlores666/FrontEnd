@@ -43,6 +43,7 @@ export const RegisterSolicitudPage = () => {
   const [pc, setPc] = useState("");
   const [proyecto, setProyecto] = useState("");
   const [actividad, setActividad] = useState("");
+  const [selectedActividad, setSelectedActividad] = useState({ id: "", nombre: "" });
   const [justificacion, setJustificacion] = useState("");
   const [items, setItems] = useState([{ cantidad: "", unidad: "", descripcion: "", cantidadAcumulada: 0, cantidadEntregada: 0, NumeroDeEntregas: 0, },]);
 
@@ -77,7 +78,7 @@ export const RegisterSolicitudPage = () => {
       !suministro ||
       !pc ||
       !proyecto ||
-      !actividad ||
+      !selectedActividad ||
       !justificacion ||
       items.length === 0 ||
       items.some((item) => !item.unidad || !item.cantidad || !item.descripcion)
@@ -100,7 +101,7 @@ export const RegisterSolicitudPage = () => {
         suministro,
         pc,
         proyecto,
-        actividad,
+        selectedActividad,
         justificacion,
         items, user
       };
@@ -294,7 +295,7 @@ export const RegisterSolicitudPage = () => {
       !suministro ||
       !pc ||
       !proyecto ||
-      !actividad ||
+      !selectedActividad ||
       !justificacion ||
       items.length === 0 ||
       items.some((item) => !item.unidad || !item.cantidad || !item.descripcion)
@@ -318,7 +319,7 @@ export const RegisterSolicitudPage = () => {
       suministro,
       pc,
       proyecto,
-      actividad,
+      selectedActividad,
       justificacion,
       items,
     };
@@ -365,13 +366,17 @@ export const RegisterSolicitudPage = () => {
   const handleChangeActividad = (e) => {
     const selectedActividadId = e.target.value;
     setActividad(selectedActividadId);
+
     const selectedActividad = idsAct.find(
       (actividad) => actividad._id === selectedActividadId
     );
-    console.log(selectedActividad ? selectedActividad.nombre : "");
-    setMyActividad_(selectedActividad ? selectedActividad.nombre : "");
 
+    setSelectedActividad({
+      id: selectedActividad ? selectedActividad._id : "",
+      nombre: selectedActividad ? selectedActividad.nombre : ""
+    });
   };
+
 
   const duplicarItem = async (index, e) => {
     e.preventDefault();
