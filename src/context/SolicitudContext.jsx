@@ -20,13 +20,11 @@ import {
   editarProyecto, getUnProyectoActividades, desenlazarActividadProyec,
 } from "../api/soli";
 
-import {
-  getInfome, createInfome, deleteInfome, llenadoDEPInforme, getUnaInfome,
-  evaluacionDelInfome, getTecnicos, editarEstadoInforme, getEncabezado,
-  getImagenInfome, InformaciónDeLaOrden,
-} from "../api/informe";
-import { getfolioInterno, getfolioInternoInforme } from "../api/folio";
-import { gethistorialOrdenTrabajo, gethistorialSoli } from "../api/historialInput";
+
+
+
+import { getfolioInterno } from "../api/folio";
+import { gethistorialSoli } from "../api/historialInput";
 import { CrearApi_key, VerApis_Keys, actualizaApi_key } from "../api/api_key";
 
 const SoliContext = createContext();
@@ -46,24 +44,19 @@ export function SoliProvider({ children }) {
   const [nombreProAct, setNombreProAct] = useState([]);
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [info, setInfo] = useState([]);
-  const [unaInfo, setUnaInfo] = useState([]);
   const [unasoli, setUnaSoli] = useState([]);
   const [myHisorialSolicitud, setMyHisorialSolicitud] = useState([]);
   const [unProyectAct, setUnProyectAct] = useState([]);
   const [nombresFirmas, setNombresFirmas] = useState([]);
   const [myFolioInterno, setMyFolioInterno] = useState([]);
-  const [myFolioInternoInfo, setMyFolioInternoInfo] = useState([]);
-  const [historialOrden, setHistorialOrden] = useState([]);
   const [historialSoli, setHistorialSoli] = useState([]);
   const [historialUnaSoli, setHistorialUnaSoli] = useState([]);
   const [api_Key, setApi_Key] = useState([]);
   const [mensaje, setMensaje] = useState("");
-  const [tecnicos, setTecnicos] = useState("");
-  const [encabezado, setEncabezado] = useState("");
+
   const [estados, setEstados] = useState([]);
   const [cantidadestados, setCantidadEstados] = useState("");
-  const [imagenInfo, setImagenInfo] = useState("");
+
   const [misProyectos, setMisProyectos] = useState([]);
   const [miProyectoAct, setMiProyectoAct] = useState([]);
   const [misActividades, setMisActividades] = useState([]);
@@ -265,118 +258,6 @@ export function SoliProvider({ children }) {
     }
   };
 
-  // Informe
-  const getInfo = async () => {
-    try {
-      const res = await getInfome();
-      setInfo(res.data);
-    } catch (error) {
-      console.error("Error fetching solitudes:", error);
-      setErrors(["Error fetching solitudes"]);
-    }
-  };
-
-
-  const createInfo = async (info) => {
-    try {
-      const res = await createInfome(info);
-      setMensaje(res.data.mensaje);
-    } catch (error) {
-      console.error("Error creating solicitud:", error);
-      setErrors(["Error creating solicitud"]);
-    }
-  };
-  const createDEPInforme = async (id, info) => {
-    try {
-      const res = await llenadoDEPInforme(id, info);
-      if (!res) {
-        console.log("Error al crear la solicitud");
-      } else {
-        console.log("Solicitud creada con éxito");
-      }
-    } catch (error) {
-      console.error("Error creating solicitud:", error);
-      setErrors(["Error creating solicitud"]);
-    }
-  };
-  const evaluarInfor = async (id, info) => {
-    try {
-      const res = await evaluacionDelInfome(id, info);
-      !res ? console.log("Error al crear el informe") : console.log("Informe creado con éxito")
-
-    } catch (error) {
-      console.error("Error creating solicitud:", error);
-      setErrors(["Error creating solicitud"]);
-    }
-  };
-  const ObservacionesDelTenico = async (id, observaciones) => {
-    try {
-      const res = await InformaciónDeLaOrden(id, observaciones);
-      !res ? console.log("Error al crear el informe") : console.log("Informe creado con éxito")
-
-      return res.data
-    } catch (error) {
-      console.error("Error creating solicitud:", error);
-      setErrors(["Error creating solicitud"]);
-    }
-  };
-  const traeUnaInfo = async (id) => {
-    try {
-      const res = await getUnaInfome(id);
-      setUnaInfo(res.data);
-    } catch (error) {
-      console.error("Error creating solicitud:", error);
-      setErrors(["Error creating solicitud"]);
-    }
-  };
-  const traeImagenInfo = async (id) => {
-    try {
-      const res = await getImagenInfome(id);
-      setImagenInfo(res.data);
-    } catch (error) {
-      console.error("Error creating solicitud:", error);
-      setErrors(["Error creating solicitud"]);
-    }
-  };
-
-  const eliminarInfo = async (id) => {
-    try {
-      const res = await deleteInfome(id);
-    } catch (error) {
-      console.error("Error fetching solitudes:", error);
-      setErrors(["Error fetching solitudes"]);
-    }
-  };
-  const editarEstadoInfo = async (id) => {
-    try {
-      const res = await editarEstadoInforme(id);
-      return res.data;
-    } catch (error) {
-      console.error("Error fetching solitudes:", error);
-      setErrors(["Error fetching solitudes"]);
-    }
-  };
-
-  //Tecnicos
-  const traerTecnicos = async () => {
-    try {
-      const res = await getTecnicos();
-      setTecnicos(res.data);
-    } catch (error) {
-      console.error("Error fetching informe:", error);
-      setErrors(["Error fetching informe"]);
-    }
-  };
-  const traerEncabezado = async (id) => {
-    try {
-      const res = await getEncabezado(id);
-      !res ? console.log("Error al traer el informe") : console.log("Exito al consultar el informe")
-      setEncabezado(res.data);
-    } catch (error) {
-      console.error("Error fetching informe(encabezado):", error);
-      setErrors(["Error fetching informe(encabezado)"]);
-    }
-  };
 
   //firmas
   const getFirmas = async () => {
@@ -408,26 +289,8 @@ export function SoliProvider({ children }) {
       setErrors(["Error fetching folioInterno"]);
     }
   };
-  const traeFolioInternoInforme = async () => {
-    try {
-      const res = await getfolioInternoInforme();
-      setMyFolioInternoInfo(res.data.folioInforme);
-    } catch (error) {
-      console.error("Error fetching folioInternoInforme:", error);
-      setErrors(["Error fetching folioInternoInforme"]);
-    }
-  };
 
-  //historial
-  const traeHistorialOrden = async () => {
-    try {
-      const res = await gethistorialOrdenTrabajo();
-      setHistorialOrden(res.data);
-    } catch (error) {
-      console.error("Error fetching historialOrden:", error);
-      setErrors(["Error fetching historialOrden"]);
-    }
-  };
+
   const traeHistorialSoli = async () => {
     try {
       const res = await gethistorialSoli();
@@ -607,43 +470,38 @@ export function SoliProvider({ children }) {
         desasignarActProyect,
         crearActYasignarProyect,
         eliminarActividad,
-        traerActSinAsignar, editarMyProyect,
+        traerActSinAsignar,
+        editarMyProyect,
         actSinAsignar,
         actualizarAct,
         crearProyecto,
-        traeMyProyecActividades, miProyectoAct,
+        traeMyProyecActividades,
+        miProyectoAct,
         eliminarProyecto,
         traerProyectos,
         asignarActProyecto,
         misProyectos,
         misActividades,
         crearActividad,
-        ObservacionesDelTenico,
+      
         ActualizarEstados,
         estados,
         eliminarUnHistorialSoli,
         historialUnaSoli,
         traehisorialDeUnaSoli,
         verMisEstados,
-        traehistoriSoli, myHisorialSolicitud,
-        cantidadestados, VercantTotalEstado,
+        traehistoriSoli,
+        myHisorialSolicitud,
+        cantidadestados,
+        VercantTotalEstado,
         traeHistorialSoli,
         historialSoli,
         soli,
         declinarmySoi,
-        traerEncabezado, encabezado,
         actualizarSoliFolioExterno,
-        traeUnaInfo,
-        unaInfo,
-        evaluarInfor,
-        editarEstadoInfo,
+
         editarFirmas,
         myFolioInterno,
-        traeFolioInternoInforme,
-        myFolioInternoInfo,
-        createDEPInforme,
-        traeHistorialOrden,
-        historialOrden,
         nombresFirmas,
         traeFolioInterno,
         unasoli,
@@ -669,14 +527,7 @@ export function SoliProvider({ children }) {
         crearmySoli,
         deleteSolitud,
         getUnaSoli,
-        info,
-        getInfo,
-        createInfo,
-        eliminarInfo,
-        imagenInfo,
-        traeImagenInfo,
-        traerTecnicos,
-        tecnicos,
+
         errors,
         loading,
         mensaje,

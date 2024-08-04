@@ -2,7 +2,8 @@ import React, { useRef, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { asignarTecnicoSchema } from '../schemas/AsignarTecnico.js'
-import { useSoli } from "../context/SolicitudContext";
+
+import { useOrden } from "../context/ordenDeTrabajoContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Swal from "sweetalert2";
 import "../css/solicitud.css";
@@ -12,11 +13,13 @@ import { AutocompleteInput } from "../components/ui/AutocompleteInput";
 import SubiendoImagenes from "../components/ui/SubiendoImagenes"
 import { Title, Label, GridContainer } from "../components/ui";
 
-//Segundo formulario Orden
-
 export const InformacionOrden = () => {
     const { id } = useParams();
-    const { historialOrden, traeHistorialOrden, ObservacionesDelTenico, traerEncabezado, encabezado, editarEstadoInfo, traeUnaInfo, unaInfo } = useSoli();
+
+    const { traerHistorialOrden, traerEncabezado, encabezado, historialOrden,
+        traerUnaInfo, unaInfo, observacionesDelTecnico, editarEstadoInfo, } = useOrden();
+
+
     const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm(
         //     {
         //     resolver: zodResolver(asignarTecnicoSchema),
@@ -30,10 +33,9 @@ export const InformacionOrden = () => {
     useEffect(() => {
         const iniciarDatos = async () => {
             try {
-                await await traeUnaInfo(id);
+                await await traerUnaInfo(id);
                 await await traerEncabezado(id);
-                console.log(unaInfo)
-                console.log(encabezado)
+                await await traerHistorialOrden(id);
             } catch (error) {
                 console.error("Error al cargar los datos", error);
             }
@@ -43,7 +45,7 @@ export const InformacionOrden = () => {
 
             setDatosCargados(true);
         }
-    }, [traerEncabezado, traeUnaInfo, datosCargados]);
+    }, [traerEncabezado, traerUnaInfo, traerHistorialOrden, datosCargados]);
 
 
 
@@ -83,27 +85,31 @@ export const InformacionOrden = () => {
             formData.append('observaciones', observaciones);
 
 
-            const res = await ObservacionesDelTenico(id, formData);
-            if (res) {
-                Swal.fire({
-                    title: "Completado!",
-                    text: "Registro Exitoso",
-                    icon: "success",
-                    confirmButtonText: "Cool",
-                });
+            const res = await observacionesDelTecnico(id, formData);
+
+            if (res && res.data?.mensaje) {
+                Swal.fire("Completado", res.data?.mensaje, "success");
+                clearForm();
             } else {
-                Swal.fire({
-                    title: "Error",
-                    text: "Error en el servidor",
-                    icon: "error",
-                    confirmButtonText: "Cool",
-                });
+                Swal.fire("Error", res?.error || "Error desconocido", "error");
             }
 
             reset();
         } catch (error) {
             console.error("Error al enviar los datos:", error);
         }
+    }
+    const clearForm = () => {
+        // Resetea el formulario
+        reset();
+
+        // Limpia los archivos en SubiendoImagenes
+        if (subiendoImagenesRef.current) {
+            subiendoImagenesRef.current.clearFiles();
+        }
+
+        // Limpia las observaciones
+        setObservaciones('');
     }
 
     return (

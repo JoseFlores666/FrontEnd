@@ -1,20 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useSoli } from '../context/SolicitudContext';
 import axios from 'axios';
+import { useOrden } from '../context/ordenDeTrabajoContext';
+
 
 export const Evidencias = () => {
   const { id } = useParams();
-  const { traeImagenInfo, imagenInfo, traeUnaInfo, unaInfo } = useSoli();
+ 
+  const {traerImagenInfo, imagenInfo,traerUnaInfo ,unaInfo} = useOrden();
+
   const [cargarDatos, setDatosCargados] = useState(false);
   const [solicitudInfo, setSolicitudInfo] = useState(null);
 
   useEffect(() => {
     const iniciarDatos = async () => {
       try {
-        await traeUnaInfo(id);
+        await traerUnaInfo(id);
         setSolicitudInfo(unaInfo);
-        await traeImagenInfo(id);
+        await traerImagenInfo(id);
         setDatosCargados(true);
       } catch (error) {
         console.error("Error al cargar los datos", error);
@@ -23,7 +26,7 @@ export const Evidencias = () => {
     if (!cargarDatos) {
       iniciarDatos();
     }
-  }, [id, traeUnaInfo, traeImagenInfo, unaInfo, cargarDatos]);
+  }, [id, traerUnaInfo, traerImagenInfo, unaInfo, cargarDatos]);
 
   const dividirEnPares = (arr) => {
     const pares = [];

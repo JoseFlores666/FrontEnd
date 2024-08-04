@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { useSoli } from "../context/SolicitudContext";
 import { useParams } from "react-router-dom";
 import "../css/solicitud.css";
 import { GridContainer, Label, Title } from "../components/ui";
+import { useOrden } from "../context/ordenDeTrabajoContext";
 
 export const VerInforme = () => {
     const { id } = useParams();
-    const { traeUnaInfo, unaInfo } = useSoli();
+    const { traerUnaInfo, unaInfo } = useOrden();
     const [datosCargados, setDatosCargados] = useState(false);
 
     useEffect(() => {
         const traerdatos = async () => {
             try {
-                await traeUnaInfo(id);
+                await traerUnaInfo(id);
                 console.log(unaInfo);
                 setDatosCargados(true);
             } catch (error) {
@@ -22,7 +22,7 @@ export const VerInforme = () => {
         if (!datosCargados) {
             traerdatos();
         }
-    }, [datosCargados, traeUnaInfo, unaInfo]);
+    }, [datosCargados, traerUnaInfo, unaInfo]);
 
     return (
         <div className="mx-auto max-w-6xl p-4 text-black">

@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import "../css/solicitud.css";
 import { useForm } from "react-hook-form";
-import { useSoli } from "../context/SolicitudContext";
+import { useOrden } from "../context/ordenDeTrabajoContext";
 import { useNavigate } from "react-router-dom";
 import "../css/Animaciones.css";
 import { AutocompleteInput } from "../components/ui/AutocompleteInput";
@@ -31,14 +31,15 @@ export const RegisterTecnicoPage = () => {
   const [projectsLoaded, setProjectsLoaded] = useState(false);
 
   const inputRef = useRef([]);
-  const { createInfo, myFolioInternoInfo, mensaje, traeFolioInternoInforme, historialOrden, traeHistorialOrden } = useSoli();
+
+  const { crearOrdenTrabajo, traerFolioInternoInforme, miFolioInternoInfo,traerHistorialOrden,historialOrden } = useOrden();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await traeFolioInternoInforme();
-
-        await traeHistorialOrden();
+        await traerFolioInternoInforme();
+        console.log(miFolioInternoInfo)
+        await traerHistorialOrden();
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -48,7 +49,7 @@ export const RegisterTecnicoPage = () => {
       fetchData();
       setProjectsLoaded(true);
     }
-  }, [projectsLoaded, traeFolioInternoInforme, traeHistorialOrden, myFolioInternoInfo, historialOrden]);
+  }, [projectsLoaded, traerFolioInternoInforme, traerHistorialOrden, miFolioInternoInfo, historialOrden]);
 
   const onSubmit = async (data) => {
     try {
@@ -65,10 +66,8 @@ export const RegisterTecnicoPage = () => {
         descripcion: descripcion,
       };
 
-      await createInfo(formData);
-      navigate('/tecnico/orden');
-
-      if (mensaje) {
+      const res = await crearOrdenTrabajo(formData);
+      if (res) {
         Swal.fire({
           title: "Completado!",
           text: "Registro Exitoso",
@@ -76,6 +75,7 @@ export const RegisterTecnicoPage = () => {
           confirmButtonText: "Cool",
         });
       }
+      navigate('/tecnico/orden');
     } catch (error) {
       console.error("Error submitting form: ", error);
     }
@@ -95,7 +95,7 @@ export const RegisterTecnicoPage = () => {
                 name="folio"
                 className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                 {...register("folio")}
-                value={myFolioInternoInfo || ""}
+                value={miFolioInternoInfo || ""}
                 disabled
               />
             </div>

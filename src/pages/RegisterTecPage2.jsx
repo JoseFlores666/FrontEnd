@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { AutocompleteInput } from "../components/ui/AutocompleteInput";
-import { useSoli } from "../context/SolicitudContext";
 import { useAuth } from "../context/authContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SubiendoImagenes from "../components/ui/SubiendoImagenes"
@@ -13,87 +12,94 @@ import Swal from "sweetalert2";
 import "../css/solicitud.css";
 import "../css/Animaciones.css";
 import { GridContainer, Label, Title } from "../components/ui";
+import { useOrden } from "../context/ordenDeTrabajoContext";
 
 export const RegisterTecPage2 = () => {
+
+    const { id } = useParams();
     const subiendoImagenesRef = useRef(null);
 
-    const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm(
-        {
-            resolver: zodResolver(formSchema)
+    const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            folioExterno: "",
+            observaciones: "",
+            items: [{ cantidad: "", descripcion: "" }],
         }
-    );
-    const { id } = useParams();
-    const { user } = useAuth();
-    const { createDEPInforme, historialOrden, traeFolioInternoInforme, traerEncabezado, encabezado, traeHistorialOrden, traeUnaInfo, unaInfo, myFolioInternoInfo } = useSoli();
+    });
+
+    const { traerUnaInfo, unaInfo, traerEncabezado, encabezado,
+        traerHistorialOrden, historialOrden, traerFolioInternoInforme,
+        miFolioInternoInfo, crearDEPInforme } = useOrden();
+
     const [recentSuggestions, setRecentSuggestions] = useState([]);
     const [fechaOrden, setFechaOrden] = useState(() => {
         const today = new Date();
         return today.toISOString().split("T")[0];
     });
+
     const [folioExterno, setFolioExterno] = useState("");
     const [items, setItems] = useState([{ cantidad: "", descripcion: "" }]);
     const refs = useRef([]);
     const [observaciones, setObservaciones] = useState("");
 
-    const onSubmit = async (data, e) => {
-        e.preventDefault();
+    const onSubmit = async (data) => {
         try {
-            const formData = {
-                ...data,
-                fechaOrden,
-                observaciones,
-                user: user.id,
-            };
+            const formData = new FormData();
 
+            // Agregar datos de items al FormData
+            data.items.forEach((item, index) => {
+                formData.append(`items[${index}].cantidad`, item.cantidad);
+                formData.append(`items[${index}].descripcion`, item.descripcion);
+            });
+
+            // Agregar archivos al FormData
             const files = subiendoImagenesRef.current.getFiles();
-            for (let i = 0; i < files.length; i++) {
-                formData.append(`imagen-${i}`, files[i]);
-                console.log(`imagen - ${i}`, files[i]);
+            files.forEach((file, index) => {
+                formData.append(`imagen-${index}`, file);
+            });
+
+            // Enviar los datos al servidor
+          const res =  await crearDEPInforme(id, formData);
+        
+            if (res && res.data?.mensaje) {
+                Swal.fire("Completado", res.data?.mensaje, "success");
+                limpiar();
+            } else {
+                Swal.fire("Error", res?.error || "Error desconocido", "error");
             }
-            await createInfo(formData);
-            console.log('Form Data:', formData);
-            await createDEPInforme(id, formData);
-            limpiar()
-            Swal.fire({
-                title: "Completado!",
-                text: "Registro técnico completado",
-                icon: "success",
-                confirmButtonText: "Cool",
-            });
         } catch (error) {
-            Swal.fire({
-                title: "Error",
-                text: "Error al enviar la solicitud",
-                icon: "error",
-                confirmButtonText: "OK",
-            });
-            console.error("Error submitting form: ", error);
+            Swal.fire("Error","Error del servidor", "error");
         }
     };
 
     const limpiar = () => {
-        reset();
+        reset(); 
         setFechaOrden(() => {
             const today = new Date();
             return today.toISOString().split("T")[0];
         });
-        setFolioExterno("");
+        setFolioExterno(""); 
         setItems([{ cantidad: "", descripcion: "" }]);
         setObservaciones("");
+        if (subiendoImagenesRef.current) {
+            subiendoImagenesRef.current.clearFiles();
+          }
     };
 
+
     useEffect(() => {
-        traeHistorialOrden();
-        traeFolioInternoInforme();
-        traeUnaInfo(id);
+        traerHistorialOrden();
+        traerFolioInternoInforme();
+        traerUnaInfo(id);
         traerEncabezado(id);
     }, []);
 
     useEffect(() => {
         if (!folioExterno) {
-            setFolioExterno(myFolioInternoInfo);
+            setFolioExterno(miFolioInternoInfo);
         }
-    }, [folioExterno, myFolioInternoInfo]);
+    }, [folioExterno, miFolioInternoInfo]);
 
     const handleCantidadChange = (index, newValue) => {
         const newItems = [...items];
@@ -133,7 +139,7 @@ export const RegisterTecPage2 = () => {
         <div className="mx-auto max-w-5xl p-4 text-black">
             <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-6xl">
                 <div className="bg-white p-6 rounded-md shadow-md">
-                    <Title>Asignar Técnico</Title>
+                    <Title>Área De Entregas</Title>
                     <GridContainer>
                         <div className="bg-slate-200 rounded p-2">
                             <Label>Fecha:</Label>
@@ -255,6 +261,7 @@ export const RegisterTecPage2 = () => {
                                                     <span className="text-red-500">{errors.items[index].descripcion.message}</span>
                                                 )}
                                             </td>
+
                                             <td className=" border border-gray-400">
                                                 <div className="flex items-center justify-center">
                                                     <button
@@ -281,7 +288,7 @@ export const RegisterTecPage2 = () => {
                             </div>
                             {/* esta parte es Obligatorio en esta parte */}
                             <div>
-                                <SubiendoImagenes />
+                                <SubiendoImagenes ref={subiendoImagenesRef} />
                             </div>
 
                         </div>

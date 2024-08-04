@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from "react-hook-form";
 import { Link, useParams } from 'react-router-dom';
-import { useSoli } from '../context/SolicitudContext';
 import { asignarTecnicoSchema } from '../schemas/AsignarTecnico.js'
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ImFileEmpty } from "react-icons/im";
@@ -9,12 +8,15 @@ import Swal from "sweetalert2";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { Title, Label, GridContainer } from '../components/ui';
-//Primer Formulario Orden
+import { useOrden } from '../context/ordenDeTrabajoContext';
+
 
 export default function AsignarTecnico() {
 
     const { id } = useParams();
-    const { historialOrden, traeHistorialOrden, evaluarInfor, traerTecnicos, tecnicos, editarEstadoInfo, traeUnaInfo, unaInfo } = useSoli();
+
+    const { traerUnaInfo, traerTecnicos, tecnicos, evaluarInforme, unaInfo } = useOrden()
+
     const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm(
         // {
         // resolver: zodResolver(asignarTecnicoSchema),
@@ -22,13 +24,12 @@ export default function AsignarTecnico() {
     );
 
     const [datosCargados, setDatosCargados] = useState(false);
-    const [observaciones, setObservaciones] = useState('');
 
     useEffect(() => {
         const iniciarDatos = async () => {
             try {
                 await traerTecnicos();
-                await traeUnaInfo(id);
+                await traerUnaInfo(id);
             } catch (error) {
                 console.error("Error al cargar los datos", error);
             }
@@ -37,7 +38,7 @@ export default function AsignarTecnico() {
             iniciarDatos();
             llenarDatos();
         }
-    }, [traerTecnicos, datosCargados]);
+    }, [traerTecnicos, traerUnaInfo, datosCargados]);
 
     const llenarDatos = () => {
         if (tecnicos.length > 0) {
@@ -48,24 +49,27 @@ export default function AsignarTecnico() {
     const onSubmit = async (data, e) => {
         e.preventDefault();
         try {
+
             const formData = new FormData();
+            console.log("Datos recibidos:", data); // Verifica que `data.tecnico` tiene un valor
 
-            formData.append('id', id);
-            formData.append('idTecnico', data.tecnico);
+            formData.append('id', id); // Asegúrate de que 'id' es el ID del informe
+            formData.append('idTecnico', data.tecnico); // Asegúrate de que 'data.tecnico' es el ID del técnico
 
-            await evaluarInfor(id, formData);
-            Swal.fire({
-                title: "Completado!",
-                text: "Registro Exitoso",
-                icon: "success",
-                confirmButtonText: "Cool",
-            });
+            const res = await evaluarInforme(id, data.tecnico);
+            if (res && res.data?.mensaje) {
+                Swal.fire("Registro Exitoso", res.data?.mensaje, "success");
+                setDatosCargados(false);
+            } else {
+                Swal.fire("Error", res?.error || "Error desconocido", "error");
+            }
 
-            reset();
+            reset(); // Resetea el formulario si es necesario
         } catch (error) {
             console.error("Error al enviar los datos:", error);
         }
-    }
+    };
+
 
     if (!datosCargados) {
         return (

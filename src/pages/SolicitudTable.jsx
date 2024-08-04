@@ -20,7 +20,8 @@ export function SolicitudTable({ }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const modalRef = useRef(null);
 
-  const { soli, getSoli, deleteSolitud, declinarmySoi, cantidadestados, VercantTotalEstado, verMisEstados, estados = [] } = useSoli();
+  const { soli, getSoli, deleteSolitud, declinarmySoi, cantidadestados, 
+    VercantTotalEstado, verMisEstados, estados = [] } = useSoli();
   const { user } = useAuth();
 
   const [loading, setLoading] = useState(true);

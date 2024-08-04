@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEdit, faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { useSoli } from "../context/SolicitudContext";
 import { Link } from 'react-router-dom';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { ImFileEmpty } from "react-icons/im";
 import TablaVistaOrden from './TablaVistaOrden';
 import { Th, Td } from '../components/ui';
+import { useOrden } from '../context/ordenDeTrabajoContext';
 
 export const TecnicoPage = () => {
 
-  const { getInfo, info, eliminarInfo } = useSoli();
+  const { traerOrdenesDeTrabajo, informes ,eliminarInfo} = useOrden();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -36,7 +36,7 @@ export const TecnicoPage = () => {
   useEffect(() => {
     const fetchInfo = async () => {
       try {
-        await getInfo();
+        await traerOrdenesDeTrabajo();
         seTdatosCargados(true)
         setLoading(false);
       } catch (error) {
@@ -47,7 +47,7 @@ export const TecnicoPage = () => {
       fetchInfo()
     }
 
-  }, [getInfo, datosCargados]);
+  }, [traerOrdenesDeTrabajo, datosCargados]);
 
   const handleDelete = async (id) => {
     try {
@@ -59,24 +59,30 @@ export const TecnicoPage = () => {
   };
 
   useEffect(() => {
-    setFilteredSolicitudes(info);
+    setFilteredSolicitudes(informes);
 
-  }, [info]);
+  }, [informes]);
+
+  const filtrarSolicitud = (solicitud) => {
+    const terminoBusqueda = searchTerm.toLowerCase();
+    return (
+      (solicitud.folio && solicitud.folio.toLowerCase().includes(terminoBusqueda)) ||
+      (solicitud.informe.Solicita.nombre && solicitud.informe.Solicita.nombre.toLowerCase().includes(terminoBusqueda)) ||
+      (solicitud.informe.Solicita.areaSolicitante && solicitud.informe.Solicita.areaSolicitante.toLowerCase().includes(terminoBusqueda)) ||
+      (solicitud.informe.tipoDeMantenimiento && solicitud.informe.tipoDeMantenimiento.toLowerCase().includes(terminoBusqueda)) ||
+      (solicitud.informe.tipoDeTrabajo && solicitud.informe.tipoDeTrabajo.toLowerCase().includes(terminoBusqueda)) ||
+      (solicitud.informe.tipoDeSolicitud && solicitud.informe.tipoDeSolicitud.toLowerCase().includes(terminoBusqueda)) ||
+      (solicitud.estado && solicitud.estado.toLowerCase().includes(terminoBusqueda))
+    );
+  };
 
   useEffect(() => {
-    if (!info) return;
-    const results = info.filter((solicitud) =>
-      (solicitud.folio && solicitud.folio.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (solicitud.informe.Solicita.nombre && solicitud.informe.Solicita.nombre.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (solicitud.informe.Solicita.areaSolicitante && solicitud.informe.Solicita.areaSolicitante.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (solicitud.informe.tipoDeMantenimiento && solicitud.informe.tipoDeMantenimiento.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (solicitud.informe.tipoDeTrabajo && solicitud.informe.tipoDeTrabajo.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (solicitud.informe.tipoDeSolicitud && solicitud.informe.tipoDeSolicitud.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (solicitud.estado && solicitud.estado.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
+    if (!Array.isArray(informes) || informes.length === 0) return;
+    const results = informes.filter(filtrarSolicitud);
     setFilteredSolicitudes(results);
     setCurrentPage(1);
-  }, [searchTerm, info]);
+  }, [searchTerm, informes]);
+
 
   const sortedSolicitudes = useMemo(() => {
     let sortableSolicitudes = [...filteredSolicitudes];
@@ -128,12 +134,12 @@ export const TecnicoPage = () => {
   };
 
   const data = {
-    recibidas: countOrdenesByState(info, 'Recibidas'),
-    asignadas: countOrdenesByState(info, 'Asignada'),
-    diagnosticadas: countOrdenesByState(info, 'Diagnosticada'),
-    completadas: countOrdenesByState(info, 'Completada'),
-    declinadas: countOrdenesByState(info, 'Declinada'),
-    total: info.length
+    recibidas: countOrdenesByState(informes, 'Recibidas'),
+    asignadas: countOrdenesByState(informes, 'Asignada'),
+    diagnosticadas: countOrdenesByState(informes, 'Diagnosticada'),
+    completadas: countOrdenesByState(informes, 'Completada'),
+    declinadas: countOrdenesByState(informes, 'Declinada'),
+    total: informes.length
   };
 
   return (
@@ -195,7 +201,7 @@ export const TecnicoPage = () => {
           </tr>
 
         </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+        <tbody className="bg-white divide-y divide-gray-200">
           {currentSolicitudes.map((solicitud, index) => (
             <tr
               key={index}

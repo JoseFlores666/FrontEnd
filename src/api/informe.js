@@ -5,7 +5,7 @@ export const getInfome = async () => axios.get("/informe");
 export const createInfome = async (info) => axios.post(`/informe`, info);
 
 export const llenadoDEPInforme = async (id, info) =>
-  axios.post(`/informe/llenadoDEPInforme/${id}`, info);
+  axios.post(`/informe/llenadoDEPInforme/${id}`, info, console.log(info));
 
 export const updateInfome = async (info) =>
   axios.put(`/informe/${info._id}`, info);
@@ -17,20 +17,34 @@ export const getUnaInfome = async (id) => axios.get(`/informe/${id}`);
 export const getImagenInfome = async (id) =>
   axios.get(`/informe/traerImagenes/${id}`);
 
-export const evaluacionDelInfome = async (id, info) =>
-  axios.put(`/informe/AsignarTecnico/${id}`, info);
+export const evaluacionDelInfome = async (id, idTecnico) =>
+  axios.put(`/informe/AsignarTecnico/${id}`, { idTecnico });
 
 export const InformaciónDeLaOrden = async (id, observaciones) =>
   axios.put(`/informe/editarObservaciones/${id}`, observaciones);
-
-
 
 //estado
 export const editarEstadoInforme = async (id) =>
   axios.put(`/informe/editarEstadoInforme/${id}`);
 
+export const getEstadosOrdenTrabajo = async () =>
+  axios.get(`/estadosOrdenTrabajo`);
 
+// Obtener la cantidad total de estados de orden de trabajo
+export const getCantidadTotalOrdenTrabajoEstados = async () =>
+  axios.get(`/estadosOrdenTrabajo/cantidadTotal`);
 
+// Crear nuevos estados de orden de trabajo
+export const crearEstadosOrdenTrabajo = async (estados) =>
+  axios.post(`/estadosOrdenTrabajo/crear`, estados);
+
+// Actualizar estados de orden de trabajo
+export const actualizarEstadosOrdenTrabajo = async (estadosAActualizar) =>
+  axios.put(`/estadosOrdenTrabajo/actualizar`, estadosAActualizar);
+
+// Declinar solicitud (ajustado si es necesario para orden de trabajo)
+export const declinarSoliOrdenTrabajo = async (id, user) =>
+  axios.put(`/solicitud/estado/${id}`, { user });
 
 //Tecnicos
 

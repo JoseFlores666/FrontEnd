@@ -27,13 +27,15 @@ const SubiendoImagenes = forwardRef((props, ref) => {
     setFiles(files.filter(file => file !== fileToRemove));
   };
 
+  // Expose functions to parent components
   useImperativeHandle(ref, () => ({
     getFiles: () => files,
+    clearFiles: () => setFiles([]), // Function to clear files
   }));
 
   return (
     <div>
-      <Container style={{ textAlign: 'center' ,color: 'black' }}>
+      <Container style={{ textAlign: 'center', color: 'black' }}>
         <h1 className='text-center text-base font-medium mb-1'>Suba sus evidencias aquí</h1>
         {error && <div className="error-message">{error}</div>}
         <Dropzone onDrop={handleDrop}>

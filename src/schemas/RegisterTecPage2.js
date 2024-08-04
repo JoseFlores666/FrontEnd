@@ -12,9 +12,6 @@ const itemSchema = z.object({
 });
 
 export const formSchema = z.object({
-  folioExterno: z.string().nonempty({ message: "Folio externo es requerido" }),
-  observaciones: z
-    .string()
-    .nonempty({ message: "Las observaciones son requeridas" }),
+ 
   items: z.array(itemSchema).min(1, { message: "Debe haber al menos un item" }),
 });
