@@ -72,15 +72,13 @@ export const RegisterTecnicoPage = () => {
       };
       console.log("Datos del formulario:", informe);
 
-      const res = await crearOrdenTrabajo(informe);
-      if (res) {
-        Swal.fire({
-          title: "Completado!",
-          text: "Registro Exitoso",
-          icon: "success",
-          confirmButtonText: "Cool",
-        });
-      }
+      await crearOrdenTrabajo(informe);
+      Swal.fire({
+        title: "Completado!",
+        text: "Registro Exitoso",
+        icon: "success",
+        confirmButtonText: "Cool",
+      });
       navigate('/tecnico/orden');
     } catch (error) {
       console.error("Error submitting form: ", error);
@@ -354,7 +352,6 @@ export const RegisterTecnicoPage = () => {
                       <img
                         src={imgWord}
                         style={{ marginLeft: '25px', width: '150px', height: '150px' }}
-                        onClick={saveData}
                       />
                     </button>
                   </div>
@@ -368,7 +365,6 @@ export const RegisterTecnicoPage = () => {
                       <img
                         src={imgPDF}
                         style={{ width: '200px', height: '200px' }}
-                        onClick={saveData}
                       />
                     </button>
                   </div>

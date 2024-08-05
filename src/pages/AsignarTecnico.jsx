@@ -3,13 +3,14 @@ import { useForm } from "react-hook-form";
 import { Link, useParams } from 'react-router-dom';
 import { asignarTecnicoSchema } from '../schemas/AsignarTecnico.js'
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigate } from "react-router-dom";
 import { ImFileEmpty } from "react-icons/im";
 import Swal from "sweetalert2";
 import { Title, Label, GridContainer } from '../components/ui';
 import { useOrden } from '../context/ordenDeTrabajoContext';
 
-
 export default function AsignarTecnico() {
+    const navigate = useNavigate();
 
     const { id } = useParams();
 
@@ -47,12 +48,12 @@ export default function AsignarTecnico() {
     const onSubmit = async (data, e) => {
         e.preventDefault();
         try {
-
             const formData = new FormData();
-            console.log("Datos recibidos:", data); // Verifica que `data.tecnico` tiene un valor
+            console.log("Datos recibidos:", data);
+            navigate('/tecnico/orden');
 
-            formData.append('id', id); // Asegúrate de que 'id' es el ID del informe
-            formData.append('idTecnico', data.tecnico); // Asegúrate de que 'data.tecnico' es el ID del técnico
+            formData.append('id', id);
+            formData.append('idTecnico', data.tecnico);
 
             const res = await evaluarInforme(id, data.tecnico);
             if (res && res.data?.mensaje) {
@@ -62,12 +63,11 @@ export default function AsignarTecnico() {
                 Swal.fire("Error", res?.error || "Error desconocido", "error");
             }
 
-            reset(); // Resetea el formulario si es necesario
+            reset();
         } catch (error) {
             console.error("Error al enviar los datos:", error);
         }
     };
-
 
     if (!datosCargados) {
         return (
@@ -142,20 +142,22 @@ export default function AsignarTecnico() {
                         ))}
                     </select>
 
-
                     <div className="flex gap-2 justify-center mt-4">
                         <Link
                             to={`/tecnico/orden`}
-                            // onClick={declinar}
                             className="px-4 py-2 text-white border bg-red-500 border-black rounded-md hover:bg-red-700"
                         >
                             Cancelar
                         </Link>
-                        <button type='submit' className="px-4 py-2 border border-black bg-indigo-500 text-white rounded-md hover:bg-indigo-600">Guardar Cambios</button>
+                        <button
+                            type='submit'
+                            className="px-4 py-2 border border-black bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
+                        >
+                            Guardar Cambios
+                        </button>
                     </div>
                 </div>
             </form>
         </div>
-
     );
 }
