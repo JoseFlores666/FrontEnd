@@ -225,6 +225,7 @@ export const RegisterTecPage2 = () => {
                                                     <input
                                                         className="h-10 w-full sm:w-3/4 md:w-1/2 lg:w-1/3 xl:w-2/4 text-center rounded-md border border-input border-gray-400 bg-gray-50 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
                                                         type="number"
+                                                        min={0}
                                                         placeholder="Ingrese la cantidad"
                                                         onChange={(e) => handleCantidadChange(index, e.target.value)}
                                                         {...register(`items[${index}].cantidad`, { required: true })}

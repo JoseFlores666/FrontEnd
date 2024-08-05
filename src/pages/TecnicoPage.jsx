@@ -21,11 +21,14 @@ export const TecnicoPage = () => {
 
   const [datosCargados, seTdatosCargados] = useState(false);
   const [isModalOpen2, setIsModalOpen2] = useState(false);
+<<<<<<< HEAD
   const [año, setAño] = useState("");
   const [mes, setMes] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [editedData, setEditedData] = useState([]);
+=======
+>>>>>>> 88d9bf23ae2f3125e897b09a8c8e3500d0788077
 
   const abrirModal = () => {
     setIsModalOpen2(true);
@@ -42,7 +45,6 @@ export const TecnicoPage = () => {
         await traerOrdenesDeTrabajo();
         await getCantidadTotalOrden();
         // console.log(informes)
-
 
         seTdatosCargados(true)
         setLoading(false);
@@ -144,6 +146,7 @@ export const TecnicoPage = () => {
     );
   };
 
+<<<<<<< HEAD
   const handleFilterChange = () => {
     const selectedYear = parseInt(año);
     const selectedMonth = mes !== "" ? parseInt(mes) : null;
@@ -193,6 +196,8 @@ export const TecnicoPage = () => {
     setEditedData(newData);
   };
 
+=======
+>>>>>>> 88d9bf23ae2f3125e897b09a8c8e3500d0788077
   return (
     <div className="overflow-x-auto p-4">
       <div className="mb-1 flex justify-between items-center">
@@ -274,7 +279,6 @@ export const TecnicoPage = () => {
                 <td className='p-1 whitespace-normal flex items-center justify-center max-w-32'>
                   <EstadoButton IdEstado={solicitud.informe?.estado?.id} nombreEstado={solicitud.informe?.estado?.nombre} />
                 </td>
-
               </Td>
               <Td className="p-1 whitespace-normal break-words border border-gray-400 text-center">
                 {solicitud.informe?.estado?.nombre === estadoDeclinado ? (
@@ -289,31 +293,42 @@ export const TecnicoPage = () => {
                   </div>
                 ) : (
                   <div className="flex justify-center items-center space-x-2">
+                    {solicitud.informe?.estado?.id !== 2 && solicitud.informe?.estado?.id !== 3 && solicitud.informe?.estado?.id !== 4 && (
+                      <Link
+                        className="text-blue-600 hover:text-blue-800"
+                        to={`/tecnico/${solicitud._id}?editar=true`}
+                      >
+                        <FontAwesomeIcon icon={faEdit} />
+                      </Link>
+                    )}
 
-                    <Link
-                      className="text-blue-600 hover:text-blue-800"
-                      to={`/tecnico/${solicitud._id}?editar=true`}
-                    >
-                      <FontAwesomeIcon icon={faEdit} />
-                    </Link>
-                    <Link
-                      className="text-blue-600 hover:text-blue-800"
-                      to={`/asignarTec/${solicitud._id}?`}
-                    >
-                      <FontAwesomeIcon icon={faCheck} />
-                    </Link>
-                    <Link
-                      className="text-blue-600 hover:text-blue-800"
-                      to={`/informacionOrden/${solicitud._id}?`}
-                    >
-                      <FontAwesomeIcon icon={faInfoCircle} />
-                    </Link>
-                    <Link
-                      className="text-blue-600 hover:text-blue-800"
-                      to={`/tecnico2/${solicitud._id}?`}
-                    >
-                      <FontAwesomeIcon icon={faPlus} />
-                    </Link>
+                    {solicitud.informe?.estado?.id !== 3 && solicitud.informe?.estado?.id !== 4 && (
+                      <Link
+                        className="text-blue-600 hover:text-blue-800"
+                        to={`/asignarTec/${solicitud._id}?`}
+                      >
+                        <FontAwesomeIcon icon={faCheck} />
+                      </Link>
+                    )}
+
+                    {(solicitud.informe?.estado?.id === 2 || solicitud.informe?.estado?.id === 3) && (
+                      <Link
+                        className="text-blue-600 hover:text-blue-800"
+                        to={`/informacionOrden/${solicitud._id}?`}
+                      >
+                        <FontAwesomeIcon icon={faInfoCircle} />
+                      </Link>
+                    )}
+
+                    {(solicitud.informe?.estado?.id === 3 || solicitud.informe?.estado?.id === 4) && (
+                      <Link
+                        className="text-blue-600 hover:text-blue-800"
+                        to={`/tecnico2/${solicitud._id}?`}
+                      >
+                        <FontAwesomeIcon icon={faPlus} />
+                      </Link>
+                    )}
+
                     <button
                       onClick={() => handleDelete(solicitud._id)}
                       className="text-red-500 hover"

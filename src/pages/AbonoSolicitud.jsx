@@ -9,6 +9,7 @@ import { ImFileEmpty } from "react-icons/im";
 import { useForm } from "react-hook-form";
 import "../css/Animaciones.css";
 import { GridContainer, Label, Title } from "../components/ui";
+import { Link } from "react-router-dom";
 import { FaCheckCircle } from "react-icons/fa";
 
 export const AbonoSolicitud = () => {
@@ -193,7 +194,6 @@ export const AbonoSolicitud = () => {
                             <FaCheckCircle className="text-green-500 text-5xl mt-4 mx-auto" />
                         </div>
                     )}
-
                 </div>
 
                 {showItems && items.map((item, index) => (
@@ -279,16 +279,17 @@ export const AbonoSolicitud = () => {
                                     <p className="text-red-500 text-xs mt-1">{errors.items[index].descripcion.message}</p>
                                 )}
                             </div>
-
                         </div>
-
                     )
-
                 ))}
-
                 {!allItemsCompleted && (
-                    // <div className="bg-white p-6 rounded-md shadow-md mb-4">
-                    <div className="flex justify-center mt-8">
+                    <div className="flex justify-center mt-8 space-x-6">
+                        <Link
+                            to={`/soli`}
+                            className="bg-red-500 hover:bg-red-700 text-white font-bold mt px-6 py-3 rounded-md border border-black"
+                        >
+                            Cancelar
+                        </Link>
                         <button
                             type="submit"
                             className="bg-green-500 hover:bg-green-700 text-white font-bold mt px-6 py-3 rounded-md border border-black"
@@ -296,7 +297,6 @@ export const AbonoSolicitud = () => {
                             Realizar Entregar
                         </button>
                     </div>
-                    // </div>
                 )}
             </form>
         </div>

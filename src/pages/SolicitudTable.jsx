@@ -292,6 +292,7 @@ export function SolicitudTable({ }) {
           <tr>
             <Th sortable={true} onClick={() => requestSort('folio')}>FOLIO</Th>
             <Th sortable={true} onClick={() => requestSort('fecha')}>FECHA</Th>
+            <Th sortable={false}>Folio asignado</Th>
             <Th sortable={true} onClick={() => requestSort('tipoSuministro')}>TIPO DE SUMINISTRO</Th>
             <Th sortable={true} onClick={() => requestSort('procesoClave')}>PROCESO CLAVE</Th>
             <Th sortable={false} extraClass="w-2/12">PROYECTO</Th>
@@ -305,6 +306,7 @@ export function SolicitudTable({ }) {
             <tr key={index} className={`text-left ${rejectedSolicitudes.includes(solicitud._id) ? 'border-red-500' : ''}`}>
               <Td>{solicitud.folio}</Td>
               <Td>{solicitud.fecha}</Td>
+              <Td>{solicitud.folioExterno||"No asignado"}</Td>
               <Td>{solicitud.tipoSuministro}</Td>
               <Td>{solicitud.procesoClave}</Td>
               <Td>{solicitud.proyecto?.nombre}</Td>
@@ -341,13 +343,17 @@ export function SolicitudTable({ }) {
                     >
                       <FontAwesomeIcon icon={faCopy} />
                     </Link>
-                    <Link
-                      to={`/soli/folioExterno/${solicitud._id}`}
-                      className="text-blue-600 hover:text-blue-800"
-                      title="Ver folio externo"
-                    >
-                      <FontAwesomeIcon icon={faFileAlt} />
-                    </Link>
+
+                    {solicitud.estado.id !== 4 && (
+                      <Link
+                        to={`/soli/folioExterno/${solicitud._id}`}
+                        className="text-blue-600 hover:text-blue-800"
+                        title="Ver folio externo"
+                      >
+                        <FontAwesomeIcon icon={faFileAlt} />
+                      </Link>
+                    )}
+
                     {solicitud.folio && solicitud.estado.id !== estadoInicial.id ? (
                       <Link
                         to={`/soli/abonar/${solicitud._id}`}
@@ -365,6 +371,7 @@ export function SolicitudTable({ }) {
                         <FontAwesomeIcon icon={faEdit} />
                       </Link>
                     )}
+
                     <Link
                       to={`/historial/${solicitud._id}`}
                       className="text-blue-600 hover:text-blue-800"
@@ -372,6 +379,7 @@ export function SolicitudTable({ }) {
                     >
                       <FontAwesomeIcon icon={faHistory} />
                     </Link>
+
                     <button
                       onClick={() => { handleOpenModal(solicitud._id, solicitud) }}
                       className="text-red-500 border border-red-500 px-2 py-1 rounded-lg"
@@ -382,7 +390,6 @@ export function SolicitudTable({ }) {
                   </div>
                 )}
               </Td>
-
             </tr>
           ))}
         </tbody>

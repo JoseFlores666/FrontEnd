@@ -72,15 +72,13 @@ export const RegisterTecnicoPage = () => {
       };
       console.log("Datos del formulario:", informe);
 
-      const res = await crearOrdenTrabajo(informe);
-      if (res) {
-        Swal.fire({
-          title: "Completado!",
-          text: "Registro Exitoso",
-          icon: "success",
-          confirmButtonText: "Cool",
-        });
-      }
+      await crearOrdenTrabajo(informe);
+      Swal.fire({
+        title: "Completado!",
+        text: "Registro Exitoso",
+        icon: "success",
+        confirmButtonText: "Cool",
+      });
       navigate('/tecnico/orden');
     } catch (error) {
       console.error("Error submitting form: ", error);
