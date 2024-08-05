@@ -49,11 +49,8 @@ export default function AsignarTecnico() {
         e.preventDefault();
         try {
             const formData = new FormData();
-<<<<<<< HEAD
-=======
             console.log("Datos recibidos:", data);
             navigate('/tecnico/orden');
->>>>>>> 88d9bf23ae2f3125e897b09a8c8e3500d0788077
 
             formData.append('id', id);
             formData.append('idTecnico', data.tecnico);
@@ -144,10 +141,6 @@ export default function AsignarTecnico() {
                             </option>
                         ))}
                     </select>
-<<<<<<< HEAD
-=======
-
->>>>>>> 88d9bf23ae2f3125e897b09a8c8e3500d0788077
                     <div className="flex gap-2 justify-center mt-4">
                         <Link
                             to={`/tecnico/orden`}

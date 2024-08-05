@@ -21,14 +21,11 @@ export const TecnicoPage = () => {
 
   const [datosCargados, seTdatosCargados] = useState(false);
   const [isModalOpen2, setIsModalOpen2] = useState(false);
-<<<<<<< HEAD
   const [año, setAño] = useState("");
   const [mes, setMes] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [editedData, setEditedData] = useState([]);
-=======
->>>>>>> 88d9bf23ae2f3125e897b09a8c8e3500d0788077
 
   const abrirModal = () => {
     setIsModalOpen2(true);
@@ -146,7 +143,6 @@ export const TecnicoPage = () => {
     );
   };
 
-<<<<<<< HEAD
   const handleFilterChange = () => {
     const selectedYear = parseInt(año);
     const selectedMonth = mes !== "" ? parseInt(mes) : null;
@@ -196,8 +192,6 @@ export const TecnicoPage = () => {
     setEditedData(newData);
   };
 
-=======
->>>>>>> 88d9bf23ae2f3125e897b09a8c8e3500d0788077
   return (
     <div className="overflow-x-auto p-4">
       <div className="mb-1 flex justify-between items-center">
