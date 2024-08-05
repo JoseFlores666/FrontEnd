@@ -6,11 +6,12 @@ import Swal from "sweetalert2";
 
 export const TablaVistaSolicitud = ({ data, refetchData }) => {
     const { ActualizarEstados } = useSoli();
-    const [datos, setDatos] = useState(data);
+    const [datos, setDatos] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
     const [editedData, setEditedData] = useState([]);
     const [año, setAño] = useState("");
     const [mes, setMes] = useState("");
+    const [estadoSeleccionado, setEstadoSeleccionado] = useState("");
 
     const datosRef = useRef([]);
 
@@ -20,26 +21,34 @@ export const TablaVistaSolicitud = ({ data, refetchData }) => {
     ];
 
     useEffect(() => {
-        setDatos(data);
-        setEditedData(data.map(item => ({ ...item }))); // Copia profunda para edición
-        datosRef.current = data.map(item => ({ ...item }));
+        const datosConFecha = data.map(item => ({
+            ...item,
+            fecha: new Date(item.fecha)
+        }));
+        setDatos(datosConFecha);
+        setEditedData(datosConFecha.map(item => ({ ...item })));
+        datosRef.current = datosConFecha.map(item => ({ ...item }));
     }, [data]);
 
     useEffect(() => {
         filtrarDatos();
-    }, [año, mes, data]);
+    }, [año, mes, estadoSeleccionado, data]);
 
     const filtrarDatos = useCallback(() => {
-        let datosFiltrados = data;
+        let datosFiltrados = datosRef.current;
+
         if (año) {
-            datosFiltrados = datosFiltrados.filter(item => new Date(item.fecha).getFullYear() === parseInt(año, 10));
+            datosFiltrados = datosFiltrados.filter(item => item.fecha.getFullYear() === parseInt(año, 10));
         }
         if (mes) {
             const mesIndex = meses.indexOf(mes);
-            datosFiltrados = datosFiltrados.filter(item => new Date(item.fecha).getMonth() === mesIndex);
+            datosFiltrados = datosFiltrados.filter(item => item.fecha.getMonth() === mesIndex);
+        }
+        if (estadoSeleccionado) {
+            datosFiltrados = datosFiltrados.filter(item => item.nombre.toLowerCase().includes(estadoSeleccionado.toLowerCase()));
         }
         setDatos(datosFiltrados);
-    }, [año, mes, data, meses]);
+    }, [año, mes, estadoSeleccionado, meses]);
 
     const handleEditClick = useCallback(() => {
         setIsEditing(true);
@@ -52,8 +61,12 @@ export const TablaVistaSolicitud = ({ data, refetchData }) => {
             if (res) {
                 Swal.fire("Datos guardados", res.mensaje, "success");
                 await refetchData();
-                setDatos(editedData.map(item => ({ ...item }))); // Sincroniza datos
-                datosRef.current = editedData.map(item => ({ ...item })); // Actualiza referencia
+                const datosActualizados = editedData.map(item => ({
+                    ...item,
+                    fecha: new Date(item.fecha)
+                }));
+                setDatos(datosActualizados);
+                datosRef.current = datosActualizados;
             }
         } catch (error) {
             console.error("Error actualizando estados:", error);
@@ -104,6 +117,16 @@ export const TablaVistaSolicitud = ({ data, refetchData }) => {
                                 <option key={index} value={mesNombre}>{mesNombre}</option>
                             ))}
                         </select>
+                    </div>
+                    <div>
+                        <label className="block text-black">Estado:</label>
+                        <input
+                            type="text"
+                            value={estadoSeleccionado}
+                            onChange={(e) => setEstadoSeleccionado(e.target.value)}
+                            className="border text-black border-gray-300 rounded p-1"
+                            placeholder="Ingrese estado"
+                        />
                     </div>
                 </div>
             )}

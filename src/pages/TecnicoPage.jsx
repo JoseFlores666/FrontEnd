@@ -10,7 +10,7 @@ import { useOrden } from '../context/ordenDeTrabajoContext';
 
 export const TecnicoPage = () => {
 
-  const { traerOrdenesDeTrabajo, informes ,eliminarInfo} = useOrden();
+  const { traerOrdenesDeTrabajo, informes, eliminarInfo } = useOrden();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -164,8 +164,9 @@ export const TecnicoPage = () => {
               className="absolute inset-y-0 right-0 flex items-center pr-3"
               onClick={clearSearch}
             >
-              <FontAwesomeIcon icon={faTrash} />
-            </button>
+              <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 8.586l3.707-3.707a1 1 0 011.414 1.414L11.414 10l3.707 3.707a1 1 0 01-1.414 1.414L10 11.414l-3.707 3.707a1 1 0 01-1.414-1.414L8.586 10 4.879 6.293a1 1 0 011.414-1.414L10 8.586z" clipRule="evenodd"></path>
+              </svg>            </button>
           )}
         </div>
         <button onClick={abrirModal} className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
