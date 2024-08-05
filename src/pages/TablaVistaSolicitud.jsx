@@ -134,7 +134,7 @@ export const TablaVistaSolicitud = ({ data, refetchData }) => {
             <table className="text-black w-full text-left border-collapse">
                 <thead>
                     <tr>
-                        <th className="border-b border-black px-4 py-2">Estado</th>
+                        <th className="border border-black px-4 py-2">Estado</th>
                         <th className="border-b border-black px-4 py-2">Cantidad Total</th>
                     </tr>
                 </thead>

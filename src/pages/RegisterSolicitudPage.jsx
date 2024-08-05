@@ -14,10 +14,8 @@ import "../css/Animaciones.css";
 import { AutocompleteInput } from "../components/ui/AutocompleteInput";
 import { GridContainer, Label, Title } from "../components/ui";
 
-
 export const RegisterSolicitudPage = () => {
   const navigate = useNavigate();
-
   const {
     register,
     handleSubmit,
@@ -350,7 +348,6 @@ export const RegisterSolicitudPage = () => {
     });
   }, [editar, duplicar]);
 
-
   const handleProyectoChange = (e) => {
     const selectedProyectoId = e.target.value;
     setProyecto(selectedProyectoId);
@@ -376,7 +373,6 @@ export const RegisterSolicitudPage = () => {
       nombre: selectedActividad ? selectedActividad.nombre : ""
     });
   };
-
 
   const duplicarItem = async (index, e) => {
     e.preventDefault();
@@ -728,7 +724,6 @@ export const RegisterSolicitudPage = () => {
               </button>
             </div>
 
-            <div>
               {isOpen && (
                 <div
                   id="static-modal"
@@ -790,7 +785,6 @@ export const RegisterSolicitudPage = () => {
                   </div>
                 </div>
               )}
-            </div>
           </div>
         </div>
       </form>

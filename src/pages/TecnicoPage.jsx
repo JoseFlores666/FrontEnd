@@ -10,11 +10,7 @@ import { useOrden } from '../context/ordenDeTrabajoContext';
 
 export const TecnicoPage = () => {
 
-<<<<<<< HEAD
-  const { traerOrdenesDeTrabajo, informes, eliminarInfo } = useOrden();
-=======
   const { traerOrdenesDeTrabajo, informes, eliminarInfo, getCantidadTotalOrden, estadosTotales } = useOrden();
->>>>>>> e48c1190bfc8fd3c5e5a365f47aac30741dc9d50
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -233,7 +229,7 @@ export const TecnicoPage = () => {
                 </Link>
               </Td>
               <Td>
-                <td className='p-1 whitespace-normal border border-gray-400 flex items-center justify-center max-w-32'>
+                <td className='p-1 whitespace-normal flex items-center justify-center max-w-32'>
                   <EstadoButton IdEstado={solicitud.informe?.estado?.id} nombreEstado={solicitud.informe?.estado?.nombre} />
                 </td>
 

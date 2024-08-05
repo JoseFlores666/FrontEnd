@@ -290,7 +290,7 @@ export function SolicitudTable({ }) {
               ))}
               </Td>
               <Td>
-                <td className='p-1 whitespace-normal border border-gray-400 flex items-center justify-center max-w-xs'>
+                <td className='p-1 whitespace-normal  flex items-center justify-center max-w-xs'>
 
                   <EstadoButton IdEstado={solicitud.estado?.id} nombreEstado={solicitud.estado?.nombre} />
                 </td>
