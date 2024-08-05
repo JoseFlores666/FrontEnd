@@ -315,7 +315,7 @@ export function SolicitudTable({ }) {
               ))}
               </Td>
               <Td>
-                <td className='p-1 whitespace-normal border border-gray-400 flex items-center justify-center max-w-xs'>
+                <td className='p-1 whitespace-normal  flex items-center justify-center max-w-xs'>
 
                   <EstadoButton IdEstado={solicitud.estado?.id} nombreEstado={solicitud.estado?.nombre} />
                 </td>
@@ -464,7 +464,7 @@ export function SolicitudTable({ }) {
               className="bg-white p-6 rounded-lg shadow-lg relative"
               onClick={(e) => e.stopPropagation()}
             >
-              <TablaVistaSolicitud data={cantidadEstados} misSoli={soli} refetchData={refetchData} D />
+              <TablaVistaSolicitud data={cantidadEstados} misSoli={soli} refetchData={refetchData} />
               <button
                 className="absolute top-2 right-2 text-red-500"
                 onClick={cerrarModal}

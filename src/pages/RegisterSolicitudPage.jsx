@@ -14,10 +14,8 @@ import "../css/Animaciones.css";
 import { AutocompleteInput } from "../components/ui/AutocompleteInput";
 import { GridContainer, Label, Title } from "../components/ui";
 
-
 export const RegisterSolicitudPage = () => {
   const navigate = useNavigate();
-
   const {
     register,
     handleSubmit,
@@ -351,7 +349,6 @@ export const RegisterSolicitudPage = () => {
     });
   }, [editar, duplicar]);
 
-
   const handleProyectoChange = (e) => {
     const selectedProyectoId = e.target.value;
     setProyecto(selectedProyectoId);
@@ -378,7 +375,6 @@ export const RegisterSolicitudPage = () => {
     });
     setMyActividad_(selectedActividad ? selectedActividad.nombre : "");
   };
-
 
   const duplicarItem = async (index, e) => {
     e.preventDefault();
@@ -549,13 +545,13 @@ export const RegisterSolicitudPage = () => {
             <table className="w-full caption-bottom text-sm border">
               <thead className="[&_tr]:border border-gray-400">
                 <tr className="border transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted border-gray-400">
-                  <th className="h-12 text-center px-4 align-middle font-bold text-black border-gray-400">Cantidad</th>
-                  <th className="h-12 text-center px-4 align-middle font-bold text-black border-gray-400">Unidad de medida</th>
-                  <th className="h-12 px-4 text-center align-middle font-bold text-black border-gray-400">Descripción del bien solicitado</th>
-                  <th className="h-12 px-4 align-middle font-bold text-black border-gray-400">Acción</th>
+                  <th className="h-10 text-center px-4 align-middle font-bold text-black border border-gray-400">Cantidad</th>
+                  <th className="h-10 text-center px-4 align-middle font-bold text-black border border-gray-400">Unidad de medida</th>
+                  <th className="h-10 px-4 text-center align-middle font-bold text-black border border-gray-400">Descripción del bien solicitado</th>
+                  <th className="h-10 px-4 align-middle font-bold text-black border border-gray-400">Acción</th>
                 </tr>
               </thead>
-              <tbody className="[&_tr:last-child]:border-0 border-gray-400">
+              <tbody className="border border-gray-400">
                 {items.map((item, index) => (
                   <tr key={index} className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted border-gray-400">
                     <td className="p-2 align-middle border border-gray-400">
@@ -595,7 +591,7 @@ export const RegisterSolicitudPage = () => {
                         <option value="Pieza">Pieza</option>
                       </select>
                     </td>
-                    <td className="p-4 align-middle border border-gray-400">
+                    <td className="p-1 align-middle border border-gray-400">
                       <AutocompleteInput
                         index={index}
                         value={item.descripcion}
@@ -617,10 +613,10 @@ export const RegisterSolicitudPage = () => {
                       />
                     </td>
                     <td className="border border-gray-400">
-                      <div className="flex items-center justify-center">
+                      <div className="flex justify-center space-x-4">
                         <button
                           onClick={(e) => eliminarItem(index, e)}
-                          className="inline-flex text-red-500 hover:text-red-700 items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10"
+                          className=" text-red-500 hover:text-red-700"
                         >
                           <FontAwesomeIcon icon={faTrashAlt} />
                         </button>
@@ -730,7 +726,6 @@ export const RegisterSolicitudPage = () => {
               </button>
             </div>
 
-            <div>
               {isOpen && (
                 <div
                   id="static-modal"
@@ -792,7 +787,6 @@ export const RegisterSolicitudPage = () => {
                   </div>
                 </div>
               )}
-            </div>
           </div>
         </div>
       </form>
