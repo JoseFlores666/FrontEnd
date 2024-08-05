@@ -1,11 +1,11 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import {
-    InformaciónDeLaOrden,
+    capturarDiagnostico,
     createInfome,
     deleteInfome,
     editarEstadoInforme,
     evaluacionDelInfome,
-    getEncabezado,
+    // getEncabezado,
     getImagenInfome,
     getInfome,
     getTecnicos,
@@ -16,6 +16,9 @@ import {
     crearEstadosOrdenTrabajo, declinarSoliOrdenTrabajo,
     getCantidadTotalOrdenTrabajoEstados,
     getEstadosOrdenTrabajo,
+    createTecnico, deleteTecnico,
+    getTecnicoPorId, getTecnicosPorInforme,
+    updateTecnico,
 } from "../api/informe";
 
 import { gethistorialOrdenTrabajo } from '../api/historialInput'
@@ -33,13 +36,15 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
     const [errores, setErrores] = useState([]);
     const [informes, setInformes] = useState([]);
     const [tecnicos, setTecnicos] = useState([]);
+    const [unTecnicos, setUnTecnicos] = useState([]);
+    const [unTecnicoinfo, setUnTecnicoinfo] = useState([]);
     const [estados, setEstados] = useState([]);
     const [unaInfo, setUnaInfo] = useState([]);
     const [imagenInfo, setImagenInfo] = useState([]);
     const [encabezado, setEncabezado] = useState([]);
     const [historialOrden, setHistorialOrden] = useState([]);
     const [miFolioInternoInfo, setMiFolioInternoInfo] = useState([]);
-    const [estadosTotales, setEstadosTotales] = useState(0);
+    const [estadosTotales, setEstadosTotales] = useState([]);
 
     const traerOrdenesDeTrabajo = async () => {
         try {
@@ -104,9 +109,9 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
         }
     };
 
-    const observacionesDelTecnico = async (id, observaciones) => {
+    const diagnosticoDelTecnico = async (id, diagnostico) => {
         try {
-            const res = await InformaciónDeLaOrden(id, observaciones);
+            const res = await capturarDiagnostico(id, diagnostico);
             return res;
         } catch (error) {
             console.error("Error al crear solicitud:", error);
@@ -127,6 +132,7 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
     const traerImagenInfo = async (id) => {
         try {
             const res = await getImagenInfome(id);
+            console.log(res.data)
             setImagenInfo(res.data);
         } catch (error) {
             console.error("Error al traer imagen:", error);
@@ -196,7 +202,7 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
         }
     };
 
-    const actualizarEstadosOrdenTrabajo = async (estadosAActualizar) => {
+    const actualizarEstadosOrden = async (estadosAActualizar) => {
         try {
             const res = await actualizarEstadosOrdenTrabajo(estadosAActualizar);
             return res;
@@ -226,9 +232,10 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
         }
     };
 
-    const getCantidadTotalOrdenTrabajoEstados = async () => {
+    const getCantidadTotalOrden = async () => {
         try {
             const res = await getCantidadTotalOrdenTrabajoEstados();
+            console.log(res.data)
             setEstadosTotales(res.data);
         } catch (error) {
             console.error("Error al obtener la cantidad total de estados de la orden de trabajo:", error);
@@ -246,6 +253,54 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
         }
     };
 
+    //TecnicosD
+    const crearTecnico = async (tecnico) => {
+        try {
+            const res = await createTecnico(tecnico);
+            return res
+        } catch (error) {
+            console.error("Error al crear técnico:", error);
+            setErrores(prevErrores => [...prevErrores, "Error al crear técnico"]);
+        }
+    };
+    const eliminarTecnico = async (id) => {
+        try {
+            const res = await deleteTecnico(id);
+            return res;
+        } catch (error) {
+            console.error("Error al eliminar técnico:", error);
+            setErrores(prevErrores => [...prevErrores, "Error al eliminar técnico"]);
+        }
+    };
+
+    const traerTecnicoPorId = async (id) => {
+        try {
+            const res = await getTecnicoPorId(id);
+            setUnTecnicos(res.data)
+        } catch (error) {
+            console.error("Error al traer técnico por ID:", error);
+            setErrores(prevErrores => [...prevErrores, "Error al traer técnico por ID"]);
+        }
+    };
+
+    const traerTecnicosPorInforme = async (informeId) => {
+        try {
+            const res = await getTecnicosPorInforme(informeId);
+            setUnTecnicoinfo(res.data);
+        } catch (error) {
+            console.error("Error al traer técnicos por informe:", error);
+            setErrores(prevErrores => [...prevErrores, "Error al traer técnicos por informe"]);
+        }
+    };
+    const actualizarTecnico = async (id, tecnico) => {
+        try {
+            const res = await updateTecnico(id, tecnico);
+            return res;
+        } catch (error) {
+            console.error("Error al actualizar técnico:", error);
+            setErrores(prevErrores => [...prevErrores, "Error al actualizar técnico"]);
+        }
+    };
 
     return (
         <OrdenTrabajoContext.Provider
@@ -260,6 +315,8 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
                 imagenInfo,
                 encabezado,
                 historialOrden,
+                unTecnicos,
+                unTecnicoinfo,
                 //funciones
                 traerOrdenesDeTrabajo,
                 crearOrdenTrabajo,
@@ -267,7 +324,7 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
                 actualizarOrdenTrabajo,
                 crearDEPInforme,
                 evaluarInforme,
-                observacionesDelTecnico,
+                diagnosticoDelTecnico,
                 traerUnaInfo,
                 traerImagenInfo,
                 eliminarInfo,
@@ -277,11 +334,16 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
                 traerHistorialOrden,
                 traerFolioInternoInforme,
                 // Otras funciones y estados...
-                actualizarEstadosOrdenTrabajo,
+                actualizarEstadosOrden,
                 crearEstadosOrdenTrabajo,
                 declinarSoliOrdenTrabajo,
-                getCantidadTotalOrdenTrabajoEstados,
+                getCantidadTotalOrden,
                 getEstadosOrdenTrabajo,
+                crearTecnico,
+                eliminarTecnico,
+                traerTecnicoPorId,
+                traerTecnicosPorInforme,
+                actualizarTecnico,
             }}
         >
             {children}

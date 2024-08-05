@@ -5,12 +5,16 @@ import { Link } from 'react-router-dom';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { ImFileEmpty } from "react-icons/im";
 import TablaVistaOrden from './TablaVistaOrden';
-import { Th, Td } from '../components/ui';
+import { Th, Td, EstadoButton } from '../components/ui';
 import { useOrden } from '../context/ordenDeTrabajoContext';
 
 export const TecnicoPage = () => {
 
+<<<<<<< HEAD
   const { traerOrdenesDeTrabajo, informes, eliminarInfo } = useOrden();
+=======
+  const { traerOrdenesDeTrabajo, informes, eliminarInfo, getCantidadTotalOrden, estadosTotales } = useOrden();
+>>>>>>> e48c1190bfc8fd3c5e5a365f47aac30741dc9d50
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -20,8 +24,11 @@ export const TecnicoPage = () => {
   const [selectedId, setSelectedId] = useState(null);
 
   const [datosCargados, seTdatosCargados] = useState(false);
-
   const [isModalOpen2, setIsModalOpen2] = useState(false);
+
+  //estados
+
+
 
   const abrirModal = () => {
     setIsModalOpen2(true);
@@ -37,6 +44,10 @@ export const TecnicoPage = () => {
     const fetchInfo = async () => {
       try {
         await traerOrdenesDeTrabajo();
+        await getCantidadTotalOrden();
+        console.log(informes)
+
+
         seTdatosCargados(true)
         setLoading(false);
       } catch (error) {
@@ -47,7 +58,13 @@ export const TecnicoPage = () => {
       fetchInfo()
     }
 
-  }, [traerOrdenesDeTrabajo, datosCargados]);
+  }, [traerOrdenesDeTrabajo, getCantidadTotalOrden, estadosTotales, datosCargados]);
+
+  const estadoInicial = estadosTotales[1];
+  const estadoAsignada = estadosTotales[2];
+  const estadoDiagnosticada = estadosTotales[3];
+  const estadoCompletada = estadosTotales[4];
+  const estadoDeclinado = estadosTotales[5];
 
   const handleDelete = async (id) => {
     try {
@@ -58,6 +75,9 @@ export const TecnicoPage = () => {
     }
   };
 
+  const refetchData = async () => {
+    seTdatosCargados(false)
+  };
   useEffect(() => {
     setFilteredSolicitudes(informes);
 
@@ -66,15 +86,16 @@ export const TecnicoPage = () => {
   const filtrarSolicitud = (solicitud) => {
     const terminoBusqueda = searchTerm.toLowerCase();
     return (
-      (solicitud.folio && solicitud.folio.toLowerCase().includes(terminoBusqueda)) ||
-      (solicitud.informe.Solicita.nombre && solicitud.informe.Solicita.nombre.toLowerCase().includes(terminoBusqueda)) ||
-      (solicitud.informe.Solicita.areaSolicitante && solicitud.informe.Solicita.areaSolicitante.toLowerCase().includes(terminoBusqueda)) ||
-      (solicitud.informe.tipoDeMantenimiento && solicitud.informe.tipoDeMantenimiento.toLowerCase().includes(terminoBusqueda)) ||
-      (solicitud.informe.tipoDeTrabajo && solicitud.informe.tipoDeTrabajo.toLowerCase().includes(terminoBusqueda)) ||
-      (solicitud.informe.tipoDeSolicitud && solicitud.informe.tipoDeSolicitud.toLowerCase().includes(terminoBusqueda)) ||
-      (solicitud.estado && solicitud.estado.toLowerCase().includes(terminoBusqueda))
+      (solicitud.informe?.folio?.toLowerCase().includes(terminoBusqueda)) ||
+      (solicitud.informe?.Solicita?.nombre?.toLowerCase().includes(terminoBusqueda)) ||
+      (solicitud.informe?.Solicita?.areaSolicitante?.toLowerCase().includes(terminoBusqueda)) ||
+      (solicitud.informe?.tipoDeMantenimiento?.toLowerCase().includes(terminoBusqueda)) ||
+      (solicitud.informe?.tipoDeTrabajo?.toLowerCase().includes(terminoBusqueda)) ||
+      (solicitud.informe?.tipoDeSolicitud?.toLowerCase().includes(terminoBusqueda)) ||
+      (solicitud.informe?.descripcion?.toLowerCase().includes(terminoBusqueda)) ||
+      (solicitud.informe?.estado?.nombre?.toLowerCase().includes(terminoBusqueda))
     );
-  };
+  }
 
   useEffect(() => {
     if (!Array.isArray(informes) || informes.length === 0) return;
@@ -82,6 +103,8 @@ export const TecnicoPage = () => {
     setFilteredSolicitudes(results);
     setCurrentPage(1);
   }, [searchTerm, informes]);
+
+
 
 
   const sortedSolicitudes = useMemo(() => {
@@ -118,9 +141,6 @@ export const TecnicoPage = () => {
     setSearchTerm("");
   };
 
-  const countOrdenesByState = (ordenes, state) => {
-    return ordenes.filter(ordenes => ordenes.estado === state).length;
-  };
 
   if (loading) {
     return (
@@ -133,14 +153,7 @@ export const TecnicoPage = () => {
     );
   };
 
-  const data = {
-    recibidas: countOrdenesByState(informes, 'Recibidas'),
-    asignadas: countOrdenesByState(informes, 'Asignada'),
-    diagnosticadas: countOrdenesByState(informes, 'Diagnosticada'),
-    completadas: countOrdenesByState(informes, 'Completada'),
-    declinadas: countOrdenesByState(informes, 'Declinada'),
-    total: informes.length
-  };
+
 
   return (
     <div className="overflow-x-auto p-4">
@@ -196,7 +209,7 @@ export const TecnicoPage = () => {
             <Th onClick={() => requestSort('tipoDeSolicitud')} sortable={true}>TIPO DE SOLICITUD</Th>
             <Th sortable={false} extraClass="w-2/12">DESCRIPCION DEL SERVICIO</Th>
             <Th sortable={false} >EVIDENCIAS</Th>
-            <Th onClick={() => requestSort('estado')} sortable={true}>ESTADO</Th>
+            <Th onClick={() => requestSort('estado.nombre')} sortable={true}>ESTADO</Th>
             <Th sortable={false}>ACCIONES</Th>
             <Th sortable={false}>INFORME</Th>
           </tr>
@@ -206,37 +219,39 @@ export const TecnicoPage = () => {
           {currentSolicitudes.map((solicitud, index) => (
             <tr
               key={index}
-              className={`text-left ${solicitud.estado === 'Declinado' ? 'border-red-500' : ''}`}
+              className={`text-left ${solicitud.estado === estadoDeclinado ? 'border-red-900' : ''}`}
             >
-              <Td>{solicitud.folio}</Td>
+              <Td>{solicitud.informe.folio}</Td>
               <Td>{new Date(solicitud.informe.fecha).toLocaleDateString()}</Td>
               <Td>{solicitud.informe.tipoDeMantenimiento}</Td>
               <Td>{solicitud.informe.tipoDeTrabajo}</Td>
               <Td>{solicitud.informe.tipoDeSolicitud}</Td>
-              <Td>{solicitud.informe.descripcionDelServicio}</Td>
+              <Td>{solicitud.informe.descripcion}</Td>
               <Td>
                 <Link to={`/evidencias/${solicitud._id}?`} className="text-black font-bold">
                   VER
                 </Link>
               </Td>
               <Td>
-                {solicitud.estado === 'Declinada' ? (
-                  <button className="text-red-500 border border-red-500 px-2 py-1 rounded-lg" disabled>Declinado</button>
-                ) : (
-                  solicitud.estado
-                )}
+                <td className='p-1 whitespace-normal border border-gray-400 flex items-center justify-center max-w-32'>
+                  <EstadoButton IdEstado={solicitud.informe?.estado?.id} nombreEstado={solicitud.informe?.estado?.nombre} />
+                </td>
+
               </Td>
               <Td className="p-1 whitespace-normal break-words border border-gray-400 text-center">
-                {solicitud.estado === 'Declinada' ? (
-                  <button className="text-red-500 border border-red-500 px-2 py-1 rounded-lg" disabled>Declinado</button>
-                ) : (
-                  <div className="flex justify-center items-center space-x-2">
+                {solicitud.informe?.estado?.nombre === estadoDeclinado ? (
+                  <div>
+                    <button className="text-red-500 border font-semibold border-red-500 px-2 py-1 rounded-lg" disabled>Declinado</button>
                     <button
                       onClick={() => handleDelete(solicitud._id)}
                       className="text-red-500 hover"
                     >
                       <FontAwesomeIcon icon={faTrash} />
                     </button>
+                  </div>
+                ) : (
+                  <div className="flex justify-center items-center space-x-2">
+
                     <Link
                       className="text-blue-600 hover:text-blue-800"
                       to={`/tecnico/${solicitud._id}?editar=true`}
@@ -261,7 +276,12 @@ export const TecnicoPage = () => {
                     >
                       <FontAwesomeIcon icon={faPlus} />
                     </Link>
-
+                    <button
+                      onClick={() => handleDelete(solicitud._id)}
+                      className="text-red-500 hover"
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </button>
                   </div>
                 )}
               </Td>
@@ -329,7 +349,7 @@ export const TecnicoPage = () => {
               className="bg-white p-6 rounded-lg shadow-lg relative"
               onClick={(e) => e.stopPropagation()}
             >
-              <TablaVistaOrden data={data} />
+              <TablaVistaOrden data={estadosTotales} refetchData={refetchData} />
               <button
                 className="absolute top-2 right-2 text-red-500"
                 onClick={cerrarModal}

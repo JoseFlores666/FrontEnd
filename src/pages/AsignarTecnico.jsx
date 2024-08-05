@@ -96,7 +96,7 @@ export default function AsignarTecnico() {
                         </div>
                         <div className="bg-slate-200 rounded p-2">
                             <Label>Folio: </Label>
-                            <p className="w-full rounded-md">{unaInfo.folio}</p>
+                            <p className="w-full rounded-md">{unaInfo.informe?.folio}</p>
                         </div>
                     </GridContainer>
                     <GridContainer>
@@ -127,7 +127,7 @@ export default function AsignarTecnico() {
 
                     <div className="bg-slate-200 rounded p-2 mb-4">
                         <Label>Descripción:</Label>
-                        <p>{unaInfo.informe?.descripcionDelServicio}</p>
+                        <p>{unaInfo.informe?.descripcion}</p>
                     </div>
 
                     <Label>Encargado de la actividad:</Label>
