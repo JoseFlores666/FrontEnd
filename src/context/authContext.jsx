@@ -17,14 +17,14 @@ export const AuthProvider = ({ children }) => {
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // limpia los errores del login despues de 5 secondos
+
   useEffect(() => {
     if (errors.length > 0) {
       const timer = setTimeout(() => {
         setErrors([]);
       }, 3000);
       return () => clearTimeout(timer);
-    } 
+    }
   }, [errors]);
 
   const signup = async (user) => {
@@ -33,10 +33,10 @@ export const AuthProvider = ({ children }) => {
       if (res.status === 200) {
         setUser(res.data);
 
-         //coloca verdadero si ya esta autenticado(si ya se resgitro)
+        //coloca verdadero si ya esta autenticado(si ya se resgitro)
         setIsAuthenticated(true);
       }
-      } catch (error) {
+    } catch (error) {
       console.log(error.response.data);
       setErrors(error.response.data.message);
     }
@@ -58,11 +58,11 @@ export const AuthProvider = ({ children }) => {
     Cookies.remove("token");
     setUser(null);
     setIsAuthenticated(false);
- 
+
   };
 
   //para que se mantega la cookies despues de recargar
-  useEffect(() => { 
+  useEffect(() => {
     const checkLogin = async () => {
 
       const cookies = Cookies.get();//la cookies trae las credenciales(usuario)
@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }) => {
         const res = await verifyTokenRequest(cookies.token);
         console.log(res);
         if (!res.data) return setIsAuthenticated(false);
-        
+
         setIsAuthenticated(true);
         setUser(res.data);
         setLoading(false);

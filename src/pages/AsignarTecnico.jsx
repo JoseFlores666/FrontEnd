@@ -49,7 +49,6 @@ export default function AsignarTecnico() {
         try {
 
             const formData = new FormData();
-            console.log("Datos recibidos:", data); // Verifica que `data.tecnico` tiene un valor
 
             formData.append('id', id); // Asegúrate de que 'id' es el ID del informe
             formData.append('idTecnico', data.tecnico); // Asegúrate de que 'data.tecnico' es el ID del técnico
@@ -141,12 +140,9 @@ export default function AsignarTecnico() {
                             </option>
                         ))}
                     </select>
-
-
                     <div className="flex gap-2 justify-center mt-4">
                         <Link
                             to={`/tecnico/orden`}
-                            // onClick={declinar}
                             className="px-4 py-2 text-white border bg-red-500 border-black rounded-md hover:bg-red-700"
                         >
                             Cancelar
@@ -156,6 +152,5 @@ export default function AsignarTecnico() {
                 </div>
             </form>
         </div>
-
     );
 }

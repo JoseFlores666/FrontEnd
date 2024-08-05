@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faEdit, faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faEdit, faCheck, faInfoCircle, faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { ImFileEmpty } from "react-icons/im";
-import TablaVistaOrden from './TablaVistaOrden';
+// import TablaVistaOrden from './TablaVistaOrden';
 import { Th, Td, EstadoButton } from '../components/ui';
 import { useOrden } from '../context/ordenDeTrabajoContext';
 
@@ -21,10 +21,11 @@ export const TecnicoPage = () => {
 
   const [datosCargados, seTdatosCargados] = useState(false);
   const [isModalOpen2, setIsModalOpen2] = useState(false);
-
-  //estados
-
-
+  const [año, setAño] = useState("");
+  const [mes, setMes] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [editedData, setEditedData] = useState([]);
 
   const abrirModal = () => {
     setIsModalOpen2(true);
@@ -32,16 +33,15 @@ export const TecnicoPage = () => {
 
   const cerrarModal = () => {
     setIsModalOpen2(false);
+    setIsEditing(false);
   };
-
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchInfo = async () => {
       try {
         await traerOrdenesDeTrabajo();
         await getCantidadTotalOrden();
-        console.log(informes)
+        // console.log(informes)
 
 
         seTdatosCargados(true)
@@ -71,9 +71,7 @@ export const TecnicoPage = () => {
     }
   };
 
-  const refetchData = async () => {
-    seTdatosCargados(false)
-  };
+
   useEffect(() => {
     setFilteredSolicitudes(informes);
 
@@ -99,9 +97,6 @@ export const TecnicoPage = () => {
     setFilteredSolicitudes(results);
     setCurrentPage(1);
   }, [searchTerm, informes]);
-
-
-
 
   const sortedSolicitudes = useMemo(() => {
     let sortableSolicitudes = [...filteredSolicitudes];
@@ -149,7 +144,54 @@ export const TecnicoPage = () => {
     );
   };
 
+  const handleFilterChange = () => {
+    const selectedYear = parseInt(año);
+    const selectedMonth = mes !== "" ? parseInt(mes) : null;
 
+    const filteredByDate = informes.filter(solicitud => {
+      const solicitudDate = new Date(solicitud.informe.fecha);
+      const solicitudYear = solicitudDate.getFullYear();
+      const solicitudMonth = solicitudDate.getMonth();
+
+      if (selectedYear && selectedMonth !== null) {
+        return solicitudYear === selectedYear && solicitudMonth === selectedMonth;
+      }
+
+      if (selectedYear) {
+        return solicitudYear === selectedYear;
+      }
+
+      if (selectedMonth !== null) {
+        return solicitudMonth === selectedMonth;
+      }
+      return true;
+    });
+
+    setFilteredSolicitudes(filteredByDate);
+    cerrarModal();
+  };
+
+
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleSaveClick = () => {
+    // Implement your save logic here
+    console.log("Saving edited data:", editedData);
+    setIsEditing(false);
+  };
+
+  const handleCancelClick = () => {
+    setIsEditing(false);
+
+  };
+
+  const handleChange = (index, field, value) => {
+    const newData = [...editedData];
+    newData[index] = { ...newData[index], [field]: value };
+    setEditedData(newData);
+  };
 
   return (
     <div className="overflow-x-auto p-4">
@@ -344,7 +386,107 @@ export const TecnicoPage = () => {
               className="bg-white p-6 rounded-lg shadow-lg relative"
               onClick={(e) => e.stopPropagation()}
             >
-              <TablaVistaOrden data={estadosTotales} refetchData={refetchData} />
+              {!isEditing && (
+                <div className="flex justify-between mb-4">
+                  <div>
+                    <label className="block text-black">Año:</label>
+                    <input
+                      type="number"
+                      value={año}
+                      onChange={(e) => setAño(e.target.value)}
+                      className="border text-black border-gray-300 rounded p-1"
+                      min="2024"
+                      max={new Date().getFullYear()}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-black">Mes:</label>
+                    <select
+                      value={mes}
+                      onChange={(e) => setMes(e.target.value)}
+                      className="border text-black border-gray-300 rounded p-1"
+                    >
+                      <option value="">Seleccionar Mes</option>
+                      <option value="0">Enero</option>
+                      <option value="1">Febrero</option>
+                      <option value="2">Marzo</option>
+                      <option value="3">Abril</option>
+                      <option value="4">Mayo</option>
+                      <option value="5">Junio</option>
+                      <option value="6">Julio</option>
+                      <option value="7">Agosto</option>
+                      <option value="8">Septiembre</option>
+                      <option value="9">Octubre</option>
+                      <option value="10">Noviembre</option>
+                      <option value="11">Diciembre</option>
+                    </select>
+
+                  </div>
+                  <button
+                    onClick={handleFilterChange}
+                    className="bg-green-500 text-white px-4 py-2 rounded"
+                  >
+                    Filtrar
+                  </button>
+                </div>
+              )}
+              {estadosTotales && estadosTotales.length > 0 && (
+                <table className="w-full text-black text-left border-collapse bg-white">
+                  <thead>
+                    <tr>
+                      <th className="border-b border-black px-4 py-2">Estado</th>
+                      <th className="border-b border-black px-4 py-2">Cantidad</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {estadosTotales.map((item, index) => (
+                      <tr key={item.id}>
+                        <td className="border-b border-black px-4 py-2">
+                          {isEditing ? (
+                            <input
+                              type="text"
+                              value={editedData[index]?.nombre || item.nombre}
+                              onChange={(e) => handleChange(index, 'nombre', e.target.value)}
+                              className="border border-gray-300 rounded p-1"
+                            />
+                          ) : (
+                            item.nombre
+                          )}
+                        </td>
+                        <td className="border-b border-black px-4 py-2">
+                          {item.cantidadTotal}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+
+              <div className="text-center mt-4">
+                {isEditing ? (
+                  <>
+                    <button
+                      onClick={handleSaveClick}
+                      className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
+                    >
+                      <FontAwesomeIcon icon={faSave} /> Guardar Cambios
+                    </button>
+                    <button
+                      onClick={handleCancelClick}
+                      className="bg-red-500 text-white px-4 py-2 rounded"
+                    >
+                      <FontAwesomeIcon icon={faTimes} /> Cancelar
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={handleEditClick}
+                    className="bg-blue-500 text-white px-4 py-2 rounded"
+                  >
+                    <FontAwesomeIcon icon={faEdit} /> Editar
+                  </button>
+                )}
+              </div>
               <button
                 className="absolute top-2 right-2 text-red-500"
                 onClick={cerrarModal}

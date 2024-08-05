@@ -10,27 +10,19 @@ import { GridContainer, Label, Title } from "../components/ui";
 
 export const RegisterTecnicoPage = () => {
   const navigate = useNavigate();
-
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm();
-
-  const [fecha, setFecha] = useState(() => {
-    const today = new Date();
-    return today.toISOString().split("T")[0];
-  });
-
-  const [areasoli, setAreasoli] = useState("");
-  const [solicita, setSolicita] = useState("");
-  const [edificio, setEdificio] = useState("");
-  const [descripcion, setDescripcion] = useState("");
-  const [recentSuggestions, setRecentSuggestions] = useState([]);
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm();
   const [projectsLoaded, setProjectsLoaded] = useState(false);
 
-  const inputRef = useRef([]);
+  const [formData, setFormData] = useState({
+    fecha: new Date().toISOString().split("T")[0],
+    areasoli: "",
+    solicita: "",
+    edificio: "",
+    descripcion: "",
+    tipoMantenimiento: "",
+    tipoTrabajo: "",
+    tipoSolicitud: ""
+  });
 
   const { crearOrdenTrabajo, traerFolioInternoInforme, miFolioInternoInfo, traerHistorialOrden, historialOrden } = useOrden();
 
@@ -48,22 +40,33 @@ export const RegisterTecnicoPage = () => {
       fetchData();
       setProjectsLoaded(true);
     }
-  }, [projectsLoaded, traerFolioInternoInforme, traerHistorialOrden, miFolioInternoInfo, historialOrden]);
+  }, [projectsLoaded, traerFolioInternoInforme, traerHistorialOrden]);
 
-  const onSubmit = async (data) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleAutocompleteChange = (name, value) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setValue(name, value, { shouldValidate: true });
+  };
+
+  const onSubmit = async () => {
     try {
       const informe = {
         Solicita: {
-          nombre: solicita,
-          areaSolicitante: areasoli,
-          edificio,
+          nombre: formData.solicita,
+          areaSolicitante: formData.areasoli,
+          edificio: formData.edificio,
         },
-        fecha,
-        tipoDeMantenimiento: data.tipoMantenimiento,
-        tipoDeTrabajo: data.tipoTrabajo,
-        tipoDeSolicitud: data.tipoSolicitud,
-        descripcion,
+        fecha: formData.fecha,
+        tipoDeMantenimiento: formData.tipoMantenimiento,
+        tipoDeTrabajo: formData.tipoTrabajo,
+        tipoDeSolicitud: formData.tipoSolicitud,
+        descripcion: formData.descripcion,
       };
+
       console.log("Datos del formulario:", informe);
 
       const res = await crearOrdenTrabajo(informe);
@@ -105,10 +108,10 @@ export const RegisterTecnicoPage = () => {
               <input
                 type="date"
                 id="fechaOrden"
-                name="fechaOrden"
+                name="fecha"
                 className="w-full text-black p-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                value={fecha}
-                onChange={(e) => setFecha(e.target.value)}
+                value={formData.fecha}
+                onChange={handleChange}
               />
             </div>
           </GridContainer>
@@ -117,15 +120,12 @@ export const RegisterTecnicoPage = () => {
               <Label>Area solicitante:</Label>
               <AutocompleteInput
                 index={0}
-                value={areasoli}
-                onChange={(newValue) => setAreasoli(newValue)}
+                value={formData.areasoli}
+                onChange={(value) => handleAutocompleteChange("areasoli", value)}
                 data={historialOrden}
-                recentSuggestions={recentSuggestions}
-                setRecentSuggestions={setRecentSuggestions}
-                inputRefs={inputRef}
+                inputRefs={useRef([])}
                 placeholder="Ingrese el área solicitante"
                 fieldsToCheck={['areaSolicitante']}
-                ConvertirAInput={true}
                 inputProps={{
                   id: "areasoli",
                   name: "areasoli",
@@ -139,15 +139,12 @@ export const RegisterTecnicoPage = () => {
               <Label>Solicita:</Label>
               <AutocompleteInput
                 index={1}
-                value={solicita}
-                onChange={(newValue) => setSolicita(newValue)}
+                value={formData.solicita}
+                onChange={(value) => handleAutocompleteChange("solicita", value)}
                 data={historialOrden}
-                recentSuggestions={recentSuggestions}
-                setRecentSuggestions={setRecentSuggestions}
-                inputRefs={inputRef}
+                inputRefs={useRef([])}
                 placeholder="Ingrese quien solicita"
                 fieldsToCheck={['nombre']}
-                ConvertirAInput={true}
                 inputProps={{
                   type: "text",
                   maxLength: 500,
@@ -159,15 +156,12 @@ export const RegisterTecnicoPage = () => {
               <Label>Edificio:</Label>
               <AutocompleteInput
                 index={2}
-                value={edificio}
-                onChange={(newValue) => setEdificio(newValue)}
+                value={formData.edificio}
+                onChange={(value) => handleAutocompleteChange("edificio", value)}
                 data={historialOrden}
-                recentSuggestions={recentSuggestions}
-                setRecentSuggestions={setRecentSuggestions}
-                inputRefs={inputRef}
+                inputRefs={useRef([])}
                 placeholder="Ingrese el edificio"
                 fieldsToCheck={['edificio']}
-                ConvertirAInput={true}
                 inputProps={{
                   id: "edificio",
                   name: "edificio",
@@ -183,9 +177,10 @@ export const RegisterTecnicoPage = () => {
               <Label>Tipo de Mantenimiento:</Label>
               <select
                 id="tipoMantenimiento"
-                {...register("tipoMantenimiento", { required: true })}
                 name="tipoMantenimiento"
                 className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                value={formData.tipoMantenimiento}
+                onChange={handleChange}
               >
                 <option value="">Seleccione un tipo de mantenimiento</option>
                 <option value="Mobiliario">Mobiliario</option>
@@ -196,9 +191,10 @@ export const RegisterTecnicoPage = () => {
               <Label>Tipo de Trabajo:</Label>
               <select
                 id="tipoTrabajo"
-                {...register("tipoTrabajo", { required: true })}
                 name="tipoTrabajo"
                 className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                value={formData.tipoTrabajo}
+                onChange={handleChange}
               >
                 <option value="">Seleccione el tipo de trabajo</option>
                 <option value="Preventivo">Preventivo</option>
@@ -209,9 +205,10 @@ export const RegisterTecnicoPage = () => {
               <Label>Tipo de Solicitud:</Label>
               <select
                 id="tipoSolicitud"
-                {...register("tipoSolicitud", { required: true })}
                 name="tipoSolicitud"
                 className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                value={formData.tipoSolicitud}
+                onChange={handleChange}
               >
                 <option value="">Seleccione el tipo de solicitud</option>
                 <option value="Normal">Normal</option>
@@ -222,29 +219,25 @@ export const RegisterTecnicoPage = () => {
           <Label>Descripción (servicio requerido)</Label>
           <AutocompleteInput
             index={3}
-            value={descripcion}
-            onChange={(newValue) => setDescripcion(newValue)}
+            value={formData.descripcion}
+            onChange={(value) => handleAutocompleteChange("descripcion", value)}
             data={historialOrden}
-            recentSuggestions={recentSuggestions}
-            setRecentSuggestions={setRecentSuggestions}
-            inputRefs={inputRef}
+            inputRefs={useRef([])}
             placeholder="Ingrese una descripción"
             fieldsToCheck={['descripcionDelServicio']}
             inputProps={{
               type: "text",
               maxLength: 500,
               className: "w-full mb-5 resize-none text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
+              // onBlur: () => setValue("descripcion", formData.descripcion, { shouldValidate: true })
             }}
           />
-          <input name="descripcion" id="descripcion" type="hidden" value={descripcion} />
-          <div className="flex items-center justify-center">
-            <button
-              type="submit"
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md border border-black"
-            >
-              Guardar cambios
-            </button>
-          </div>
+          <button
+            className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md border border-black"
+            type="submit"
+          >
+            Guardar
+          </button>
         </div>
       </form>
     </div>

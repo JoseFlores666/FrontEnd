@@ -107,16 +107,17 @@ export const RegisterSolicitudPage = () => {
       };
 
       console.log(datosSolicitud);
-      crearmySoli(datosSolicitud);
-      limpiarDatos();
+      const res = crearmySoli(datosSolicitud);
+
+      if (res && res.data?.mensaje) {
+        Swal.fire("Registro Exitoso", res.data?.mensaje, "success");
+        limpiarDatos();
+      } else {
+        Swal.fire("Error", res.data?.error || "Error desconocido", "error");
+      }
+
       localStorage.setItem("datosSolicitud", JSON.stringify(datosSolicitud));
 
-      Swal.fire({
-        title: "Completado!",
-        text: "Registro Exitosa",
-        icon: "success",
-        confirmButtonText: "Cool",
-      });
     } catch (error) {
       console.error("Error fetching activities:", error);
       alert("Error al guardar los datos.");
@@ -375,6 +376,7 @@ export const RegisterSolicitudPage = () => {
       id: selectedActividad ? selectedActividad._id : "",
       nombre: selectedActividad ? selectedActividad.nombre : ""
     });
+    setMyActividad_(selectedActividad ? selectedActividad.nombre : "");
   };
 
 

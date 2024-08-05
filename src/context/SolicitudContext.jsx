@@ -134,12 +134,8 @@ export function SoliProvider({ children }) {
   const crearmySoli = async (soli) => {
     try {
       const res = await createSoli(soli);
-      console.log(res);
-      if (!res) {
-        console.log("Error al crear la solicitud");
-      } else {
-        console.log("Solicitud creada con éxito");
-      }
+      return res;
+
     } catch (error) {
       console.error("Error creating solicitud:", error);
       setErrors(["Error creating solicitud"]);

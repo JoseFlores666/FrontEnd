@@ -10,6 +10,7 @@ import { Td, Th, EstadoButton } from "../components/ui";
 
 export function SolicitudTable({ }) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchDate, setSearchDate] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [solicitudesPerPage, setSolicitudesPerPage] = useState(10);
   const [sortConfig, setSortConfig] = useState({ key: 'folio', direction: 'des' });
@@ -91,29 +92,53 @@ export function SolicitudTable({ }) {
     }
   }, [soli, estadoRechazada]);
 
-
   useEffect(() => {
     if (searchTerm.trim() === "") {
       setFilteredSolicitudes(soli);
       return;
     }
 
-    const results = soli.filter((solicitud) =>
-      solicitud.folio.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      solicitud.areaSolicitante.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      solicitud.tipoSuministro.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      solicitud.procesoClave.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (solicitud.proyecto?.nombre?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-      (solicitud.actividades?.some(actividad =>
-        (actividad.actividadRef?.nombre?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-        (actividad.nombreActividad?.toLowerCase() || '').includes(searchTerm.toLowerCase())
-      )) ||
-      (solicitud.estado?.nombre?.toLowerCase() || '').includes(searchTerm.toLowerCase())
-    );
+    const formattedSearchDate = searchTerm.split('/').reverse().join('-');
+    const searchDateObj = new Date(formattedSearchDate);
+
+    if (isNaN(searchDateObj.getTime())) {
+      // Si searchDateObj no es una fecha válida, no realizar la búsqueda por fecha
+      setFilteredSolicitudes(soli.filter(solicitud =>
+        solicitud.folio.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        solicitud.areaSolicitante.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        solicitud.tipoSuministro.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        solicitud.procesoClave.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (solicitud.proyecto?.nombre?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+        (solicitud.actividades?.some(actividad =>
+          (actividad.actividadRef?.nombre?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+          (actividad.nombreActividad?.toLowerCase() || '').includes(searchTerm.toLowerCase())
+        )) ||
+        (solicitud.estado?.nombre?.toLowerCase() || '').includes(searchTerm.toLowerCase())
+      ));
+      return;
+    }
+
+    const results = soli.filter(solicitud => {
+      const solicitudDate = new Date(solicitud.fecha.split('/').reverse().join('-'));
+      return (
+        solicitud.folio.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        solicitud.areaSolicitante.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        solicitud.tipoSuministro.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        solicitud.procesoClave.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (solicitud.proyecto?.nombre?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+        (solicitud.actividades?.some(actividad =>
+          (actividad.actividadRef?.nombre?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+          (actividad.nombreActividad?.toLowerCase() || '').includes(searchTerm.toLowerCase())
+        )) ||
+        (solicitud.estado?.nombre?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+        (searchDateObj ? solicitudDate.toISOString().startsWith(searchDateObj.toISOString().slice(0, 10)) : true)
+      );
+    });
 
     setFilteredSolicitudes(results);
     setCurrentPage(1);
   }, [searchTerm, soli]);
+
 
   const sortedSolicitudes = React.useMemo(() => {
     let sortableSolicitudes = [...filteredSolicitudes];
