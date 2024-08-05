@@ -54,9 +54,10 @@ export const FolioExterno = () => {
                 const { fecha, folio, folioExterno, proyecto, actividades, estado, areaSolicitante, tipoSuministro, procesoClave } = solicitud;
 
                 const actividadesNombres = Array.isArray(actividades)
-                    ? actividades.map(act => act.nombre).join(", ")
+                    ? actividades.map(act => act.nombreActividadPropio || act.nombreActividad || "").join(", ")
                     : "";
 
+                console.log(solicitud)
                 setValue("fecha", fecha ? new Date(fecha).toISOString().split('T')[0] : "");
                 setValue("folio", folio || "");
                 setValue("folioExterno", folioExterno || "");

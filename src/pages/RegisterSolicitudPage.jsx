@@ -374,6 +374,7 @@ export const RegisterSolicitudPage = () => {
       nombre: selectedActividad ? selectedActividad.nombre : ""
     });
     setMyActividad_(selectedActividad ? selectedActividad.nombre : "");
+    setMyProyecto_(selectedActividad ? selectedActividad.nombre : "");
   };
 
   const duplicarItem = async (index, e) => {

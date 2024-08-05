@@ -49,21 +49,21 @@ export const VerInforme = () => {
                     <GridContainer>
                         <div className="bg-slate-200 rounded p-2">
                             <Label>Tipo de Solicitud:</Label>
-                            <p className="w-full rounded-md">{hasInforme ? unaInfo.informe.tipoDeSolicitud : 'Tipo de Solicitud no disponible'}</p>
+                            <p className="w-full rounded-md">{hasInforme ? unaInfo.informe?.tipoDeSolicitud : 'Tipo de Solicitud no disponible'}</p>
                         </div>
                         <div className="bg-slate-200 rounded p-2">
                             <Label>Tipo de Mantenimiento:</Label>
-                            <p className="w-full rounded-md">{hasInforme ? unaInfo.informe.tipoDeMantenimiento : 'Tipo de Mantenimiento no disponible'}</p>
+                            <p className="w-full rounded-md">{hasInforme ? unaInfo.informe?.tipoDeMantenimiento : 'Tipo de Mantenimiento no disponible'}</p>
                         </div>
                         <div className="bg-slate-200 rounded p-2">
                             <Label>Tipo de Trabajo:</Label>
-                            <p className="w-full rounded-md">{hasInforme ? unaInfo.informe.tipoDeTrabajo : 'Tipo de Trabajo no disponible'}</p>
+                            <p className="w-full rounded-md">{hasInforme ? unaInfo.informe?.tipoDeTrabajo : 'Tipo de Trabajo no disponible'}</p>
                         </div>
                     </GridContainer>
                     <GridContainer>
                         <div className="bg-slate-200 rounded p-2">
                             <Label>Área solicitante:</Label>
-                            <p className="w-full rounded-md">{hasInforme && unaInfo.informe.Solicita ? unaInfo.informe.Solicita.areaSolicitante : 'Área solicitante no disponible'}</p>
+                            <p className="w-full rounded-md">{hasInforme && unaInfo.informe?.Solicita ? unaInfo.informe.Solicita.areaSolicitante : 'Área solicitante no disponible'}</p>
                         </div>
 
                         <div className="bg-slate-200 rounded p-2">

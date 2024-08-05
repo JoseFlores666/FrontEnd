@@ -36,16 +36,7 @@ export const RegisterTecnicoPage = () => {
   const [recentSuggestions, setRecentSuggestions] = useState([]);
   const [projectsLoaded, setProjectsLoaded] = useState(false);
 
-  const [formData, setFormData] = useState({
-    fecha: new Date().toISOString().split("T")[0],
-    areasoli: "",
-    solicita: "",
-    edificio: "",
-    descripcion: "",
-    tipoMantenimiento: "",
-    tipoTrabajo: "",
-    tipoSolicitud: ""
-  });
+  const inputRef = useRef([]);
 
   const { crearOrdenTrabajo, traerFolioInternoInforme, miFolioInternoInfo, traerHistorialOrden, historialOrden } = useOrden();
 
@@ -63,23 +54,22 @@ export const RegisterTecnicoPage = () => {
       fetchData();
       setProjectsLoaded(true);
     }
-  }, [projectsLoaded, traerFolioInternoInforme, traerHistorialOrden]);
+  }, [projectsLoaded, traerFolioInternoInforme, traerHistorialOrden, miFolioInternoInfo, historialOrden]);
 
   const saveData = async (data) => {
     try {
       const informe = {
         Solicita: {
-          nombre: formData.solicita,
-          areaSolicitante: formData.areasoli,
-          edificio: formData.edificio,
+          nombre: solicita,
+          areaSolicitante: areasoli,
+          edificio,
         },
-        fecha: formData.fecha,
-        tipoDeMantenimiento: formData.tipoMantenimiento,
-        tipoDeTrabajo: formData.tipoTrabajo,
-        tipoDeSolicitud: formData.tipoSolicitud,
-        descripcion: formData.descripcion,
+        fecha,
+        tipoDeMantenimiento: data.tipoMantenimiento,
+        tipoDeTrabajo: data.tipoTrabajo,
+        tipoDeSolicitud: data.tipoSolicitud,
+        descripcion,
       };
-
       console.log("Datos del formulario:", informe);
 
       const res = await crearOrdenTrabajo(informe);
@@ -175,10 +165,10 @@ export const RegisterTecnicoPage = () => {
               <input
                 type="date"
                 id="fechaOrden"
-                name="fecha"
+                name="fechaOrden"
                 className="w-full text-black p-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                value={formData.fecha}
-                onChange={handleChange}
+                value={fecha}
+                onChange={(e) => setFecha(e.target.value)}
               />
             </div>
           </GridContainer>
@@ -187,12 +177,15 @@ export const RegisterTecnicoPage = () => {
               <Label>Area solicitante:</Label>
               <AutocompleteInput
                 index={0}
-                value={formData.areasoli}
-                onChange={(value) => handleAutocompleteChange("areasoli", value)}
+                value={areasoli}
+                onChange={(newValue) => setAreasoli(newValue)}
                 data={historialOrden}
-                inputRefs={useRef([])}
+                recentSuggestions={recentSuggestions}
+                setRecentSuggestions={setRecentSuggestions}
+                inputRefs={inputRef}
                 placeholder="Ingrese el área solicitante"
                 fieldsToCheck={['areaSolicitante']}
+                ConvertirAInput={true}
                 inputProps={{
                   id: "areasoli",
                   name: "areasoli",
@@ -206,12 +199,15 @@ export const RegisterTecnicoPage = () => {
               <Label>Solicita:</Label>
               <AutocompleteInput
                 index={1}
-                value={formData.solicita}
-                onChange={(value) => handleAutocompleteChange("solicita", value)}
+                value={solicita}
+                onChange={(newValue) => setSolicita(newValue)}
                 data={historialOrden}
-                inputRefs={useRef([])}
+                recentSuggestions={recentSuggestions}
+                setRecentSuggestions={setRecentSuggestions}
+                inputRefs={inputRef}
                 placeholder="Ingrese quien solicita"
                 fieldsToCheck={['nombre']}
+                ConvertirAInput={true}
                 inputProps={{
                   id: "solicita",
                   name: "solicita",
@@ -225,12 +221,15 @@ export const RegisterTecnicoPage = () => {
               <Label>Edificio:</Label>
               <AutocompleteInput
                 index={2}
-                value={formData.edificio}
-                onChange={(value) => handleAutocompleteChange("edificio", value)}
+                value={edificio}
+                onChange={(newValue) => setEdificio(newValue)}
                 data={historialOrden}
-                inputRefs={useRef([])}
+                recentSuggestions={recentSuggestions}
+                setRecentSuggestions={setRecentSuggestions}
+                inputRefs={inputRef}
                 placeholder="Ingrese el edificio"
                 fieldsToCheck={['edificio']}
+                ConvertirAInput={true}
                 inputProps={{
                   id: "edificio",
                   name: "edificio",
@@ -246,10 +245,9 @@ export const RegisterTecnicoPage = () => {
               <Label>Tipo de Mantenimiento:</Label>
               <select
                 id="tipoMantenimiento"
+                {...register("tipoMantenimiento", { required: true })}
                 name="tipoMantenimiento"
                 className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                value={formData.tipoMantenimiento}
-                onChange={handleChange}
               >
                 <option value="">Seleccione un tipo de mantenimiento</option>
                 <option value="Mobiliario">Mobiliario</option>
@@ -260,10 +258,9 @@ export const RegisterTecnicoPage = () => {
               <Label>Tipo de Trabajo:</Label>
               <select
                 id="tipoTrabajo"
+                {...register("tipoTrabajo", { required: true })}
                 name="tipoTrabajo"
                 className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                value={formData.tipoTrabajo}
-                onChange={handleChange}
               >
                 <option value="">Seleccione el tipo de trabajo</option>
                 <option value="Preventivo">Preventivo</option>
@@ -274,10 +271,9 @@ export const RegisterTecnicoPage = () => {
               <Label>Tipo de Solicitud:</Label>
               <select
                 id="tipoSolicitud"
+                {...register("tipoSolicitud", { required: true })}
                 name="tipoSolicitud"
                 className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                value={formData.tipoSolicitud}
-                onChange={handleChange}
               >
                 <option value="">Seleccione el tipo de solicitud</option>
                 <option value="Normal">Normal</option>
@@ -288,20 +284,24 @@ export const RegisterTecnicoPage = () => {
           <Label>Descripción (servicio requerido)</Label>
           <AutocompleteInput
             index={3}
-            value={formData.descripcion}
-            onChange={(value) => handleAutocompleteChange("descripcion", value)}
+            value={descripcion}
+            onChange={(newValue) => setDescripcion(newValue)}
             data={historialOrden}
-            inputRefs={useRef([])}
+            recentSuggestions={recentSuggestions}
+            setRecentSuggestions={setRecentSuggestions}
+            inputRefs={inputRef}
             placeholder="Ingrese una descripción"
             fieldsToCheck={['descripcionDelServicio']}
             inputProps={{
               type: "text",
               maxLength: 500,
               className: "w-full mb-5 resize-none text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
-              // onBlur: () => setValue("descripcion", formData.descripcion, { shouldValidate: true })
             }}
           />
           <input name="descripcion" id="descripcion" type="hidden" value={descripcion} />
+           {errors.tipoMantenimiento || errors.tipoTrabajo || errors.tipoSolicitud ? (
+            <div className="text-red-500">Por favor, complete todos los campos requeridos.</div>
+          ) : null}
           <div className="flex items-center justify-center">
             <button
               type="submit"
@@ -357,7 +357,6 @@ export const RegisterTecnicoPage = () => {
                       <img
                         src={imgWord}
                         style={{ marginLeft: '25px', width: '150px', height: '150px' }}
-                        onClick={saveData}
                       />
                     </button>
                   </div>
@@ -371,7 +370,6 @@ export const RegisterTecnicoPage = () => {
                       <img
                         src={imgPDF}
                         style={{ width: '200px', height: '200px' }}
-                        onClick={saveData}
                       />
                     </button>
                   </div>
@@ -380,6 +378,7 @@ export const RegisterTecnicoPage = () => {
             </div>
           </div>
         )}
+        
 
       </form>
     </div>
