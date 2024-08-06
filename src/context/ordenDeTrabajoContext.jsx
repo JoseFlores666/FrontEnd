@@ -5,7 +5,6 @@ import {
     deleteInfome,
     editarEstadoInforme,
     evaluacionDelInfome,
-    // getEncabezado,
     getImagenInfome,
     getInfome,
     getTecnicos,
@@ -143,7 +142,6 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
     const traerImagenInfo = async (id) => {
         try {
             const res = await getImagenInfome(id);
-            console.log(res.data)
             setImagenInfo(res.data);
         } catch (error) {
             console.error("Error al traer imagen:", error);
@@ -179,16 +177,6 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
         } catch (error) {
             console.error("Error al traer técnicos:", error);
             setErrores(["Error al traer técnicos"]);
-        }
-    };
-
-    const traerEncabezado = async (id) => {
-        try {
-            const res = await getEncabezado(id);
-            setEncabezado(res.data);
-        } catch (error) {
-            console.error("Error al traer informe (encabezado):", error);
-            setErrores(["Error al traer informe (encabezado)"]);
         }
     };
 
@@ -246,7 +234,7 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
     const getCantidadTotalOrden = async (mesAnioIdestado) => {
         try {
             const res = await getCantidadTotalOrdenTrabajoEstados(mesAnioIdestado);
-            console.log(res.data)
+        
             setEstadosTotales(res.data);
         } catch (error) {
             console.error("Error al obtener la cantidad total de estados de la orden de trabajo:", error);
@@ -343,7 +331,6 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
                 eliminarInfo,
                 editarEstadoInfo,
                 traerTecnicos,
-                traerEncabezado,
                 traerHistorialOrden,
                 traerFolioInternoInforme,
                 // Otras funciones y estados...

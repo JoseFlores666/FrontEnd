@@ -44,8 +44,7 @@ export const TecnicoPage = () => {
       try {
         await traerOrdenesDeTrabajo();
         await getCantidadTotalOrden();
-        console.log(estadosTotales)
-
+      
         seTdatosCargados(true)
         setLoading(false);
       } catch (error) {
@@ -148,8 +147,6 @@ export const TecnicoPage = () => {
     const selectedMonth = mes !== "" ? parseInt(mes, 10) : null;
     const selectedEstado = estadosTotales.find(estado => estado.nombre === estadoSeleccionado) || null;
 
-    console.log('Selected Estado:', selectedEstado?.id || null);
-
     const mesAnioIdestado = {
       mes: selectedMonth,
       anio: selectedYear,
@@ -157,7 +154,6 @@ export const TecnicoPage = () => {
     };
 
     await getCantidadTotalOrden(mesAnioIdestado);
-    console.log(estadosTotales)//trae el array con la respuesta de la funcion traerFiltrarInformes
 
     const filteredByDate = informes.filter(solicitud => {
       const solicitudDate = new Date(solicitud.informe.fecha);

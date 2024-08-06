@@ -18,7 +18,6 @@ export const Evidencias = () => {
         await traerUnaInfo(id);
         setSolicitudInfo(unaInfo);
         await traerImagenInfo(id);
-        console.log(imagenInfo)
         setDatosCargados(true);
       } catch (error) {
         console.error("Error al cargar los datos", error);

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/authContext";
-import INNEGO from '../../public/INNEGO.svg'
 import { DashboardMenu } from '../pages/DashboardMenu'; // Importa el componente
 
 export function Navbar() {
@@ -12,9 +11,6 @@ export function Navbar() {
   const [isDashboardMenuOpen, setIsDashboardMenuOpen] = useState(false);
 
   const location = useLocation();
-
-  const navigate = useNavigate();
-
 
   useEffect(() => {
     setActiveLink(location.pathname);
@@ -64,7 +60,7 @@ export function Navbar() {
             to={isAuthenticated ? "/soli/registro/:id" : "/"}
             className="flex items-center space-x-3 rtl:space-x-reverse">
             <img
-              src={INNEGO}
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQECmkNjpPwLnbAXf3j5eavPu0QSYoOfiNA8A&s"
               className="h-8 cursor-pointer"
               alt="Flowbite Logo"
             />
