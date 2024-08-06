@@ -1,21 +1,23 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEdit, faCheck, faInfoCircle, faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
+import { Await, Link } from 'react-router-dom';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { ImFileEmpty } from "react-icons/im";
 // import TablaVistaOrden from './TablaVistaOrden';
 import { Th, Td, EstadoButton } from '../components/ui';
 import { useOrden } from '../context/ordenDeTrabajoContext';
+import Swal from 'sweetalert2';
 
 export const TecnicoPage = () => {
 
-  const { traerOrdenesDeTrabajo, informes, eliminarInfo, getCantidadTotalOrden, estadosTotales } = useOrden();
+  const { traerOrdenesDeTrabajo, informes, getCantidadTotalOrden,
+    estadosTotales, eliminarInfo, actualizarEstadosOrden } = useOrden();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [solicitudesPerPage, setSolicitudesPerPage] = useState(10);
-  const [sortConfig, setSortConfig] = useState({ key: 'folio', direction: 'des' });
+  const [sortConfig, setSortConfig] = useState({ key: 'folio', direction: 'desc' });
   const [filteredSolicitudes, setFilteredSolicitudes] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
 
@@ -26,6 +28,7 @@ export const TecnicoPage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [editedData, setEditedData] = useState([]);
+  const [estadoSeleccionado, setEstadoSeleccionado] = useState("");
 
   const abrirModal = () => {
     setIsModalOpen2(true);
@@ -41,8 +44,7 @@ export const TecnicoPage = () => {
       try {
         await traerOrdenesDeTrabajo();
         await getCantidadTotalOrden();
-        // console.log(informes)
-
+      
         seTdatosCargados(true)
         setLoading(false);
       } catch (error) {
@@ -55,10 +57,7 @@ export const TecnicoPage = () => {
 
   }, [traerOrdenesDeTrabajo, getCantidadTotalOrden, estadosTotales, datosCargados]);
 
-  const estadoInicial = estadosTotales[1];
-  const estadoAsignada = estadosTotales[2];
-  const estadoDiagnosticada = estadosTotales[3];
-  const estadoCompletada = estadosTotales[4];
+  
   const estadoDeclinado = estadosTotales[5];
 
   const handleDelete = async (id) => {
@@ -142,41 +141,63 @@ export const TecnicoPage = () => {
     );
   };
 
-  const handleFilterChange = () => {
-    const selectedYear = parseInt(año);
-    const selectedMonth = mes !== "" ? parseInt(mes) : null;
+  const handleFilterChange = async () => {
+    const selectedYear = parseInt(año, 10);
+    const selectedMonth = mes !== "" ? parseInt(mes, 10) : null;
+    const selectedEstado = estadosTotales.find(estado => estado.nombre === estadoSeleccionado) || null;
+
+    const mesAnioIdestado = {
+      mes: selectedMonth,
+      anio: selectedYear,
+      idEstado: selectedEstado?.id || null,
+    };
+
+    await getCantidadTotalOrden(mesAnioIdestado);
 
     const filteredByDate = informes.filter(solicitud => {
       const solicitudDate = new Date(solicitud.informe.fecha);
       const solicitudYear = solicitudDate.getFullYear();
       const solicitudMonth = solicitudDate.getMonth();
 
-      if (selectedYear && selectedMonth !== null) {
-        return solicitudYear === selectedYear && solicitudMonth === selectedMonth;
-      }
+      const isYearMatch = selectedYear ? solicitudYear === selectedYear : true;
+      const isMonthMatch = selectedMonth !== null ? solicitudMonth === selectedMonth : true;
+      const isEstadoMatch = selectedEstado ? solicitud.informe.estado.nombre.toLowerCase().includes(selectedEstado.nombre.toLowerCase()) : true;
 
-      if (selectedYear) {
-        return solicitudYear === selectedYear;
-      }
-
-      if (selectedMonth !== null) {
-        return solicitudMonth === selectedMonth;
-      }
-      return true;
+      return isYearMatch && isMonthMatch && isEstadoMatch;
     });
 
     setFilteredSolicitudes(filteredByDate);
-    cerrarModal();
   };
+
 
 
   const handleEditClick = () => {
+    const dataWithId = estadosTotales.map(item => ({
+      id: item.id, // Suponiendo que `_id` es el campo de identificador
+      nombre: item.nombre
+      // Añade otros campos necesarios para la edición
+    }));
+    setEditedData(dataWithId);
     setIsEditing(true);
   };
 
-  const handleSaveClick = () => {
-    // Implement your save logic here
-    console.log("Saving edited data:", editedData);
+
+  const handleSaveClick = async () => {
+
+    const dataToSave = editedData.map(item => ({
+      id: item.id,
+      nombre: item.nombre
+    }));
+    try {
+      const res = await actualizarEstadosOrden(dataToSave);
+      if (res) {
+        Swal.fire("Datos guardados", res.data?.mensaje, "success");
+        seTdatosCargados(false)
+      }
+    } catch (error) {
+      console.error("Error actualizando estados:", error);
+      Swal.fire("Error", "No se pudieron guardar los datos. Inténtalo nuevamente.", "error");
+    }
     setIsEditing(false);
   };
 
@@ -190,6 +211,7 @@ export const TecnicoPage = () => {
     newData[index] = { ...newData[index], [field]: value };
     setEditedData(newData);
   };
+
 
   return (
     <div className="overflow-x-auto p-4">
@@ -269,9 +291,7 @@ export const TecnicoPage = () => {
                 </Link>
               </Td>
               <Td>
-                <td className='p-1 whitespace-normal flex items-center justify-center max-w-32'>
-                  <EstadoButton IdEstado={solicitud.informe?.estado?.id} nombreEstado={solicitud.informe?.estado?.nombre} />
-                </td>
+                <EstadoButton IdEstado={solicitud.informe?.estado?.id} nombreEstado={solicitud.informe?.estado?.nombre} />
               </Td>
               <Td className="p-1 whitespace-normal break-words border border-gray-400 text-center">
                 {solicitud.informe?.estado?.nombre === estadoDeclinado ? (
@@ -396,26 +416,26 @@ export const TecnicoPage = () => {
               onClick={(e) => e.stopPropagation()}
             >
               {!isEditing && (
-                <div className="flex justify-between mb-4">
-                  <div>
+                <div className="flex justify-between mb-4 space-x-4">
+                  <div className="flex-1">
                     <label className="block text-black">Año:</label>
                     <input
                       type="number"
                       value={año}
                       onChange={(e) => setAño(e.target.value)}
-                      className="border text-black border-gray-300 rounded p-1"
+                      className="border text-black border-gray-300 rounded p-1 w-full"
                       min="2024"
                       max={new Date().getFullYear()}
                     />
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <label className="block text-black">Mes:</label>
                     <select
                       value={mes}
                       onChange={(e) => setMes(e.target.value)}
-                      className="border text-black border-gray-300 rounded p-1"
+                      className="border text-black border-gray-300 rounded p-1 w-full"
                     >
-                      <option value="">Seleccionar Mes</option>
+                      <option value="">Todos</option>
                       <option value="0">Enero</option>
                       <option value="1">Febrero</option>
                       <option value="2">Marzo</option>
@@ -429,16 +449,41 @@ export const TecnicoPage = () => {
                       <option value="10">Noviembre</option>
                       <option value="11">Diciembre</option>
                     </select>
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-black">Estado:</label>
+                    <select
+                      className="border text-black border-gray-300 rounded p-1 w-full"
+                      value={estadoSeleccionado}
+                      onChange={(e) => {
+                        console.log('estadoSeleccionado (onChange):', e.target.value);
+                        setEstadoSeleccionado(e.target.value);
+                      }}
+                    >
+                      <option value="">Todos</option>
+                      {estadosTotales.map((estado) => (
+                        <option key={estado._id} value={estado._id}>
+                          {estado.nombre}
+                        </option>
+                      ))}
+                    </select>
 
                   </div>
-                  <button
-                    onClick={handleFilterChange}
-                    className="bg-green-500 text-white px-4 py-2 rounded"
-                  >
-                    Filtrar
-                  </button>
+                  <div className="flex-1 flex items-end">
+                    <button
+                      onClick={() => {
+                        console.log('estadoSeleccionado (before filter):', estadoSeleccionado);
+                        handleFilterChange();
+                      }}
+                      className="bg-green-500 text-white px-4 py-1 rounded h-fit"
+                    >
+                      Filtrar
+                    </button></div>
+
+
                 </div>
               )}
+
               {estadosTotales && estadosTotales.length > 0 && (
                 <table className="w-full text-black text-left border-collapse bg-white">
                   <thead>
@@ -449,8 +494,9 @@ export const TecnicoPage = () => {
                   </thead>
                   <tbody>
                     {estadosTotales.map((item, index) => (
-                      <tr key={item.id}>
+                      <tr key={editedData[index]?.id || item.id}>
                         <td className="border-b border-black px-4 py-2">
+
                           {isEditing ? (
                             <input
                               type="text"
@@ -467,9 +513,17 @@ export const TecnicoPage = () => {
                         </td>
                       </tr>
                     ))}
+                    <tr>
+                      <td className="border-b border-black px-4 py-2 font-bold">Total</td>
+                      <td className="border-b border-black px-4 py-2 font-bold">
+                        {estadosTotales.reduce((total, item) => total + item.cantidadTotal, 0)}
+                      </td>
+                    </tr>
+
                   </tbody>
                 </table>
               )}
+
 
               <div className="text-center mt-4">
                 {isEditing ? (

@@ -18,6 +18,7 @@ import {
   getActSinAsignar, postProyecto, deleteProyecto,
   asignarActividadProyect, ProyectCrearActYAsignarle,
   editarProyecto, getUnProyectoActividades, desenlazarActividadProyec,
+
 } from "../api/soli";
 
 
@@ -180,9 +181,9 @@ export function SoliProvider({ children }) {
     }
   };
 
-  const VercantTotalEstado = async () => {
+  const VercantTotalEstado = async (mesAnioIdestado) => {
     try {
-      const res = await getVercantidadTotalEstados();
+      const res = await getVercantidadTotalEstados(mesAnioIdestado);
       setCantidadEstados(res.data)
     } catch (error) {
       console.error("Error fetching solitudes:", error);

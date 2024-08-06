@@ -11,16 +11,7 @@ const itemSchema = z.object({
 });
 
 export const AbonoSchema = z.object({
-  folioExterno: z
-    .string()
-    .nonempty({ message: "Folio externo es requerido" })
-    .optional(),
-  observaciones: z
-    .string()
-    .nonempty({ message: "Las observaciones son requeridas" })
-    .optional(),
+ 
   items: z
     .array(itemSchema)
-    .min(1, { message: "Debe haber al menos un item" })
-    .optional(),
 });

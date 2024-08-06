@@ -40,8 +40,10 @@ export const getFiltroEstado = async (estado) =>
 
 export const getEstados = async () => axios.get(`/estados`);
 
-export const getVercantidadTotalEstados = async () =>
-  axios.get(`/estados/VercantidadTotal`);
+export const getVercantidadTotalEstados = async (mesAnioIdestado) =>
+  axios.get(`/estados/VercantidadTotal`, {
+    params: mesAnioIdestado,
+  });
 
 export const actualizaEstado = async (EstadosAActualizar) =>
   axios.put(`/estados/actualizar`, EstadosAActualizar);

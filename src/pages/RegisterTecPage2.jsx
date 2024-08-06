@@ -132,6 +132,11 @@ export const RegisterTecPage2 = () => {
         setItems(items.filter((_, i) => i !== index));
     };
 
+    const formatFecha = (fecha) => {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(fecha).toLocaleDateString(undefined, options);
+      };
+
     return (
         <div className="mx-auto max-w-5xl p-4 text-black">
             <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-6xl">
@@ -140,7 +145,7 @@ export const RegisterTecPage2 = () => {
                     <GridContainer>
                         <div className="bg-slate-200 rounded p-2">
                             <Label>Fecha:</Label>
-                            <p className="w-full rounded-md">{unaInfo.informe?.fecha}</p>
+                            <p className="w-full rounded-md">   {formatFecha(unaInfo.informe?.fecha)}</p>
                         </div>
 
                         <div className="bg-slate-200 rounded p-2">
@@ -195,6 +200,12 @@ export const RegisterTecPage2 = () => {
                         {errors.tecnicos && (
                             <span className="text-red-500">{errors.tecnicos.message}</span>
                         )}
+                    </div>
+                    <div className="bg-slate-200 rounded p-2 mb-4">
+                        <Label>Diagnostico</Label>
+
+                        <p>{unaInfo.informe?.solicitud?.diagnostico}</p>
+
                     </div>
 
                     <div className="flex items-center justify-center w-full h-11 p-3 rounded-md">

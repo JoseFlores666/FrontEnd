@@ -13,7 +13,6 @@ export const VerInforme = () => {
         const traerdatos = async () => {
             try {
                 await traerUnaInfo(id);
-                console.log(unaInfo);
                 setDatosCargados(true);
             } catch (error) {
                 console.error("Error al ejecutar la funcion traer datos", error);

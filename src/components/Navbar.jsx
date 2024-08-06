@@ -1,8 +1,12 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/authContext";
+<<<<<<< HEAD
 import INNEGO from '../../public/INNEGO.svg'
 import { DashboardMenu } from '../pages/DashboardMenu';
+=======
+import { DashboardMenu } from '../pages/DashboardMenu'; // Importa el componente
+>>>>>>> 48820be16f908c5d2610265ef08424546208394e
 
 export function Navbar() {
   const { isAuthenticated, logout, user } = useAuth();
@@ -13,8 +17,11 @@ export function Navbar() {
 
   const location = useLocation();
 
+<<<<<<< HEAD
   const navigate = useNavigate();
 
+=======
+>>>>>>> 48820be16f908c5d2610265ef08424546208394e
   useEffect(() => {
     setActiveLink(location.pathname);
   }, [location.pathname]);
@@ -60,8 +67,14 @@ export function Navbar() {
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <div className="flex items-center justify-center space-x-1">
             <img
+<<<<<<< HEAD
               src={INNEGO}
               className="h-8"
+=======
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQECmkNjpPwLnbAXf3j5eavPu0QSYoOfiNA8A&s"
+              className="h-8 cursor-pointer"
+              alt="Flowbite Logo"
+>>>>>>> 48820be16f908c5d2610265ef08424546208394e
             />
             <span className="self-left text-2xl font-semibold whitespace-nowrap dark:text-white">Solicitudes Innego</span>
           </div>

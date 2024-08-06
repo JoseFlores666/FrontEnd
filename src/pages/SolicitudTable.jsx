@@ -4,13 +4,13 @@ import { useAuth } from "../context/authContext";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faFileAlt, faEdit, faTruck, faTimesCircle, faCopy, faHistory } from "@fortawesome/free-solid-svg-icons";
+import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { ImFileEmpty } from "react-icons/im";
-import { TablaVistaSolicitud } from "./TablaVistaSolicitud";
 import { Td, Th, EstadoButton } from "../components/ui";
+import Swal from "sweetalert2";
 
 export function SolicitudTable({ }) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchDate, setSearchDate] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [solicitudesPerPage, setSolicitudesPerPage] = useState(10);
   const [sortConfig, setSortConfig] = useState({ key: 'folio', direction: 'des' });
@@ -23,12 +23,17 @@ export function SolicitudTable({ }) {
   const modalRef = useRef(null);
 
   const { soli, getSoli, deleteSolitud, declinarmySoi, VercantTotalEstado,
-    cantidadEstados } = useSoli();
+    cantidadEstados, ActualizarEstados } = useSoli();
   const { user } = useAuth();
 
   const [loading, setLoading] = useState(true);
   const [solicitudesFetched, setSolicitudesFetched] = useState(false);
   const [isModalOpen2, setIsModalOpen2] = useState(false);
+  const [año, setAño] = useState("");
+  const [mes, setMes] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedData, setEditedData] = useState([]);
+  const [estadoSeleccionado, setEstadoSeleccionado] = useState("");
 
   //estados
   const [estadoInicial, setEstadoInicial] = useState([]);
@@ -51,9 +56,6 @@ export function SolicitudTable({ }) {
       try {
         await getSoli();
         await VercantTotalEstado();
-        console.log(cantidadEstados)
-        console.log(soli)
-
         setSolicitudesFetched(true);
         setLoading(false);
       } catch (error) {
@@ -76,9 +78,6 @@ export function SolicitudTable({ }) {
     }
   }, [cantidadEstados]);
 
-  const refetchData = async () => {
-    setSolicitudesFetched(false)
-  };
 
   const [filteredSolicitudes, setFilteredSolicitudes] = useState(soli);
 
@@ -240,6 +239,86 @@ export function SolicitudTable({ }) {
     );
   }
 
+  const handleFilterChange = async () => {
+    try {
+      const selectedYear = parseInt(año, 10);
+      const selectedMonth = mes !== "" ? parseInt(mes, 10) : null;
+      const selectedEstado = cantidadEstados.find(estado => estado.nombre === estadoSeleccionado) || null;
+
+
+      const mesAnioIdestado = {
+        mes: selectedMonth,
+        anio: selectedYear,
+        idEstado: selectedEstado?.id || null,
+      };
+
+      await VercantTotalEstado(mesAnioIdestado);
+
+      const filteredByDate = soli.filter(solicitud => {
+        const solicitudDate = new Date(solicitud.fecha);
+        const solicitudYear = solicitudDate.getFullYear();
+        const solicitudMonth = solicitudDate.getMonth();
+
+        const isYearMatch = selectedYear ? solicitudYear === selectedYear : true;
+        const isMonthMatch = selectedMonth !== null ? solicitudMonth === selectedMonth : true;
+        const isEstadoMatch = selectedEstado ? solicitud.estado.nombre.toLowerCase() === selectedEstado.nombre.toLowerCase() : true;
+
+        return isYearMatch && isMonthMatch && isEstadoMatch;
+      });
+
+      setFilteredSolicitudes(filteredByDate);
+    } catch (error) {
+      console.error('Error al filtrar solicitudes:', error);
+    }
+  };
+
+
+
+
+  const handleEditClick = () => {
+    const dataWithId = cantidadEstados.map(item => ({
+      id: item.id, // Suponiendo que `_id` es el campo de identificador
+      nombre: item.nombre
+      // Añade otros campos necesarios para la edición
+    }));
+    setEditedData(dataWithId);
+    setIsEditing(true);
+  };
+
+
+  const handleSaveClick = async () => {
+
+    const dataToSave = editedData.map(item => ({
+      id: item.id,
+      nombre: item.nombre
+    }));
+    try {
+      const res = await ActualizarEstados(dataToSave);
+      if (res) {
+        Swal.fire("Datos guardados", res.data?.mensaje, "success");
+        setSolicitudesFetched(false);
+      }
+    } catch (error) {
+      console.error("Error actualizando estados:", error);
+      Swal.fire("Error", "No se pudieron guardar los datos. Inténtalo nuevamente.", "error");
+    }
+    setIsEditing(false);
+  };
+
+  const handleCancelClick = () => {
+    setIsEditing(false);
+
+  };
+
+  const handleChange = (index, field, value) => {
+    setEditedData((prevData) => {
+      const newData = [...prevData];
+      newData[index] = { ...newData[index], [field]: value };
+      return newData;
+    });
+  };
+
+
   return (
     <div className="overflow-x-auto p-4">
       <div className="mb-1 flex justify-between items-center">
@@ -306,7 +385,7 @@ export function SolicitudTable({ }) {
             <tr key={index} className={`text-left ${rejectedSolicitudes.includes(solicitud._id) ? 'border-red-500' : ''}`}>
               <Td>{solicitud.folio}</Td>
               <Td>{solicitud.fecha}</Td>
-              <Td>{solicitud.folioExterno||"No asignado"}</Td>
+              <Td>{solicitud.folioExterno || "No asignado"}</Td>
               <Td>{solicitud.tipoSuministro}</Td>
               <Td>{solicitud.procesoClave}</Td>
               <Td>{solicitud.proyecto?.nombre}</Td>
@@ -317,10 +396,7 @@ export function SolicitudTable({ }) {
               ))}
               </Td>
               <Td>
-                <td className='p-1 whitespace-normal  flex items-center justify-center max-w-xs'>
-
-                  <EstadoButton IdEstado={solicitud.estado?.id} nombreEstado={solicitud.estado?.nombre} />
-                </td>
+                <EstadoButton IdEstado={solicitud.estado?.id} nombreEstado={solicitud.estado?.nombre} />
               </Td>
               <Td>
                 {rejectedSolicitudes.includes(solicitud._id) ? (
@@ -471,7 +547,141 @@ export function SolicitudTable({ }) {
               className="bg-white p-6 rounded-lg shadow-lg relative"
               onClick={(e) => e.stopPropagation()}
             >
-              <TablaVistaSolicitud data={cantidadEstados} misSoli={soli} refetchData={refetchData} />
+              {!isEditing && (
+                <div className="flex justify-between mb-4 space-x-4">
+                  <div className="flex-1">
+                    <label className="block text-black">Año:</label>
+                    <input
+                      type="number"
+                      value={año}
+                      onChange={(e) => setAño(e.target.value)}
+                      className="border text-black border-gray-300 rounded p-1 w-full"
+                      min="2024"
+                      max={new Date().getFullYear()}
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-black">Mes:</label>
+                    <select
+                      value={mes}
+                      onChange={(e) => setMes(e.target.value)}
+                      className="border text-black border-gray-300 rounded p-1 w-full"
+                    >
+                      <option value="">Todos</option>
+                      <option value="0">Enero</option>
+                      <option value="1">Febrero</option>
+                      <option value="2">Marzo</option>
+                      <option value="3">Abril</option>
+                      <option value="4">Mayo</option>
+                      <option value="5">Junio</option>
+                      <option value="6">Julio</option>
+                      <option value="7">Agosto</option>
+                      <option value="8">Septiembre</option>
+                      <option value="9">Octubre</option>
+                      <option value="10">Noviembre</option>
+                      <option value="11">Diciembre</option>
+                    </select>
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-black">Estado:</label>
+                    <select
+                      className="border text-black border-gray-300 rounded p-1 w-full"
+                      value={estadoSeleccionado}
+                      onChange={(e) => {
+                        console.log('estadoSeleccionado (onChange):', e.target.value);
+                        setEstadoSeleccionado(e.target.value);
+                      }}
+                    >
+                      <option value="">Todos</option>
+                      {cantidadEstados.map((estado) => (
+                        <option key={estado._id} value={estado._id}>
+                          {estado.nombre}
+                        </option>
+                      ))}
+                    </select>
+
+                  </div>
+                  <div className="flex-1 flex items-end">
+                    <button
+                      onClick={() => {
+                        console.log('estadoSeleccionado (before filter):', estadoSeleccionado);
+                        handleFilterChange();
+                      }}
+                      className="bg-green-500 text-white px-4 py-1 rounded h-fit"
+                    >
+                      Filtrar
+                    </button></div>
+
+
+                </div>
+              )}
+
+              {cantidadEstados && cantidadEstados.length > 0 && (
+                <table className="w-full text-black text-left border-collapse bg-white">
+                  <thead>
+                    <tr>
+                      <th className="border-b border-black px-4 py-2">Estado</th>
+                      <th className="border-b border-black px-4 py-2">Cantidad</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {cantidadEstados.map((item, index) => (
+                      <tr key={editedData[index]?.id || item.id}>
+                        <td className="border-b border-black px-4 py-2">
+
+                          {isEditing ? (
+                            <input
+                              type="text"
+                              value={editedData[index]?.nombre || item.nombre}
+                              onChange={(e) => handleChange(index, 'nombre', e.target.value)}
+                              className="border border-gray-300 rounded p-1"
+                            />
+                          ) : (
+                            item.nombre
+                          )}
+                        </td>
+                        <td className="border-b border-black px-4 py-2">
+                          {item.cantidadTotal}
+                        </td>
+                      </tr>
+                    ))}
+                    <tr>
+                      <td className="border-b border-black px-4 py-2 font-bold">Total</td>
+                      <td className="border-b border-black px-4 py-2 font-bold">
+                        {cantidadEstados.reduce((total, item) => total + item.cantidadTotal, 0)}
+                      </td>
+                    </tr>
+
+                  </tbody>
+                </table>
+              )}
+
+
+              <div className="text-center mt-4">
+                {isEditing ? (
+                  <>
+                    <button
+                      onClick={handleSaveClick}
+                      className="bg-blue-500 text-white px-4 py-2 rounded mr-2"
+                    >
+                      <FontAwesomeIcon icon={faSave} /> Guardar Cambios
+                    </button>
+                    <button
+                      onClick={handleCancelClick}
+                      className="bg-red-500 text-white px-4 py-2 rounded"
+                    >
+                      <FontAwesomeIcon icon={faTimes} /> Cancelar
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={handleEditClick}
+                    className="bg-blue-500 text-white px-4 py-2 rounded"
+                  >
+                    <FontAwesomeIcon icon={faEdit} /> Editar
+                  </button>
+                )}
+              </div>
               <button
                 className="absolute top-2 right-2 text-red-500"
                 onClick={cerrarModal}

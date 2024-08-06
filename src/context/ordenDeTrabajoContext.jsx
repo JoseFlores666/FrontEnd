@@ -5,7 +5,6 @@ import {
     deleteInfome,
     editarEstadoInforme,
     evaluacionDelInfome,
-    // getEncabezado,
     getImagenInfome,
     getInfome,
     getTecnicos,
@@ -35,6 +34,7 @@ export const useOrden = () => {
 export const OrdenDeTrabajoProvider = ({ children }) => {
     const [errores, setErrores] = useState([]);
     const [informes, setInformes] = useState([]);
+    const [filtrarInforme, setfiltrarInforme] = useState([]);
     const [tecnicos, setTecnicos] = useState([]);
     const [unTecnicos, setUnTecnicos] = useState([]);
     const [unTecnicoinfo, setUnTecnicoinfo] = useState([]);
@@ -48,8 +48,18 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
 
     const traerOrdenesDeTrabajo = async () => {
         try {
-            const respuesta = await getInfome();
-            setInformes(respuesta.data);
+            const res = await getInfome();
+            setInformes(res.data);
+        } catch (error) {
+            console.error("Error al traer informes:", error);
+            setErrores(prevErrores => [...prevErrores, "Error al traer informes"]);
+        }
+    };
+    const traerFiltrarInformesEstado = async (mesAnioIdestado) => {
+        try {
+            const res = await filtrarInformes(mesAnioIdestado);
+            console.log(res.data);
+            setfiltrarInforme(res.data);
         } catch (error) {
             console.error("Error al traer informes:", error);
             setErrores(prevErrores => [...prevErrores, "Error al traer informes"]);
@@ -132,7 +142,6 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
     const traerImagenInfo = async (id) => {
         try {
             const res = await getImagenInfome(id);
-            console.log(res.data)
             setImagenInfo(res.data);
         } catch (error) {
             console.error("Error al traer imagen:", error);
@@ -168,16 +177,6 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
         } catch (error) {
             console.error("Error al traer técnicos:", error);
             setErrores(["Error al traer técnicos"]);
-        }
-    };
-
-    const traerEncabezado = async (id) => {
-        try {
-            const res = await getEncabezado(id);
-            setEncabezado(res.data);
-        } catch (error) {
-            console.error("Error al traer informe (encabezado):", error);
-            setErrores(["Error al traer informe (encabezado)"]);
         }
     };
 
@@ -232,10 +231,10 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
         }
     };
 
-    const getCantidadTotalOrden = async () => {
+    const getCantidadTotalOrden = async (mesAnioIdestado) => {
         try {
-            const res = await getCantidadTotalOrdenTrabajoEstados();
-            console.log(res.data)
+            const res = await getCantidadTotalOrdenTrabajoEstados(mesAnioIdestado);
+        
             setEstadosTotales(res.data);
         } catch (error) {
             console.error("Error al obtener la cantidad total de estados de la orden de trabajo:", error);
@@ -253,7 +252,7 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
         }
     };
 
-    //TecnicosD
+    //Tecnicos
     const crearTecnico = async (tecnico) => {
         try {
             const res = await createTecnico(tecnico);
@@ -307,6 +306,7 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
             value={{
                 errores,
                 informes,
+                filtrarInforme,
                 tecnicos,
                 estados,
                 estadosTotales,
@@ -319,6 +319,7 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
                 unTecnicoinfo,
                 //funciones
                 traerOrdenesDeTrabajo,
+                traerFiltrarInformesEstado,
                 crearOrdenTrabajo,
                 eliminarOrdenTrabajo,
                 actualizarOrdenTrabajo,
@@ -330,10 +331,10 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
                 eliminarInfo,
                 editarEstadoInfo,
                 traerTecnicos,
-                traerEncabezado,
                 traerHistorialOrden,
                 traerFolioInternoInforme,
                 // Otras funciones y estados...
+
                 actualizarEstadosOrden,
                 crearEstadosOrdenTrabajo,
                 declinarSoliOrdenTrabajo,
