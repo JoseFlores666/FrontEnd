@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEdit, faCheck, faInfoCircle, faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
+import { Await, Link } from 'react-router-dom';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { ImFileEmpty } from "react-icons/im";
 // import TablaVistaOrden from './TablaVistaOrden';
@@ -10,12 +10,13 @@ import { useOrden } from '../context/ordenDeTrabajoContext';
 
 export const TecnicoPage = () => {
 
-  const { traerOrdenesDeTrabajo, informes, eliminarInfo, getCantidadTotalOrden, estadosTotales } = useOrden();
+  const { traerOrdenesDeTrabajo, informes, traerFiltrarInformesEstado,
+    filtrarInforme, eliminarInfo, } = useOrden();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [solicitudesPerPage, setSolicitudesPerPage] = useState(10);
-  const [sortConfig, setSortConfig] = useState({ key: 'folio', direction: 'des' });
+  const [sortConfig, setSortConfig] = useState({ key: 'folio', direction: 'desc' });
   const [filteredSolicitudes, setFilteredSolicitudes] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
 
@@ -26,6 +27,7 @@ export const TecnicoPage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [editedData, setEditedData] = useState([]);
+  const [estadoSeleccionado, setEstadoSeleccionado] = useState("");
 
   const abrirModal = () => {
     setIsModalOpen2(true);
@@ -40,8 +42,8 @@ export const TecnicoPage = () => {
     const fetchInfo = async () => {
       try {
         await traerOrdenesDeTrabajo();
-        await getCantidadTotalOrden();
-        // console.log(informes)
+        await traerFiltrarInformesEstado();
+        console.log(filtrarInforme)
 
         seTdatosCargados(true)
         setLoading(false);
@@ -53,13 +55,13 @@ export const TecnicoPage = () => {
       fetchInfo()
     }
 
-  }, [traerOrdenesDeTrabajo, getCantidadTotalOrden, estadosTotales, datosCargados]);
+  }, [traerOrdenesDeTrabajo, traerFiltrarInformesEstado, filtrarInforme, datosCargados]);
 
-  const estadoInicial = estadosTotales[1];
-  const estadoAsignada = estadosTotales[2];
-  const estadoDiagnosticada = estadosTotales[3];
-  const estadoCompletada = estadosTotales[4];
-  const estadoDeclinado = estadosTotales[5];
+  const estadoInicial = filtrarInforme[1];
+  const estadoAsignada = filtrarInforme[2];
+  const estadoDiagnosticada = filtrarInforme[3];
+  const estadoCompletada = filtrarInforme[4];
+  const estadoDeclinado = filtrarInforme[5];
 
   const handleDelete = async (id) => {
     try {
@@ -143,32 +145,37 @@ export const TecnicoPage = () => {
     );
   };
 
-  const handleFilterChange = () => {
-    const selectedYear = parseInt(año);
-    const selectedMonth = mes !== "" ? parseInt(mes) : null;
+  const handleFilterChange = async () => {
+    const selectedYear = parseInt(año, 10);
+    const selectedMonth = mes !== "" ? parseInt(mes, 10) : null;
+    const selectedEstado = filtrarInforme.find(estado => estado.nombre === estadoSeleccionado) || null;
+
+    console.log('Selected Estado:', selectedEstado?.id || null);
+
+    const mesAnioIdestado = {
+      mes: selectedMonth,
+      anio: selectedYear,
+      idEstado: selectedEstado?.id || null,
+    };
+
+    await traerFiltrarInformesEstado(mesAnioIdestado);
+    console.log(filtrarInforme)//trae el array con la respuesta de la funcion traerFiltrarInformes
 
     const filteredByDate = informes.filter(solicitud => {
       const solicitudDate = new Date(solicitud.informe.fecha);
       const solicitudYear = solicitudDate.getFullYear();
       const solicitudMonth = solicitudDate.getMonth();
 
-      if (selectedYear && selectedMonth !== null) {
-        return solicitudYear === selectedYear && solicitudMonth === selectedMonth;
-      }
+      const isYearMatch = selectedYear ? solicitudYear === selectedYear : true;
+      const isMonthMatch = selectedMonth !== null ? solicitudMonth === selectedMonth : true;
+      const isEstadoMatch = selectedEstado ? solicitud.informe.estado.nombre.toLowerCase().includes(selectedEstado.nombre.toLowerCase()) : true;
 
-      if (selectedYear) {
-        return solicitudYear === selectedYear;
-      }
-
-      if (selectedMonth !== null) {
-        return solicitudMonth === selectedMonth;
-      }
-      return true;
+      return isYearMatch && isMonthMatch && isEstadoMatch;
     });
 
     setFilteredSolicitudes(filteredByDate);
-    cerrarModal();
   };
+
 
 
   const handleEditClick = () => {
@@ -270,9 +277,7 @@ export const TecnicoPage = () => {
                 </Link>
               </Td>
               <Td>
-                <td className='p-1 whitespace-normal flex items-center justify-center max-w-32'>
-                  <EstadoButton IdEstado={solicitud.informe?.estado?.id} nombreEstado={solicitud.informe?.estado?.nombre} />
-                </td>
+                <EstadoButton IdEstado={solicitud.informe?.estado?.id} nombreEstado={solicitud.informe?.estado?.nombre} />
               </Td>
               <Td className="p-1 whitespace-normal break-words border border-gray-400 text-center">
                 {solicitud.informe?.estado?.nombre === estadoDeclinado ? (
@@ -397,26 +402,26 @@ export const TecnicoPage = () => {
               onClick={(e) => e.stopPropagation()}
             >
               {!isEditing && (
-                <div className="flex justify-between mb-4">
-                  <div>
+                <div className="flex justify-between mb-4 space-x-4">
+                  <div className="flex-1">
                     <label className="block text-black">Año:</label>
                     <input
                       type="number"
                       value={año}
                       onChange={(e) => setAño(e.target.value)}
-                      className="border text-black border-gray-300 rounded p-1"
+                      className="border text-black border-gray-300 rounded p-1 w-full"
                       min="2024"
                       max={new Date().getFullYear()}
                     />
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <label className="block text-black">Mes:</label>
                     <select
                       value={mes}
                       onChange={(e) => setMes(e.target.value)}
-                      className="border text-black border-gray-300 rounded p-1"
+                      className="border text-black border-gray-300 rounded p-1 w-full"
                     >
-                      <option value="">Seleccionar Mes</option>
+                      <option value="">Todos</option>
                       <option value="0">Enero</option>
                       <option value="1">Febrero</option>
                       <option value="2">Marzo</option>
@@ -430,17 +435,42 @@ export const TecnicoPage = () => {
                       <option value="10">Noviembre</option>
                       <option value="11">Diciembre</option>
                     </select>
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-black">Estado:</label>
+                    <select
+                      className="border text-black border-gray-300 rounded p-1 w-full"
+                      value={estadoSeleccionado}
+                      onChange={(e) => {
+                        console.log('estadoSeleccionado (onChange):', e.target.value);
+                        setEstadoSeleccionado(e.target.value);
+                      }}
+                    >
+                      <option value="">Todos</option>
+                      {filtrarInforme.map((estado) => (
+                        <option key={estado._id} value={estado._id}>
+                          {estado.nombre}
+                        </option>
+                      ))}
+                    </select>
 
                   </div>
-                  <button
-                    onClick={handleFilterChange}
-                    className="bg-green-500 text-white px-4 py-2 rounded"
-                  >
-                    Filtrar
-                  </button>
+                  <div className="flex-1 flex items-end">
+                    <button
+                      onClick={() => {
+                        console.log('estadoSeleccionado (before filter):', estadoSeleccionado);
+                        handleFilterChange();
+                      }}
+                      className="bg-green-500 text-white px-4 py-1 rounded h-fit"
+                    >
+                      Filtrar
+                    </button></div>
+
+
                 </div>
               )}
-              {estadosTotales && estadosTotales.length > 0 && (
+
+              {filtrarInforme && filtrarInforme.length > 0 && (
                 <table className="w-full text-black text-left border-collapse bg-white">
                   <thead>
                     <tr>
@@ -449,7 +479,7 @@ export const TecnicoPage = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {estadosTotales.map((item, index) => (
+                    {filtrarInforme.map((item, index) => (
                       <tr key={item.id}>
                         <td className="border-b border-black px-4 py-2">
                           {isEditing ? (
@@ -471,6 +501,7 @@ export const TecnicoPage = () => {
                   </tbody>
                 </table>
               )}
+
 
               <div className="text-center mt-4">
                 {isEditing ? (

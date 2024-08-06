@@ -306,7 +306,7 @@ export function SolicitudTable({ }) {
             <tr key={index} className={`text-left ${rejectedSolicitudes.includes(solicitud._id) ? 'border-red-500' : ''}`}>
               <Td>{solicitud.folio}</Td>
               <Td>{solicitud.fecha}</Td>
-              <Td>{solicitud.folioExterno||"No asignado"}</Td>
+              <Td>{solicitud.folioExterno || "No asignado"}</Td>
               <Td>{solicitud.tipoSuministro}</Td>
               <Td>{solicitud.procesoClave}</Td>
               <Td>{solicitud.proyecto?.nombre}</Td>
@@ -317,10 +317,7 @@ export function SolicitudTable({ }) {
               ))}
               </Td>
               <Td>
-                <td className='p-1 whitespace-normal  flex items-center justify-center max-w-xs'>
-
-                  <EstadoButton IdEstado={solicitud.estado?.id} nombreEstado={solicitud.estado?.nombre} />
-                </td>
+                <EstadoButton IdEstado={solicitud.estado?.id} nombreEstado={solicitud.estado?.nombre} />
               </Td>
               <Td>
                 {rejectedSolicitudes.includes(solicitud._id) ? (

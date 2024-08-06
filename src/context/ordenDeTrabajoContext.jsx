@@ -19,6 +19,7 @@ import {
     createTecnico, deleteTecnico,
     getTecnicoPorId, getTecnicosPorInforme,
     updateTecnico,
+    filtrarInformes,
 } from "../api/informe";
 
 import { gethistorialOrdenTrabajo } from '../api/historialInput'
@@ -35,6 +36,7 @@ export const useOrden = () => {
 export const OrdenDeTrabajoProvider = ({ children }) => {
     const [errores, setErrores] = useState([]);
     const [informes, setInformes] = useState([]);
+    const [filtrarInforme, setfiltrarInforme] = useState([]);
     const [tecnicos, setTecnicos] = useState([]);
     const [unTecnicos, setUnTecnicos] = useState([]);
     const [unTecnicoinfo, setUnTecnicoinfo] = useState([]);
@@ -48,8 +50,18 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
 
     const traerOrdenesDeTrabajo = async () => {
         try {
-            const respuesta = await getInfome();
-            setInformes(respuesta.data);
+            const res = await getInfome();
+            setInformes(res.data);
+        } catch (error) {
+            console.error("Error al traer informes:", error);
+            setErrores(prevErrores => [...prevErrores, "Error al traer informes"]);
+        }
+    };
+    const traerFiltrarInformesEstado = async (mesAnioIdestado) => {
+        try {
+            const res = await filtrarInformes(mesAnioIdestado);
+            console.log(res.data);
+            setfiltrarInforme(res.data);
         } catch (error) {
             console.error("Error al traer informes:", error);
             setErrores(prevErrores => [...prevErrores, "Error al traer informes"]);
@@ -253,7 +265,7 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
         }
     };
 
-    //TecnicosD
+    //Tecnicos
     const crearTecnico = async (tecnico) => {
         try {
             const res = await createTecnico(tecnico);
@@ -307,6 +319,7 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
             value={{
                 errores,
                 informes,
+                filtrarInforme,
                 tecnicos,
                 estados,
                 estadosTotales,
@@ -319,6 +332,7 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
                 unTecnicoinfo,
                 //funciones
                 traerOrdenesDeTrabajo,
+                traerFiltrarInformesEstado,
                 crearOrdenTrabajo,
                 eliminarOrdenTrabajo,
                 actualizarOrdenTrabajo,
@@ -334,6 +348,7 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
                 traerHistorialOrden,
                 traerFolioInternoInforme,
                 // Otras funciones y estados...
+
                 actualizarEstadosOrden,
                 crearEstadosOrdenTrabajo,
                 declinarSoliOrdenTrabajo,

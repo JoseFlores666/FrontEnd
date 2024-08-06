@@ -36,13 +36,17 @@ export const getCantidadTotalOrdenTrabajoEstados = async () =>
 export const crearEstadosOrdenTrabajo = async (estados) =>
   axios.post(`/estadosOrdenTrabajo/crear`, estados);
 
-
 export const actualizarEstadosOrdenTrabajo = async (EstadosAActualizar) =>
   axios.put(`/estadosOrdenTrabajo/actualizar`, EstadosAActualizar);
 
-
 export const declinarSoliOrdenTrabajo = async (id, user) =>
   axios.put(`/solicitud/estado/${id}`, { user });
+
+  //En un endpoint GET, típicamente se utilizan req.query 
+export const filtrarInformes = async (mesAnioIdestado) =>
+  axios.get(`/informe/filtrarInformes`, {
+    params: mesAnioIdestado,
+  });
 
 // Técnicos
 export const getTecnicos = async () => axios.get("/tecnicos");
@@ -50,14 +54,12 @@ export const getTecnicos = async () => axios.get("/tecnicos");
 export const createTecnico = async (tecnico) =>
   axios.post(`/tecnicos`, tecnico);
 
-export const getTecnicoPorId = async (id) =>
-  axios.get(`/tecnicos/${id}`);
+export const getTecnicoPorId = async (id) => axios.get(`/tecnicos/${id}`);
 
-export const updateTecnico = async (id,tecnico) =>
+export const updateTecnico = async (id, tecnico) =>
   axios.put(`/tecnicos/${id}`, tecnico);
 
-export const deleteTecnico = async (id) =>
-  axios.delete(`/tecnicos/${id}`);
+export const deleteTecnico = async (id) => axios.delete(`/tecnicos/${id}`);
 
 export const getTecnicosPorInforme = async (id) =>
-  axios.get(`/informes/${id}/descripcion`);
+  axios.get(`/informe/${id}/descripcion`);
