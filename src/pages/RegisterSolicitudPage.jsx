@@ -158,7 +158,8 @@ export const RegisterSolicitudPage = () => {
 
           setActividad(primeraActividad.actividadRef || "");
           setMyActividad_(primeraActividad.nombre || "");
-          console.log(myActividad_);
+
+          setSelectedActividad({id: primeraActividad.actividadRef,nombre:primeraActividad.nombreActividadPropio})
           setActividad(primeraActividad.actividadRef || "");
           setMyActividad_(primeraActividad.nombreActividadPropio || "");
         }
