@@ -155,16 +155,9 @@ export const RegisterSolicitudPage = () => {
        
         if (unasoli.actividades && unasoli.actividades.length > 0) {
           const primeraActividad = unasoli.actividades[0];
-<<<<<<< HEAD
-
-          setActividad(primeraActividad.actividadRef || "");
-          setMyActividad_(primeraActividad.nombre || "");
-          console.log(myActividad_);
-=======
           console.log(primeraActividad.actividadRef)
           setActividad(primeraActividad.actividadRef || "");
           setMyActividad_(primeraActividad.nombreActividadPropio || "");
->>>>>>> 888b12d84da27cfcba2be46da8755a4f6910acc0
         }
       }
       setJustificacion(unasoli.justificacionAdquisicion || "");

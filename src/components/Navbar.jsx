@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/authContext";
-<<<<<<< HEAD
-import { DashboardMenu } from '../pages/DashboardMenu';
-=======
 import { DashboardMenu } from '../pages/DashboardMenu'; // Importa el componente
->>>>>>> 888b12d84da27cfcba2be46da8755a4f6910acc0
 
 export function Navbar() {
   const { isAuthenticated, logout, user } = useAuth();
@@ -15,10 +11,6 @@ export function Navbar() {
   const [isDashboardMenuOpen, setIsDashboardMenuOpen] = useState(false);
 
   const location = useLocation();
-<<<<<<< HEAD
-
-=======
->>>>>>> 888b12d84da27cfcba2be46da8755a4f6910acc0
   useEffect(() => {
     setActiveLink(location.pathname);
   }, [location.pathname]);
