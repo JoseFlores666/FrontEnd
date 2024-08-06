@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useOrden } from '../context/ordenDeTrabajoContext';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt, faClone,faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faClone, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { Label, Title } from '../components/ui';
 
 export const TecnicosTable = () => {
   const [form, setForm] = useState({
@@ -128,58 +129,71 @@ export const TecnicosTable = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl">
-      <h1 className="text-3xl font-bold text-center mb-6">Gestión de Técnicos</h1>
-
-      <form onSubmit={handleSubmit} className="bg-white shadow-lg rounded-lg px-8 pt-6 pb-8 mb-6">
+    <div className="container mx-auto p-4 max-w-4xl text-black">
+      <form onSubmit={handleSubmit} className="bg-white shadow-lg rounded-lg px-8 pt-2 pb-8 mb-6">
+        <Title>Gestión de Personal Técnico</Title>
         <div className="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input
-            type="text"
-            name="nombreCompleto"
-            value={form.nombreCompleto}
-            onChange={handleChange}
-            placeholder="Nombre Completo"
-            required
-            className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-          <input
-            type="number"
-            name="edad"
-            value={form.edad}
-            onChange={handleChange}
-            placeholder="Edad"
-            required
-            className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-          <input
-            type="tel"
-            name="telefono"
-            value={form.telefono}
-            onChange={handleChange}
-            placeholder="Teléfono"
-            required
-            className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-          <input
-            type="email"
-            name="correo"
-            value={form.correo}
-            onChange={handleChange}
-            placeholder="Correo"
-            required
-            className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-          <input
-            type="text"
-            name="area"
-            value={form.area}
-            onChange={handleChange}
-            placeholder="Área"
-            required
-            className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
+          <div>
+            <Label>Nombre:</Label>
+            <input
+              type="text"
+              name="nombreCompleto"
+              value={form.nombreCompleto}
+              onChange={handleChange}
+              required
+              className="w-full p-1 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+          <div>
+            <Label>Edad:</Label>
+            <input
+              min={18}
+              max={112}
+              type="number"
+              name="edad"
+              value={form.edad}
+              onChange={handleChange}
+              required
+              className="w-full p-1 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+          <div>
+            <Label>Número de Tel:</Label>
+            <input
+              type="tel"
+              name="telefono"
+              value={form.telefono}
+              onChange={handleChange}
+              required
+              maxLength={10}
+              className="w-full p-1 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+          <div>
+            <Label>Correo:</Label>
+            <input
+              type="email"
+              name="correo"
+              value={form.correo}
+              onChange={handleChange}
+              required
+              className="w-full p-1 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+          <div>
+            <Label>Area Asignada:</Label>
+            <input
+              type="text"
+              name="area"
+              value={form.area}
+              onChange={handleChange}
+              required
+              className="w-full p-1 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+            />
+          </div>
+
         </div>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-end">
           <button
             type="submit"
             className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
@@ -200,7 +214,7 @@ export const TecnicosTable = () => {
 
       <table className="min-w-full bg-white border shadow-lg rounded-lg">
         <thead>
-          <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+          <tr className="bg-gray-200 text-black uppercase text-sm leading-normal">
             <th className="py-3 px-6 text-left">Nombre Completo</th>
             <th className="py-3 px-6 text-left">Edad</th>
             <th className="py-3 px-6 text-left">Teléfono</th>
@@ -209,7 +223,7 @@ export const TecnicosTable = () => {
             <th className="py-3 px-6 text-center">Acción</th>
           </tr>
         </thead>
-        <tbody className="text-gray-600 text-sm font-light">
+        <tbody className="text-black text-sm font-medium">
           {tecnicos.map((tecnico, index) => (
             <tr key={index} className="border-b border-gray-200 hover:bg-gray-100">
               <td className="py-3 px-6 text-left whitespace-nowrap">{tecnico.nombreCompleto}</td>

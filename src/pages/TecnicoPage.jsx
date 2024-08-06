@@ -70,7 +70,6 @@ export const TecnicoPage = () => {
     }
   };
 
-
   useEffect(() => {
     setFilteredSolicitudes(informes);
 

@@ -3,10 +3,8 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useOrden } from '../context/ordenDeTrabajoContext';
 
-
 export const Evidencias = () => {
   const { id } = useParams();
-
   const { traerImagenInfo, imagenInfo, traerUnaInfo, unaInfo } = useOrden();
 
   const [cargarDatos, setDatosCargados] = useState(false);
@@ -18,7 +16,7 @@ export const Evidencias = () => {
         await traerUnaInfo(id);
         setSolicitudInfo(unaInfo);
         await traerImagenInfo(id);
-        console.log(imagenInfo)
+        console.log(imagenInfo);
         setDatosCargados(true);
       } catch (error) {
         console.error("Error al cargar los datos", error);
@@ -44,7 +42,13 @@ export const Evidencias = () => {
     const blob = await response.blob();
     return blob;
   };
+
   const enviarImagenes = async () => {
+    if (imagenInfo.length === 0) {
+      console.log('No hay imágenes para enviar');
+      return;
+    }
+
     try {
       const formData = new FormData();
       formData.append('numero_de_imagenes', imagenInfo.length);
@@ -55,7 +59,6 @@ export const Evidencias = () => {
         formData.append('imagenes[]', blob, `imagen${i + 1}.jpg`);
       }
 
-      // Asegúrate de que el folio esté presente
       if (solicitudInfo && solicitudInfo.folio) {
         formData.append('folio', solicitudInfo.folio);
         console.log('Folio enviado:', solicitudInfo.folio);
@@ -82,13 +85,10 @@ export const Evidencias = () => {
           console.error('Error al guardar el folio', error);
         });
 
-
         const save_as = '';
         const downloadUrl = `http://localhost/PlantillasWordyPdf/DescargarEvidencias.php?save_as=${save_as}`;
-
         window.location.href = downloadUrl;
 
-        // Esperar 3 segundos antes de hacer la solicitud para eliminar imágenes
         setTimeout(() => {
           eliminarImagenes();
         }, 3000); // 3000 milisegundos = 3 segundos
@@ -100,7 +100,6 @@ export const Evidencias = () => {
       console.error('Error al enviar las imágenes', error);
     }
   };
-
 
   const eliminarImagenes = async () => {
     try {
@@ -150,6 +149,7 @@ export const Evidencias = () => {
           <button
             type='submit'
             className="px-4 py-2 border border-black bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
+            disabled={imagenInfo.length === 0}
           >
             Descargar Evidencias
           </button>
