@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/authContext";
+<<<<<<< HEAD
 import { DashboardMenu } from '../pages/DashboardMenu';
+=======
+import { DashboardMenu } from '../pages/DashboardMenu'; // Importa el componente
+>>>>>>> 888b12d84da27cfcba2be46da8755a4f6910acc0
 
 export function Navbar() {
   const { isAuthenticated, logout, user } = useAuth();
@@ -11,7 +15,10 @@ export function Navbar() {
   const [isDashboardMenuOpen, setIsDashboardMenuOpen] = useState(false);
 
   const location = useLocation();
+<<<<<<< HEAD
 
+=======
+>>>>>>> 888b12d84da27cfcba2be46da8755a4f6910acc0
   useEffect(() => {
     setActiveLink(location.pathname);
   }, [location.pathname]);
@@ -61,8 +68,8 @@ export function Navbar() {
               className="h-8"
               alt="Flowbite Logo"
             />
-            <span className="self-left text-2xl font-semibold whitespace-nowrap dark:text-white">Solicitudes Innego</span>
-          </div>
+            <span className="self-left text-2xl font-semibold whitespace-nowrap hover:text-gray-600 hover:border-gray-300  text-gray-900 dark:text-white">Solicitudes Innego</span>
+          </div>  
           <div className="hidden w-full md:block md:w-auto" id="navbar-solid-bg">
             <ul className="flex items-center space-x-3  font-medium mt-4 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-transparent dark:bg-gray-800 md:dark:bg-transparent dark:border-gray-700">
               {isAuthenticated ? (

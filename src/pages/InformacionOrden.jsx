@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import { AutocompleteInput } from "../components/ui/AutocompleteInput";
 import SubiendoImagenes from "../components/ui/SubiendoImagenes"
 import { Title, Label, GridContainer } from "../components/ui";
+import { EncabezadoFormulario } from "../components/ui/Encabezado.jsx";
 
 export const InformacionOrden = () => {
     const { id } = useParams();
@@ -93,7 +94,7 @@ export const InformacionOrden = () => {
             <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-6xl">
                 <div className="bg-white p-6 rounded-md shadow-md">
                     <Title>Informacion del encargo</Title>
-                    <GridContainer>
+                    {/* <GridContainer>
                         <div className="bg-slate-200 rounded p-2">
                             <Label>Fecha:</Label>
                             <p className="w-full rounded-md">{unaInfo.informe?.fecha}</p>
@@ -145,7 +146,8 @@ export const InformacionOrden = () => {
                         {errors.tecnicos && (
                             <span className="text-red-500">{errors.tecnicos.message}</span>
                         )}
-                    </div>
+                    </div> */}
+                      <EncabezadoFormulario unaInfo={unaInfo} />
                     <div className="bg-slate-200 rounded p-2 mb-4">
                         <Label>Observaciones del servicio requerido</Label>
                         <AutocompleteInput

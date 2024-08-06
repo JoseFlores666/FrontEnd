@@ -23,6 +23,7 @@ import { ProjectAndActManager } from "./pages/EditarProyects&Act"
 import { VerInforme } from "./pages/VerInformePage"
 import { InformacionOrden } from "./pages/InformacionOrden"
 import { Historial } from "./pages/Historial"
+// import { EncabezadoFormulario } from "./pages/Encabezado";
 
 function App() {
   return (
@@ -53,6 +54,7 @@ function App() {
                     <Route path="/proyectAndAct" element={<ProjectAndActManager />} />
                     <Route path="/verInforme/:id" element={<VerInforme />} />
                     <Route path="/informacionOrden/:id" element={<InformacionOrden />} />
+                    {/* <Route path="/encabezadoFormulario" element={<EncabezadoFormulario />} /> */}
                     <Route path="/historial/:id" element={<Historial />} />
                   </Route>
                 </Routes>

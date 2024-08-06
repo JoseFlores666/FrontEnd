@@ -8,6 +8,7 @@ import { ImFileEmpty } from "react-icons/im";
 import Swal from "sweetalert2";
 import { Title, Label, GridContainer } from '../components/ui';
 import { useOrden } from '../context/ordenDeTrabajoContext';
+import { EncabezadoFormulario } from '../components/ui/Encabezado.jsx';
 
 export default function AsignarTecnico() {
     const navigate = useNavigate();
@@ -85,7 +86,7 @@ export default function AsignarTecnico() {
             <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-6xl">
                 <div className="bg-white p-6 rounded-md shadow-md">
                     <Title>Asignar tecnico</Title>
-                    <GridContainer>
+                    {/*    <GridContainer>
                         <div className="bg-slate-200 rounded p-2">
                             <Label>Fecha:</Label>
                             <p className="w-full rounded-md">{unaInfo.informe?.fecha}</p>
@@ -128,7 +129,9 @@ export default function AsignarTecnico() {
                     <div className="bg-slate-200 rounded p-2 mb-4">
                         <Label>Descripción:</Label>
                         <p>{unaInfo.informe?.descripcion}</p>
-                    </div>
+                    </div> */}
+                    <EncabezadoFormulario unaInfo={unaInfo} />
+
 
                     <Label>Encargado de la actividad:</Label>
                     <select
