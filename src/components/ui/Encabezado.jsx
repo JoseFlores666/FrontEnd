@@ -1,5 +1,5 @@
 import React from "react";
-import { GridContainer, Label, Title } from ".";
+import { GridContainer, Label } from ".";
 
 export const EncabezadoFormulario = ({ unaInfo }) => {
     const formatFecha = (fecha) => {

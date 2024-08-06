@@ -155,7 +155,14 @@ export const RegisterSolicitudPage = () => {
        
         if (unasoli.actividades && unasoli.actividades.length > 0) {
           const primeraActividad = unasoli.actividades[0];
+<<<<<<< HEAD
           console.log(primeraActividad.actividadRef)
+=======
+
+          setActividad(primeraActividad.actividadRef || "");
+          setMyActividad_(primeraActividad.nombre || "");
+          console.log(myActividad_);
+>>>>>>> 31d450e6f8a3e49a6bc3b5d46695f5a6552758ad
           setActividad(primeraActividad.actividadRef || "");
           setMyActividad_(primeraActividad.nombreActividadPropio || "");
         }

@@ -13,7 +13,7 @@ import "../css/solicitud.css";
 import "../css/Animaciones.css";
 import { GridContainer, Label, Title } from "../components/ui";
 import { useOrden } from "../context/ordenDeTrabajoContext";
-import {EncabezadoFormulario}from '../components/ui/Encabezado'
+// import { EncabezadoFormulario } from '../components/ui/Encabezado'
 
 export const RegisterTecPage2 = () => {
 
@@ -144,8 +144,8 @@ export const RegisterTecPage2 = () => {
         <div className="mx-auto max-w-5xl p-4 text-black">
             <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-6xl">
                 <div className="bg-white p-6 rounded-md shadow-md">
-                    {/* <Title>Área De Entregas</Title>
-                    <GridContainer>
+                    <Title>Área De Entregas</Title>
+                        <GridContainer>
                         <div className="bg-slate-200 rounded p-2">
                             <Label>Fecha:</Label>
                             <p className="w-full rounded-md">   {formatFecha(unaInfo.informe?.fecha)}</p>
@@ -209,9 +209,9 @@ export const RegisterTecPage2 = () => {
 
                         <p>{unaInfo.informe?.solicitud?.diagnostico}</p>
 
-                    </div> */}
-                    
-                    <EncabezadoFormulario unaInfo={unaInfo} />
+                    </div> 
+
+                    {/* <EncabezadoFormulario unaInfo={unaInfo} /> */}
                     <div className="flex items-center justify-center w-full h-11 p-3 rounded-md">
                         <p className="font-bold">Llenado Exclusivo Para El DEP MSG:</p>
                     </div>
