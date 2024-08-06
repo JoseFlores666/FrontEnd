@@ -7,11 +7,12 @@ import { ImFileEmpty } from "react-icons/im";
 // import TablaVistaOrden from './TablaVistaOrden';
 import { Th, Td, EstadoButton } from '../components/ui';
 import { useOrden } from '../context/ordenDeTrabajoContext';
+import Swal from 'sweetalert2';
 
 export const TecnicoPage = () => {
 
-  const { traerOrdenesDeTrabajo, informes, traerFiltrarInformesEstado,
-    filtrarInforme, eliminarInfo, } = useOrden();
+  const { traerOrdenesDeTrabajo, informes, getCantidadTotalOrden,
+    estadosTotales, eliminarInfo, actualizarEstadosOrden } = useOrden();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -42,8 +43,8 @@ export const TecnicoPage = () => {
     const fetchInfo = async () => {
       try {
         await traerOrdenesDeTrabajo();
-        await traerFiltrarInformesEstado();
-        console.log(filtrarInforme)
+        await getCantidadTotalOrden();
+        console.log(estadosTotales)
 
         seTdatosCargados(true)
         setLoading(false);
@@ -55,13 +56,10 @@ export const TecnicoPage = () => {
       fetchInfo()
     }
 
-  }, [traerOrdenesDeTrabajo, traerFiltrarInformesEstado, filtrarInforme, datosCargados]);
+  }, [traerOrdenesDeTrabajo, getCantidadTotalOrden, estadosTotales, datosCargados]);
 
-  const estadoInicial = filtrarInforme[1];
-  const estadoAsignada = filtrarInforme[2];
-  const estadoDiagnosticada = filtrarInforme[3];
-  const estadoCompletada = filtrarInforme[4];
-  const estadoDeclinado = filtrarInforme[5];
+  
+  const estadoDeclinado = estadosTotales[5];
 
   const handleDelete = async (id) => {
     try {
@@ -148,7 +146,7 @@ export const TecnicoPage = () => {
   const handleFilterChange = async () => {
     const selectedYear = parseInt(año, 10);
     const selectedMonth = mes !== "" ? parseInt(mes, 10) : null;
-    const selectedEstado = filtrarInforme.find(estado => estado.nombre === estadoSeleccionado) || null;
+    const selectedEstado = estadosTotales.find(estado => estado.nombre === estadoSeleccionado) || null;
 
     console.log('Selected Estado:', selectedEstado?.id || null);
 
@@ -158,8 +156,8 @@ export const TecnicoPage = () => {
       idEstado: selectedEstado?.id || null,
     };
 
-    await traerFiltrarInformesEstado(mesAnioIdestado);
-    console.log(filtrarInforme)//trae el array con la respuesta de la funcion traerFiltrarInformes
+    await getCantidadTotalOrden(mesAnioIdestado);
+    console.log(estadosTotales)//trae el array con la respuesta de la funcion traerFiltrarInformes
 
     const filteredByDate = informes.filter(solicitud => {
       const solicitudDate = new Date(solicitud.informe.fecha);
@@ -179,12 +177,32 @@ export const TecnicoPage = () => {
 
 
   const handleEditClick = () => {
+    const dataWithId = estadosTotales.map(item => ({
+      id: item.id, // Suponiendo que `_id` es el campo de identificador
+      nombre: item.nombre
+      // Añade otros campos necesarios para la edición
+    }));
+    setEditedData(dataWithId);
     setIsEditing(true);
   };
 
-  const handleSaveClick = () => {
-    // Implement your save logic here
-    console.log("Saving edited data:", editedData);
+
+  const handleSaveClick = async () => {
+
+    const dataToSave = editedData.map(item => ({
+      id: item.id,
+      nombre: item.nombre
+    }));
+    try {
+      const res = await actualizarEstadosOrden(dataToSave);
+      if (res) {
+        Swal.fire("Datos guardados", res.data?.mensaje, "success");
+        seTdatosCargados(false)
+      }
+    } catch (error) {
+      console.error("Error actualizando estados:", error);
+      Swal.fire("Error", "No se pudieron guardar los datos. Inténtalo nuevamente.", "error");
+    }
     setIsEditing(false);
   };
 
@@ -198,6 +216,7 @@ export const TecnicoPage = () => {
     newData[index] = { ...newData[index], [field]: value };
     setEditedData(newData);
   };
+
 
   return (
     <div className="overflow-x-auto p-4">
@@ -447,7 +466,7 @@ export const TecnicoPage = () => {
                       }}
                     >
                       <option value="">Todos</option>
-                      {filtrarInforme.map((estado) => (
+                      {estadosTotales.map((estado) => (
                         <option key={estado._id} value={estado._id}>
                           {estado.nombre}
                         </option>
@@ -470,7 +489,7 @@ export const TecnicoPage = () => {
                 </div>
               )}
 
-              {filtrarInforme && filtrarInforme.length > 0 && (
+              {estadosTotales && estadosTotales.length > 0 && (
                 <table className="w-full text-black text-left border-collapse bg-white">
                   <thead>
                     <tr>
@@ -479,9 +498,10 @@ export const TecnicoPage = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {filtrarInforme.map((item, index) => (
-                      <tr key={item.id}>
+                    {estadosTotales.map((item, index) => (
+                      <tr key={editedData[index]?.id || item.id}>
                         <td className="border-b border-black px-4 py-2">
+
                           {isEditing ? (
                             <input
                               type="text"
@@ -498,6 +518,13 @@ export const TecnicoPage = () => {
                         </td>
                       </tr>
                     ))}
+                    <tr>
+                      <td className="border-b border-black px-4 py-2 font-bold">Total</td>
+                      <td className="border-b border-black px-4 py-2 font-bold">
+                        {estadosTotales.reduce((total, item) => total + item.cantidadTotal, 0)}
+                      </td>
+                    </tr>
+
                   </tbody>
                 </table>
               )}

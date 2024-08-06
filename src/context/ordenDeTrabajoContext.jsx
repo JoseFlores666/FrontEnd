@@ -19,7 +19,6 @@ import {
     createTecnico, deleteTecnico,
     getTecnicoPorId, getTecnicosPorInforme,
     updateTecnico,
-    filtrarInformes,
 } from "../api/informe";
 
 import { gethistorialOrdenTrabajo } from '../api/historialInput'
@@ -244,9 +243,9 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
         }
     };
 
-    const getCantidadTotalOrden = async () => {
+    const getCantidadTotalOrden = async (mesAnioIdestado) => {
         try {
-            const res = await getCantidadTotalOrdenTrabajoEstados();
+            const res = await getCantidadTotalOrdenTrabajoEstados(mesAnioIdestado);
             console.log(res.data)
             setEstadosTotales(res.data);
         } catch (error) {
