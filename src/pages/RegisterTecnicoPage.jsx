@@ -9,7 +9,6 @@ import Swal from "sweetalert2";
 import { GridContainer, Label, Title } from "../components/ui";
 import imgPDF from '../img/imagenPDF.png';
 import imgWord from '../img/imagenWord.png';
-import { id } from "date-fns/locale";
 
 export const RegisterTecnicoPage = () => {
   const navigate = useNavigate();

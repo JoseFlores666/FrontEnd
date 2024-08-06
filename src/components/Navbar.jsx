@@ -57,7 +57,7 @@ export function Navbar() {
           <div className="flex items-center justify-center space-x-1">
             <img
               src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQECmkNjpPwLnbAXf3j5eavPu0QSYoOfiNA8A&s"
-              className="h-8 cursor-pointer"
+              className="h-8"
               alt="Flowbite Logo"
             />
             <span className="self-left text-2xl font-semibold whitespace-nowrap hover:text-gray-600 hover:border-gray-300  text-gray-900 dark:text-white">Solicitudes Innego</span>

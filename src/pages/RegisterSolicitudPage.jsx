@@ -107,12 +107,8 @@ export const RegisterSolicitudPage = () => {
       console.log(datosSolicitud);
       const res = crearmySoli(datosSolicitud);
 
-      if (res && res.data?.mensaje) {
-        Swal.fire("Registro Exitoso", res.data?.mensaje, "success");
+      Swal.fire("Registro Exitoso", res.data?.mensaje, "success");
         limpiarDatos();
-      } else {
-        Swal.fire("Error", res.data?.error || "Error desconocido", "error");
-      }
 
       localStorage.setItem("datosSolicitud", JSON.stringify(datosSolicitud));
 
@@ -159,7 +155,10 @@ export const RegisterSolicitudPage = () => {
        
         if (unasoli.actividades && unasoli.actividades.length > 0) {
           const primeraActividad = unasoli.actividades[0];
-          console.log(primeraActividad.actividadRef)
+
+          setActividad(primeraActividad.actividadRef || "");
+          setMyActividad_(primeraActividad.nombre || "");
+          console.log(myActividad_);
           setActividad(primeraActividad.actividadRef || "");
           setMyActividad_(primeraActividad.nombreActividadPropio || "");
         }
