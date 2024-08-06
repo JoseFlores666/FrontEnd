@@ -87,7 +87,13 @@ export const VerInforme = () => {
                                     <Label>Fecha de atención:</Label>
                                     <p className="w-full rounded-md">{hasSolicitud && unaInfo.informe?.solicitud?.fechaAtencion ? new Date(unaInfo.informe?.solicitud?.fechaAtencion).toLocaleDateString() : 'Fecha de atención no disponible'}</p>
                                 </div>
+                                <div></div>
                                 <div className="bg-slate-200 rounded p-2">
+                                    <Label>Estado:</Label>
+                                    <p className="w-full rounded-md">{unaInfo.informe?.estado?.nombre || 'Estado no disponible'}</p>
+                                </div>
+                            </GridContainer>
+                            <div className="bg-slate-200 rounded p-2 mb-4">
                                     <Label>Insumos solicitados:</Label>
                                     <ul className="list-disc pl-5">
                                         {hasSolicitud && unaInfo.informe?.solicitud?.material?.length > 0 ? (
@@ -99,11 +105,6 @@ export const VerInforme = () => {
                                         )}
                                     </ul>
                                 </div>
-                                <div className="bg-slate-200 rounded p-2">
-                                    <Label>Estado:</Label>
-                                    <p className="w-full rounded-md">{unaInfo.informe?.estado?.nombre || 'Estado no disponible'}</p>
-                                </div>
-                            </GridContainer>
                             <div className="bg-slate-200 rounded p-2">
                                 <Label>Observaciones técnicas:</Label>
                                 <p className="w-full rounded-md">{hasSolicitud ? unaInfo.informe?.solicitud?.diagnostico : 'Diagnostoco técnico no disponibles'}</p>

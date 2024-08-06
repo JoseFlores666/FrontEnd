@@ -362,8 +362,8 @@ export const TecnicoPage = () => {
       </table>
 
       <nav aria-label="Page navigation example" className="flex items-center justify-between pt-4">
-        <span className="text-sm font-normal text-white dark:text-black-400">
-          Mostrando <span className="font-semibold text-white black:text-black">{indexOfFirstSolicitud + 1}-{indexOfLastSolicitud}</span> Total de Solicitudes: <span className="font-semibold text-white dark:text-white">{filteredSolicitudes.length}</span>
+        <span className="text-sm font-normal text-black dark:text-black-400">
+          Mostrando <span className="font-semibold text-black black:text-black">{indexOfFirstSolicitud + 1}-{indexOfLastSolicitud}</span> Total de Solicitudes: <span className="font-semibold text-black dark:text-black">{filteredSolicitudes.length}</span>
         </span>
         <ul className="inline-flex items-center -space-x-px h-8 text-sm">
           <li>
