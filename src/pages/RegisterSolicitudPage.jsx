@@ -156,12 +156,12 @@ export const RegisterSolicitudPage = () => {
 
         getIdsProyectYAct(unasoli.proyecto._id);
 
+       
         if (unasoli.actividades && unasoli.actividades.length > 0) {
           const primeraActividad = unasoli.actividades[0];
-
-          setActividad(primeraActividad._id || "");
-          setMyActividad_(primeraActividad.nombre || "");
-          console.log(myActividad_);
+          console.log(primeraActividad.actividadRef)
+          setActividad(primeraActividad.actividadRef || "");
+          setMyActividad_(primeraActividad.nombreActividadPropio || "");
         }
       }
       setJustificacion(unasoli.justificacionAdquisicion || "");

@@ -1,12 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/authContext";
-<<<<<<< HEAD
-import INNEGO from '../../public/INNEGO.svg'
-import { DashboardMenu } from '../pages/DashboardMenu';
-=======
 import { DashboardMenu } from '../pages/DashboardMenu'; // Importa el componente
->>>>>>> 48820be16f908c5d2610265ef08424546208394e
 
 export function Navbar() {
   const { isAuthenticated, logout, user } = useAuth();
@@ -16,12 +11,6 @@ export function Navbar() {
   const [isDashboardMenuOpen, setIsDashboardMenuOpen] = useState(false);
 
   const location = useLocation();
-
-<<<<<<< HEAD
-  const navigate = useNavigate();
-
-=======
->>>>>>> 48820be16f908c5d2610265ef08424546208394e
   useEffect(() => {
     setActiveLink(location.pathname);
   }, [location.pathname]);
@@ -67,17 +56,12 @@ export function Navbar() {
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <div className="flex items-center justify-center space-x-1">
             <img
-<<<<<<< HEAD
-              src={INNEGO}
-              className="h-8"
-=======
               src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQECmkNjpPwLnbAXf3j5eavPu0QSYoOfiNA8A&s"
               className="h-8 cursor-pointer"
               alt="Flowbite Logo"
->>>>>>> 48820be16f908c5d2610265ef08424546208394e
             />
-            <span className="self-left text-2xl font-semibold whitespace-nowrap dark:text-white">Solicitudes Innego</span>
-          </div>
+            <span className="self-left text-2xl font-semibold whitespace-nowrap hover:text-gray-600 hover:border-gray-300  text-gray-900 dark:text-white">Solicitudes Innego</span>
+          </div>  
           <div className="hidden w-full md:block md:w-auto" id="navbar-solid-bg">
             <ul className="flex items-center space-x-3  font-medium mt-4 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-transparent dark:bg-gray-800 md:dark:bg-transparent dark:border-gray-700">
               {isAuthenticated ? (

@@ -13,6 +13,7 @@ import "../css/solicitud.css";
 import "../css/Animaciones.css";
 import { GridContainer, Label, Title } from "../components/ui";
 import { useOrden } from "../context/ordenDeTrabajoContext";
+import {EncabezadoFormulario}from '../components/ui/Encabezado'
 
 export const RegisterTecPage2 = () => {
 
@@ -23,9 +24,7 @@ export const RegisterTecPage2 = () => {
     const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            folioExterno: "",
-            observaciones: "",
-            items: [{ cantidad: "", descripcion: "" }],
+            items: [{ cantidad: "", descripcion: "" }], images: [],
         }
     });
 
@@ -45,6 +44,10 @@ export const RegisterTecPage2 = () => {
 
     const onSubmit = async (data) => {
         try {
+            if (subiendoImagenesRef.current && subiendoImagenesRef.current.hasFiles() === false) {
+                Swal.fire("Error", "Debe subir al menos una imagen.", "error");
+                return;
+            }
             const formData = new FormData();
 
             // Agregar datos de items al FormData
@@ -135,13 +138,13 @@ export const RegisterTecPage2 = () => {
     const formatFecha = (fecha) => {
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         return new Date(fecha).toLocaleDateString(undefined, options);
-      };
+    };
 
     return (
         <div className="mx-auto max-w-5xl p-4 text-black">
             <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-6xl">
                 <div className="bg-white p-6 rounded-md shadow-md">
-                    <Title>Área De Entregas</Title>
+                    {/* <Title>Área De Entregas</Title>
                     <GridContainer>
                         <div className="bg-slate-200 rounded p-2">
                             <Label>Fecha:</Label>
@@ -206,8 +209,9 @@ export const RegisterTecPage2 = () => {
 
                         <p>{unaInfo.informe?.solicitud?.diagnostico}</p>
 
-                    </div>
-
+                    </div> */}
+                    
+                    <EncabezadoFormulario unaInfo={unaInfo} />
                     <div className="flex items-center justify-center w-full h-11 p-3 rounded-md">
                         <p className="font-bold">Llenado Exclusivo Para El DEP MSG:</p>
                     </div>
@@ -295,11 +299,11 @@ export const RegisterTecPage2 = () => {
                                     Agregar más
                                 </button>
                             </div>
-                            {/* esta parte es Obligatorio en esta parte */}
-                            <div>
-                                <SubiendoImagenes ref={subiendoImagenesRef} />
-                            </div>
 
+                            <div>
+                                <SubiendoImagenes ref={subiendoImagenesRef} requerido={true} />
+                            </div>
+                            {errors.images && <div className="text-red-500">{errors.images.message}</div>}
                         </div>
                         <div className="flex justify-center mt-4">
                             <button
