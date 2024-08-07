@@ -30,7 +30,7 @@ export const TecnicoPage = () => {
   const [editedData, setEditedData] = useState([]);
   const [estadoSeleccionado, setEstadoSeleccionado] = useState("");
 
-  
+
   const abrirModal = () => {
     setIsModalOpen2(true);
   };
@@ -45,7 +45,7 @@ export const TecnicoPage = () => {
       try {
         await traerOrdenesDeTrabajo();
         await getCantidadTotalOrden();
-
+        console.log(informes)
         seTdatosCargados(true)
         setLoading(false);
       } catch (error) {
@@ -85,6 +85,7 @@ export const TecnicoPage = () => {
       (solicitud.informe?.tipoDeTrabajo?.toLowerCase().includes(terminoBusqueda)) ||
       (solicitud.informe?.tipoDeSolicitud?.toLowerCase().includes(terminoBusqueda)) ||
       (solicitud.informe?.descripcion?.toLowerCase().includes(terminoBusqueda)) ||
+      (solicitud.informe?.solicitud?.tecnicos?.nombreCompleto?.toLowerCase().includes(terminoBusqueda)) ||
       (solicitud.informe?.estado?.nombre?.toLowerCase().includes(terminoBusqueda))
     );
   }
@@ -270,6 +271,7 @@ export const TecnicoPage = () => {
             <Th onClick={() => requestSort('tipoDeTrabajo')} sortable={true}>TIPO DE TRABAJO</Th>
             <Th onClick={() => requestSort('tipoDeSolicitud')} sortable={true}>TIPO DE SOLICITUD</Th>
             <Th sortable={false} extraClass="w-2/12">DESCRIPCION DEL SERVICIO</Th>
+            <Th onClick={() => requestSort('tecnicos.nombreCompleto')} sortable={true}>TÉCNICO</Th>
             <Th sortable={false} >EVIDENCIAS</Th>
             <Th onClick={() => requestSort('estado.nombre')} sortable={true}>ESTADO</Th>
             <Th sortable={false}>ACCIONES</Th>
@@ -289,6 +291,7 @@ export const TecnicoPage = () => {
               <Td>{solicitud.informe.tipoDeTrabajo}</Td>
               <Td>{solicitud.informe.tipoDeSolicitud}</Td>
               <Td>{solicitud.informe.descripcion}</Td>
+              <Td>{solicitud.informe?.solicitud?.tecnicos?.nombreCompleto || "Sin Asignar"}</Td>
               <Td>
                 <Link to={`/evidencias/${solicitud._id}?`} className="text-black font-bold">
                   VER
