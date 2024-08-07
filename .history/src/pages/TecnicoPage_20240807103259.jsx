@@ -84,7 +84,10 @@ export const TecnicoPage = () => {
       (solicitud.informe?.tipoDeTrabajo?.toLowerCase().includes(terminoBusqueda)) ||
       (solicitud.informe?.tipoDeSolicitud?.toLowerCase().includes(terminoBusqueda)) ||
       (solicitud.informe?.descripcion?.toLowerCase().includes(terminoBusqueda)) ||
+<<<<<<< HEAD
       (solicitud.informe?.solicitud?.tecnicos?.nombreCompleto?.toLowerCase().includes(terminoBusqueda)) ||
+=======
+>>>>>>> 6e99d47d826836c225ec64f001e5f1c8ac924a65
       (solicitud.informe?.estado?.nombre?.toLowerCase().includes(terminoBusqueda))
     );
   }

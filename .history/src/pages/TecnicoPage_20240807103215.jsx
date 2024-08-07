@@ -84,7 +84,10 @@ export const TecnicoPage = () => {
       (solicitud.informe?.tipoDeTrabajo?.toLowerCase().includes(terminoBusqueda)) ||
       (solicitud.informe?.tipoDeSolicitud?.toLowerCase().includes(terminoBusqueda)) ||
       (solicitud.informe?.descripcion?.toLowerCase().includes(terminoBusqueda)) ||
+<<<<<<< HEAD
       (solicitud.informe?.solicitud?.tecnicos?.nombreCompleto?.toLowerCase().includes(terminoBusqueda)) ||
+=======
+>>>>>>> 6e99d47d826836c225ec64f001e5f1c8ac924a65
       (solicitud.informe?.estado?.nombre?.toLowerCase().includes(terminoBusqueda))
     );
   }
@@ -100,6 +103,7 @@ export const TecnicoPage = () => {
     let sortableSolicitudes = [...filteredSolicitudes];
     if (sortConfig.key !== null) {
       sortableSolicitudes.sort((a, b) => {
+<<<<<<< HEAD
         const aKey = a.informe ? a.informe[sortConfig.key] : a[sortConfig.key];
         const bKey = b.informe ? b.informe[sortConfig.key] : b[sortConfig.key];
 
@@ -107,6 +111,12 @@ export const TecnicoPage = () => {
           return sortConfig.direction === 'asc' ? -1 : 1;
         }
         if (aKey > bKey) {
+=======
+        if (a[sortConfig.key] < b[sortConfig.key]) {
+          return sortConfig.direction === 'asc' ? -1 : 1;
+        }
+        if (a[sortConfig.key] > b[sortConfig.key]) {
+>>>>>>> 6e99d47d826836c225ec64f001e5f1c8ac924a65
           return sortConfig.direction === 'asc' ? 1 : -1;
         }
         return 0;
@@ -270,7 +280,10 @@ export const TecnicoPage = () => {
             <Th onClick={() => requestSort('tipoDeTrabajo')} sortable={true}>TIPO DE TRABAJO</Th>
             <Th onClick={() => requestSort('tipoDeSolicitud')} sortable={true}>TIPO DE SOLICITUD</Th>
             <Th sortable={false} extraClass="w-2/12">DESCRIPCION DEL SERVICIO</Th>
+<<<<<<< HEAD
             <Th onClick={() => requestSort('tecnicos.nombreCompleto')} sortable={true}>TÉCNICO</Th>
+=======
+>>>>>>> 6e99d47d826836c225ec64f001e5f1c8ac924a65
             <Th sortable={false} >EVIDENCIAS</Th>
             <Th onClick={() => requestSort('estado.nombre')} sortable={true}>ESTADO</Th>
             <Th sortable={false}>ACCIONES</Th>
@@ -290,7 +303,10 @@ export const TecnicoPage = () => {
               <Td>{solicitud.informe.tipoDeTrabajo}</Td>
               <Td>{solicitud.informe.tipoDeSolicitud}</Td>
               <Td>{solicitud.informe.descripcion}</Td>
+<<<<<<< HEAD
               <Td>{solicitud.informe?.solicitud?.tecnicos?.nombreCompleto || "Sin Asignar"}</Td>
+=======
+>>>>>>> 6e99d47d826836c225ec64f001e5f1c8ac924a65
               <Td>
                 <Link to={`/evidencias/${solicitud._id}?`} className="text-black font-bold">
                   VER

@@ -84,7 +84,10 @@ export const TecnicoPage = () => {
       (solicitud.informe?.tipoDeTrabajo?.toLowerCase().includes(terminoBusqueda)) ||
       (solicitud.informe?.tipoDeSolicitud?.toLowerCase().includes(terminoBusqueda)) ||
       (solicitud.informe?.descripcion?.toLowerCase().includes(terminoBusqueda)) ||
+<<<<<<< HEAD
       (solicitud.informe?.solicitud?.tecnicos?.nombreCompleto?.toLowerCase().includes(terminoBusqueda)) ||
+=======
+>>>>>>> 6e99d47d826836c225ec64f001e5f1c8ac924a65
       (solicitud.informe?.estado?.nombre?.toLowerCase().includes(terminoBusqueda))
     );
   }
@@ -290,7 +293,10 @@ export const TecnicoPage = () => {
               <Td>{solicitud.informe.tipoDeTrabajo}</Td>
               <Td>{solicitud.informe.tipoDeSolicitud}</Td>
               <Td>{solicitud.informe.descripcion}</Td>
+<<<<<<< HEAD
               <Td>{solicitud.informe?.solicitud?.tecnicos?.nombreCompleto || "Sin Asignar"}</Td>
+=======
+>>>>>>> 6e99d47d826836c225ec64f001e5f1c8ac924a65
               <Td>
                 <Link to={`/evidencias/${solicitud._id}?`} className="text-black font-bold">
                   VER

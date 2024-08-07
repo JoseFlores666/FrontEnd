@@ -229,8 +229,11 @@ export const AbonoSolicitud = () => {
                                             <option value="Paquete">Paquete</option>
                                             <option value="Rollo">Rollo</option>
                                             <option value="Caja">Caja</option>
+<<<<<<< HEAD
                                             <option value="Kit">Kit</option>
                                             <option value="Pieza">Pieza</option>
+=======
+>>>>>>> 6e99d47d826836c225ec64f001e5f1c8ac924a65
                                         </select>
                                         {errors.items?.[index]?.unidad && (
                                             <p className="text-red-500 text-xs mt-1">{errors.items[index].unidad.message}</p>
@@ -250,11 +253,16 @@ export const AbonoSolicitud = () => {
                                         <input
                                             type="number"
                                             min={0}
+<<<<<<< HEAD
                                             max={item.cantidad - item.cantidadAcumulada}
                                             className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                                             {...register(`items.${index}.cantidadEntregada`, {
                                                 validate: value => value <= item.cantidad - item.cantidadAcumulada || "La cantidad a entregar excede la cantidad restante."
                                             })}
+=======
+                                            className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                                            {...register(`items.${index}.cantidadEntregada`)}
+>>>>>>> 6e99d47d826836c225ec64f001e5f1c8ac924a65
                                         />
                                         {errors.items?.[index]?.cantidadEntregada && (
                                             <p className="text-red-500 text-xs mt-1">{errors.items[index].cantidadEntregada.message}</p>
