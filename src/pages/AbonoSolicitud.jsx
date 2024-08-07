@@ -74,9 +74,10 @@ export const AbonoSolicitud = () => {
             setValue("folioExterno", unasoli.folioExterno || "");
             setValue("fecha", unasoli.fecha ? new Date(unasoli.fecha).toISOString().slice(0, 10) : "");
             setValue("items", unasoli.suministros || []);
-         
+
             const nuevosItems = unasoli.suministros || [];
-            console.log(nuevosItems)
+            console.log("nuevosItems:", nuevosItems); // Verifica los datos de los items
+
             setItems(nuevosItems);
 
             if (unasoli.folioExterno) {
@@ -230,6 +231,8 @@ export const AbonoSolicitud = () => {
                                             <option value="Paquete">Paquete</option>
                                             <option value="Rollo">Rollo</option>
                                             <option value="Caja">Caja</option>
+                                            <option value="Kit">Kit</option>
+                                            <option value="Pieza">Pieza</option>
                                         </select>
                                         {errors.items?.[index]?.unidad && (
                                             <p className="text-red-500 text-xs mt-1">{errors.items[index].unidad.message}</p>
@@ -249,8 +252,11 @@ export const AbonoSolicitud = () => {
                                         <input
                                             type="number"
                                             min={0}
+                                            max={item.cantidad - item.cantidadAcumulada}
                                             className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                                            {...register(`items.${index}.cantidadEntregada`)}
+                                            {...register(`items.${index}.cantidadEntregada`, {
+                                                validate: value => value <= item.cantidad - item.cantidadAcumulada || "La cantidad a entregar excede la cantidad restante."
+                                            })}
                                         />
                                         {errors.items?.[index]?.cantidadEntregada && (
                                             <p className="text-red-500 text-xs mt-1">{errors.items[index].cantidadEntregada.message}</p>

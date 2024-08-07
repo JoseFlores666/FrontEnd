@@ -21,9 +21,6 @@ import {
 
 } from "../api/soli";
 
-
-
-
 import { getfolioInterno } from "../api/folio";
 import { gethistorialSoli } from "../api/historialInput";
 import { CrearApi_key, VerApis_Keys, actualizaApi_key } from "../api/api_key";
@@ -95,7 +92,7 @@ export function SoliProvider({ children }) {
   const getunSolitud = async (id) => {
     try {
       const res = await getUnaSoli(id);
-      // console.log(res)
+
       setUnaSoli(res.data);
     } catch (error) {
       console.error("Error fetching solitudes:", error);
@@ -136,7 +133,6 @@ export function SoliProvider({ children }) {
     try {
       const res = await createSoli(soli);
       return res;
-
     } catch (error) {
       console.error("Error creating solicitud:", error);
       setErrors(["Error creating solicitud"]);
@@ -163,8 +159,10 @@ export function SoliProvider({ children }) {
 
   const actializarSoli = async (id, datosSolicitud) => {
     try {
-      await updateSoli(id, datosSolicitud);
+      const res = await updateSoli(id, datosSolicitud);
+
       console.log("Actulizado con exito");
+      return res;
     } catch (error) {
       console.error("Error fetching solitudes:", error);
       setErrors(["Error fetching solitudes"]);

@@ -49,7 +49,7 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
     const traerOrdenesDeTrabajo = async () => {
         try {
             const res = await getInfome();
-            console.log(res)
+  
             setInformes(res.data);
         } catch (error) {
             console.error("Error al traer informes:", error);

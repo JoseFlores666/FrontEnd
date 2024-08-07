@@ -30,6 +30,7 @@ export const TecnicoPage = () => {
   const [editedData, setEditedData] = useState([]);
   const [estadoSeleccionado, setEstadoSeleccionado] = useState("");
 
+  
   const abrirModal = () => {
     setIsModalOpen2(true);
   };
