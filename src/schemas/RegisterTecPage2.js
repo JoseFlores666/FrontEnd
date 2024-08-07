@@ -29,9 +29,5 @@ export const formSchema = z.object({
           "Solo se permiten imágenes con extensiones .png, .jpeg, .jpg o .gif",
       }
     ),
-  // .refine((files) => files.every((file) => file.size <= 5 * 1024 * 1024), {
-  //   // 5MB max
-  //   message: "Cada imagen no debe exceder los 5MB",
-  // })
   items: z.array(itemSchema).min(1, { message: "Debe haber al menos un item" }),
 });

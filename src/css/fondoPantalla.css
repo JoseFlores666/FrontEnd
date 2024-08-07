@@ -93,7 +93,6 @@ body {
   animation: float 10s ease-in-out infinite;
   box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5);
 }
-<<<<<<< HEAD
 
 .top-right-animation {
   position: absolute;
@@ -107,15 +106,11 @@ body {
   animation: float 3s ease-in-out infinite; /* Animación de flotación */
   z-index: -1; 
 }
-=======
-/*
->>>>>>> 6e99d47d826836c225ec64f001e5f1c8ac924a65
 @keyframes float {
   0% {
     transform: translateY(0);
   }
   50% {
-<<<<<<< HEAD
     transform: translateY(-10px);
   }
   100% {
@@ -126,59 +121,3 @@ body {
     -o-transform: translateY(0);
 }
 }
-=======
-    transform: translateY(-30px);
-  }
-  100% {
-    transform: translateY(0);
-  }
-}
-
-Position gradient circles */
-/* .gradient-circle.small {
-  width: 200px;
-  height: 200px;
-  left: -100px;
-  bottom: -100px;
-}
-
-.gradient-circle.medium {
-  width: 400px;
-  height: 400px;
-  left: -200px;
-  bottom: -200px;
-}
-
-.gradient-circle.large {
-  width: 600px;
-  height: 600px;
-  left: -300px;
-  bottom: -300px;
-}
-
-.square {
-  position: absolute;
-  width: 50px;
-  height: 50px;
-  background: white;
-  animation: moveSquare 10s linear infinite;
-}
-
-@keyframes moveSquare {
-  0% {
-    transform: translate(0, 0);
-  }
-  25% {
-    transform: translate(calc(100vw - 50px), 0);
-  }
-  50% {
-    transform: translate(calc(100vw - 50px), calc(100vh - 50px));
-  }
-  75% {
-    transform: translate(0, calc(100vh - 50px));
-  }
-  100% {
-    transform: translate(0, 0);
-  }
-} */
->>>>>>> 6e99d47d826836c225ec64f001e5f1c8ac924a65

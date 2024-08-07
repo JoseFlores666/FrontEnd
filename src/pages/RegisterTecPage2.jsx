@@ -21,11 +21,10 @@ export const RegisterTecPage2 = () => {
     const subiendoImagenesRef = useRef(null);
     const navigate = useNavigate();
 
-    const { register, handleSubmit, formState: { errors }, setValue, reset ,setError } = useForm({
+    const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            items: [{ cantidad: "", descripcion: "" }],
-            images: [],
+            items: [{ cantidad: "", descripcion: "" }], images: [],
         }
     });
 
@@ -45,8 +44,8 @@ export const RegisterTecPage2 = () => {
 
     const onSubmit = async (data) => {
         try {
-            if (subiendoImagenesRef.current && !subiendoImagenesRef.current.hasFiles()) {
-                setError("images", { type: "manual", message: "Debe subir al menos una imagen." });
+            if (subiendoImagenesRef.current && subiendoImagenesRef.current.hasFiles() === false) {
+                Swal.fire("Error", "Debe subir al menos una imagen.", "error");
                 return;
             }
             const formData = new FormData();
@@ -146,7 +145,7 @@ export const RegisterTecPage2 = () => {
             <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-6xl">
                 <div className="bg-white p-6 rounded-md shadow-md">
                     <Title>Área De Entregas</Title>
-                    <GridContainer>
+                        <GridContainer>
                         <div className="bg-slate-200 rounded p-2">
                             <Label>Fecha:</Label>
                             <p className="w-full rounded-md">   {formatFecha(unaInfo.informe?.fecha)}</p>
@@ -210,7 +209,7 @@ export const RegisterTecPage2 = () => {
 
                         <p>{unaInfo.informe?.solicitud?.diagnostico}</p>
 
-                    </div>
+                    </div> 
 
                     {/* <EncabezadoFormulario unaInfo={unaInfo} /> */}
                     <div className="flex items-center justify-center w-full h-11 p-3 rounded-md">
@@ -302,9 +301,9 @@ export const RegisterTecPage2 = () => {
                             </div>
 
                             <div>
-                                <SubiendoImagenes ref={subiendoImagenesRef} />
-                                {errors.images && <div className="text-red-500">{errors.images.message}</div>}
+                                <SubiendoImagenes ref={subiendoImagenesRef} requerido={true} />
                             </div>
+                            {errors.images && <div className="text-red-500">{errors.images.message}</div>}
                         </div>
                         <div className="flex justify-center mt-4">
                             <button
