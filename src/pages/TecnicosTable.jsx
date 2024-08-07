@@ -132,17 +132,20 @@ export const TecnicosTable = () => {
     <div className="container mx-auto p-4 max-w-4xl text-black">
       <form onSubmit={handleSubmit} className="bg-white shadow-lg rounded-lg px-8 pt-2 pb-8 mb-6">
         <Title>Gestión de Personal Técnico</Title>
+        
         <div className="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+         
           <div>
             <Label>Nombre:</Label>
             <input
               type="text"
               name="nombreCompleto"
+              placeholder='Ingrese su nombre completo'
               value={form.nombreCompleto}
               onChange={handleChange}
               required
-              className="w-full p-1 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-            />
+              className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              />
           </div>
           <div>
             <Label>Edad:</Label>
@@ -151,11 +154,12 @@ export const TecnicosTable = () => {
               max={112}
               type="number"
               name="edad"
+              placeholder='Ingrese su edad (debe ser mayor de 18)'
               value={form.edad}
               onChange={handleChange}
               required
-              className="w-full p-1 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-            />
+              className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              />
           </div>
           <div>
             <Label>Número de Tel:</Label>
@@ -163,52 +167,56 @@ export const TecnicosTable = () => {
               type="tel"
               name="telefono"
               value={form.telefono}
+              placeholder='Ingrese su numero de telefono'
               onChange={handleChange}
               required
               maxLength={10}
-              className="w-full p-1 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-            />
+              className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              />
           </div>
           <div>
             <Label>Correo:</Label>
             <input
               type="email"
               name="correo"
+              placeholder='Ingrese su correo'
               value={form.correo}
               onChange={handleChange}
               required
-              className="w-full p-1 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-            />
+              className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              />
           </div>
           <div>
             <Label>Area Asignada:</Label>
             <input
               type="text"
               name="area"
+              placeholder='Ingrese su Area en la universidad'
               value={form.area}
               onChange={handleChange}
               required
-              className="w-full p-1 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-            />
+              className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+              />
           </div>
 
         </div>
-        <div className="flex items-center justify-end">
-          <button
-            type="submit"
-            className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
-          >
-            {editId ? 'Actualizar' : 'Agregar'}
-          </button>
-          {editId && (
+        <div className="flex items-center justify-center">
+        {editId && (
             <button
               type="button"
               onClick={limpiar}
               className="bg-green-600 hover:bg-green-800 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
             >
-              Agregar Nuevo
+              Cancelar
             </button>
           )}
+          <button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline"
+          >
+            {editId ? 'Actualizar' : 'Agregar Tecnico'}
+          </button>
+         
         </div>
       </form>
 

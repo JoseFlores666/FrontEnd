@@ -69,11 +69,14 @@ export const AbonoSolicitud = () => {
 
     const llenaSolicitud = () => {
         try {
+
             setValue("folio", unasoli.folio || "");
             setValue("folioExterno", unasoli.folioExterno || "");
             setValue("fecha", unasoli.fecha ? new Date(unasoli.fecha).toISOString().slice(0, 10) : "");
             setValue("items", unasoli.suministros || []);
+         
             const nuevosItems = unasoli.suministros || [];
+            console.log(nuevosItems)
             setItems(nuevosItems);
 
             if (unasoli.folioExterno) {
@@ -90,7 +93,7 @@ export const AbonoSolicitud = () => {
         try {
             data.id = id;
             data.user = user;
-            // Eliminar propiedades no deseadas
+
             const { NumEntregas, ...restData } = data;
             delete restData[""];
 
@@ -245,7 +248,7 @@ export const AbonoSolicitud = () => {
                                         <Label>Cantidad a entregar:</Label>
                                         <input
                                             type="number"
-                                            // min={0}
+                                            min={0}
                                             className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                                             {...register(`items.${index}.cantidadEntregada`)}
                                         />

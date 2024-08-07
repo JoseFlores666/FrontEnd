@@ -16,6 +16,7 @@ export const Evidencias = () => {
         await traerUnaInfo(id);
         setSolicitudInfo(unaInfo);
         await traerImagenInfo(id);
+        console.log(unaInfo)
         setDatosCargados(true);
       } catch (error) {
         console.error("Error al cargar los datos", error);
@@ -58,9 +59,10 @@ export const Evidencias = () => {
         formData.append('imagenes[]', blob, `imagen${i + 1}.jpg`);
       }
 
-      if (solicitudInfo && solicitudInfo.folio) {
-        formData.append('folio', solicitudInfo.folio);
-        console.log('Folio enviado:', solicitudInfo.folio);
+  
+      if (solicitudInfo && solicitudInfo.informe?.folio) {
+        formData.append('folio',solicitudInfo.informe?.folio);
+        console.log('Folio enviado:', solicitudInfo.informe?.folio);
       } else {
         console.error('Folio no disponible');
       }

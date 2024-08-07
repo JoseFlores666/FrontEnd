@@ -44,7 +44,7 @@ export const TecnicoPage = () => {
       try {
         await traerOrdenesDeTrabajo();
         await getCantidadTotalOrden();
-      
+
         seTdatosCargados(true)
         setLoading(false);
       } catch (error) {
@@ -55,9 +55,9 @@ export const TecnicoPage = () => {
       fetchInfo()
     }
 
-  }, [traerOrdenesDeTrabajo, getCantidadTotalOrden, estadosTotales, datosCargados]);
+  }, [traerOrdenesDeTrabajo, getCantidadTotalOrden, datosCargados]);
 
-  
+
   const estadoDeclinado = estadosTotales[5];
 
   const handleDelete = async (id) => {
@@ -99,10 +99,13 @@ export const TecnicoPage = () => {
     let sortableSolicitudes = [...filteredSolicitudes];
     if (sortConfig.key !== null) {
       sortableSolicitudes.sort((a, b) => {
-        if (a[sortConfig.key] < b[sortConfig.key]) {
+        const aKey = a.informe ? a.informe[sortConfig.key] : a[sortConfig.key];
+        const bKey = b.informe ? b.informe[sortConfig.key] : b[sortConfig.key];
+
+        if (aKey < bKey) {
           return sortConfig.direction === 'asc' ? -1 : 1;
         }
-        if (a[sortConfig.key] > b[sortConfig.key]) {
+        if (aKey > bKey) {
           return sortConfig.direction === 'asc' ? 1 : -1;
         }
         return 0;

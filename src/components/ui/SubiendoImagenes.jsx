@@ -48,14 +48,11 @@ const SubiendoImagenes = forwardRef(({ NuevoEstilos = false, requerido = false, 
     ? 'Coloca tus evidencias aquí, o haz clic para seleccionar'
     : 'Suba sus evidencias aquí';
 
-  const placeholder = requerido ? 'Este campo es requerido' : '';
-
   return (
     <div>
       <Container style={{ textAlign: 'center', color: 'black' }}>
         <h1 className='text-center text-base font-medium mb-1'>{message}</h1>
         {error && <div className="error-message">{error}</div>}
-        {/* {placeholder && <div className="placeholder-message text-red-500">{placeholder}</div>} */}
 
         {!imagenes.length && (
           <Dropzone onDrop={handleDrop}>

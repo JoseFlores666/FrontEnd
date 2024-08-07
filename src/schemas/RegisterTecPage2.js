@@ -12,23 +12,23 @@ const itemSchema = z.object({
 });
 
 export const formSchema = z.object({
-  images: z
-    .array(z.instanceof(File))
-    .refine((files) => files.length > 0, {
-      message: "Debe subir al menos una imagen.",
-    })
-    .refine(
-      (files) =>
-        files.every((file) =>
-          ["image/png", "image/jpeg", "image/jpg", "image/gif"].includes(
-            file.type
-          )
-        ),
-      {
-        message:
-          "Solo se permiten imágenes con extensiones .png, .jpeg, .jpg o .gif",
-      }
-    ),
+  // images: z
+  //   .array(z.instanceof(File))
+  //   .refine((files) => files.length > 0, {
+  //     message: "Debe subir al menos una imagen.",
+  //   })
+  //   .refine(
+  //     (files) =>
+  //       files.every((file) =>
+  //         ["image/png", "image/jpeg", "image/jpg", "image/gif"].includes(
+  //           file.type
+  //         )
+  //       ),
+  //     {
+  //       message:
+  //         "Solo se permiten imágenes con extensiones .png, .jpeg, .jpg o .gif",
+  //     }
+  //   ),
   // .refine((files) => files.every((file) => file.size <= 5 * 1024 * 1024), {
   //   // 5MB max
   //   message: "Cada imagen no debe exceder los 5MB",
