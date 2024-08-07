@@ -1,6 +1,4 @@
 import React, { useRef, useState, useEffect } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { registerSoliSchema } from "../schemas/registerSoliPage";
 import { useSoli } from "../context/SolicitudContext";
 import { useAuth } from "../context/authContext";
 import { useForm } from "react-hook-form";
@@ -13,15 +11,12 @@ import { faTrashAlt, faClone } from '@fortawesome/free-solid-svg-icons';
 import "../css/Animaciones.css";
 import { AutocompleteInput } from "../components/ui/AutocompleteInput";
 import { GridContainer, Label, Title } from "../components/ui";
+import { ValidacionSoli } from "../schemas/ValidacionSoli";
 
 export const RegisterSolicitudPage = () => {
   const navigate = useNavigate();
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm({ resolver: zodResolver(registerSoliSchema), });
+  const [value, setValue] = useState('');
+  const [errors, setErrors] = useState({});
 
   const [fecha, setFecha] = useState(() => {
     const today = new Date();
@@ -70,17 +65,15 @@ export const RegisterSolicitudPage = () => {
     setIsOpen(false);
   };
 
-  const guardarDatos = () => {
-    if (
-      !fecha ||
-      !suministro ||
-      !pc ||
-      !proyecto ||
-      !selectedActividad ||
-      !justificacion ||
-      items.length === 0 ||
-      items.some((item) => !item.unidad || !item.cantidad || !item.descripcion)
-    ) {
+  const guardarDatos = (e) => {
+    e.preventDefault();
+    const fields = { fecha, suministro, pc, proyecto, actividad, justificacion };
+    const newErrors = ValidacionSoli(fields, items);
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      setIsOpen(true);
+    } else {
       Swal.fire({
         title: "Alerta!",
         text: "Complete todos los componentes",
@@ -108,7 +101,7 @@ export const RegisterSolicitudPage = () => {
       const res = crearmySoli(datosSolicitud);
 
       Swal.fire("Registro Exitoso", res.data?.mensaje, "success");
-        limpiarDatos();
+      limpiarDatos();
 
       localStorage.setItem("datosSolicitud", JSON.stringify(datosSolicitud));
 
@@ -152,14 +145,14 @@ export const RegisterSolicitudPage = () => {
 
         getIdsProyectYAct(unasoli.proyecto._id);
 
-       
+
         if (unasoli.actividades && unasoli.actividades.length > 0) {
           const primeraActividad = unasoli.actividades[0];
 
           setActividad(primeraActividad.actividadRef || "");
           setMyActividad_(primeraActividad.nombre || "");
 
-          setSelectedActividad({id: primeraActividad.actividadRef,nombre:primeraActividad.nombreActividadPropio})
+          setSelectedActividad({ id: primeraActividad.actividadRef, nombre: primeraActividad.nombreActividadPropio })
           setActividad(primeraActividad.actividadRef || "");
           setMyActividad_(primeraActividad.nombreActividadPropio || "");
         }
@@ -289,16 +282,13 @@ export const RegisterSolicitudPage = () => {
   };
 
   const actualizarDatos = () => {
-    if (
-      !fecha ||
-      !suministro ||
-      !pc ||
-      !proyecto ||
-      !selectedActividad ||
-      !justificacion ||
-      items.length === 0 ||
-      items.some((item) => !item.unidad || !item.cantidad || !item.descripcion)
-    ) {
+    const fields = { fecha, suministro, pc, proyecto, actividad, justificacion };
+    const newErrors = ValidacionSoli(fields, items);
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      setIsOpen(true);
+    } else {
       Swal.fire({
         title: "Alerta!",
         text: "Complete todos los componentes",
@@ -459,6 +449,8 @@ export const RegisterSolicitudPage = () => {
                 value={fecha || ""}
                 onChange={(e) => setFecha(e.target.value)}
               />
+              {errors.fecha && <p className="text-red-500">{errors.fecha}</p>}
+
             </div>
             <div>
               <Label>Tipo de Suministro:</Label>
@@ -474,6 +466,8 @@ export const RegisterSolicitudPage = () => {
                 <option value="Normal">Normal</option>
                 <option value="Urgente">Urgente</option>
               </select>
+              {errors.suministro && <p className="text-red-500">{errors.suministro}</p>}
+
             </div>
           </GridContainer>
           <GridContainer>
@@ -491,6 +485,8 @@ export const RegisterSolicitudPage = () => {
                 <option value="Educativo">PC Educativo</option>
                 <option value="Otro">Otro</option>
               </select>
+              {errors.pc && <p className="text-red-500">{errors.pc}</p>}
+
             </div>
             <div>
               <Label>Proyecto:</Label>
@@ -515,6 +511,8 @@ export const RegisterSolicitudPage = () => {
                   </option>
                 ))}
               </select>
+              {errors.proyecto && <p className="text-red-500">{errors.proyecto}</p>}
+
             </div>
             <div>
               <Label>Actividad:</Label>
@@ -538,6 +536,8 @@ export const RegisterSolicitudPage = () => {
                   </option>
                 ))}
               </select>
+              {errors.actividad && <p className="text-red-500">{errors.actividad}</p>}
+
             </div>
           </GridContainer>
           <input type="hidden" id="myProyectoInput" name="myProyecto" value={myProyecto_ || ""} />
@@ -572,6 +572,8 @@ export const RegisterSolicitudPage = () => {
                           name={`items[${index}][cantidad]`}
                         />
                       </div>
+                      {errors[`items[${index}].cantidad`] && <p className="text-red-500">{errors[`items[${index}].cantidad`]}</p>}
+
                     </td>
                     <td className="p-4 align-middle border border-gray-400">
                       <select
@@ -591,6 +593,8 @@ export const RegisterSolicitudPage = () => {
                         <option value="Caja">Caja</option>
                         <option value="Pieza">Pieza</option>
                       </select>
+                      {errors[`items[${index}].unidad`] && <p className="text-red-500">{errors[`items[${index}].unidad`]}</p>}
+
                     </td>
                     <td className="p-1 align-middle border border-gray-400">
                       <AutocompleteInput
@@ -612,6 +616,8 @@ export const RegisterSolicitudPage = () => {
                           onBlur: () => setValue(`items[${index}].descripcion`, item.descripcion, { shouldValidate: true })
                         }}
                       />
+                      {errors[`items[${index}].descripcion`] && <p className="text-red-500">{errors[`items[${index}].descripcion`]}</p>}
+
                     </td>
                     <td className="border border-gray-400">
                       <div className="flex justify-center space-x-4">
@@ -632,6 +638,8 @@ export const RegisterSolicitudPage = () => {
             </table>
 
             <div className="p-4 bg-white border-b border-r border-l border-gray-400 rounded-b-md">
+            {errors.items && <p className="text-red-600 mt-2">{errors.items}</p>}
+
               <button
                 onClick={(e) => agregarItem(e)}
                 className="px-4 py-2 text-white font-bold border bg-green-500 border-black rounded-md hover:bg-green-700 w-full">
@@ -660,6 +668,8 @@ export const RegisterSolicitudPage = () => {
                 onBlur: () => setValue(`justificacion`, justificacion, { shouldValidate: true })
               }}
             />
+            {errors.justificacion && <p className="text-red-500">{errors.justificacion}</p>}
+
           </div>
 
           <div>
@@ -727,67 +737,67 @@ export const RegisterSolicitudPage = () => {
               </button>
             </div>
 
-              {isOpen && (
-                <div
-                  id="static-modal"
-                  tabIndex="-1"
-                  aria-hidden={!isOpen}
-                  className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full flex"
-                >
-                  <div className="relative p-4 w-full max-w-2xl max-h-full">
-                    <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                      <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Haga click en el tipo de archivo que desea generar:</h3>
-                        <button
-                          type="button"
-                          className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                          onClick={handleCloseModal}
+            {isOpen && (
+              <div
+                id="static-modal"
+                tabIndex="-1"
+                aria-hidden={!isOpen}
+                className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full flex"
+              >
+                <div className="relative p-4 w-full max-w-2xl max-h-full">
+                  <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                    <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Haga click en el tipo de archivo que desea generar:</h3>
+                      <button
+                        type="button"
+                        className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                        onClick={handleCloseModal}
+                      >
+                        <svg
+                          className="w-3 h-3"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 14 14"
                         >
-                          <svg
-                            className="w-3 h-3"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 14 14"
-                          >
-                            <path
-                              stroke="currentColor"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                            />
-                          </svg>
+                          <path
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-2 p-4 md:grid-cols-2 gap-6 ">
+                      <div className="flex items-center justify-center">
+                        <button type="submit" onClick={() => setClickedPDF(false)}
+                          style={{ all: 'unset', cursor: 'pointer' }}>
+                          <img
+                            src={imgWord}
+                            style={{ marginLeft: '25px', width: '150px', height: '150px' }}
+                            onClick={editar ? guardarActualizacion : fetchProyecto}
+                          />
                         </button>
                       </div>
 
-                      <div className="grid grid-cols-2 p-4 md:grid-cols-2 gap-6 ">
-                        <div className="flex items-center justify-center">
-                          <button type="submit" onClick={() => setClickedPDF(false)}
-                            style={{ all: 'unset', cursor: 'pointer' }}>
-                            <img
-                              src={imgWord}
-                              style={{ marginLeft: '25px', width: '150px', height: '150px' }}
-                              onClick={editar ? guardarActualizacion : fetchProyecto}
-                            />
-                          </button>
-                        </div>
-
-                        <div>
-                          <button type="submit" onClick={() => setClickedPDF(true)}
-                            style={{ all: 'unset', cursor: 'pointer' }}>
-                            <img
-                              src={imgPDF}
-                              style={{ width: '200px', height: '200px' }}
-                              onClick={editar ? guardarActualizacion : fetchProyecto}
-                            />
-                          </button>
-                        </div>
+                      <div>
+                        <button type="submit" onClick={() => setClickedPDF(true)}
+                          style={{ all: 'unset', cursor: 'pointer' }}>
+                          <img
+                            src={imgPDF}
+                            style={{ width: '200px', height: '200px' }}
+                            onClick={editar ? guardarActualizacion : fetchProyecto}
+                          />
+                        </button>
                       </div>
                     </div>
                   </div>
                 </div>
-              )}
+              </div>
+            )}
           </div>
         </div>
       </form>

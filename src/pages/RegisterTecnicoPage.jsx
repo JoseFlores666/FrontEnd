@@ -250,6 +250,8 @@ export const RegisterTecnicoPage = () => {
                 <option value="Mobiliario">Mobiliario</option>
                 <option value="Instalaciones">Instalaciones</option>
               </select>
+              {errors.tipoMantenimiento ? (
+                <div className="text-red-500">El tipo de mantenimiento es requerido.</div>) : null}
             </div>
             <div>
               <Label>Tipo de Trabajo:</Label>
@@ -263,6 +265,8 @@ export const RegisterTecnicoPage = () => {
                 <option value="Preventivo">Preventivo</option>
                 <option value="Correctivo">Correctivo</option>
               </select>
+              {errors.tipoTrabajo ? (
+                <div className="text-red-500">El tipo de trabajo es requerido.</div>) : null}
             </div>
             <div>
               <Label>Tipo de Solicitud:</Label>
@@ -276,6 +280,8 @@ export const RegisterTecnicoPage = () => {
                 <option value="Normal">Normal</option>
                 <option value="Urgente">Urgente</option>
               </select>
+              {errors.tipoSolicitud ? (
+                <div className="text-red-500">El tipo de mantenimiento es requerido.</div>) : null}
             </div>
           </GridContainer>
           <Label>Descripción (servicio requerido)</Label>
@@ -296,9 +302,6 @@ export const RegisterTecnicoPage = () => {
             }}
           />
           <input name="descripcion" id="descripcion" type="hidden" value={descripcion} />
-           {errors.tipoMantenimiento || errors.tipoTrabajo || errors.tipoSolicitud ? (
-            <div className="text-red-500">Por favor, complete todos los campos requeridos.</div>
-          ) : null}
           <div className="flex items-center justify-center">
             <button
               type="submit"
@@ -375,7 +378,7 @@ export const RegisterTecnicoPage = () => {
             </div>
           </div>
         )}
-        
+
 
       </form>
     </div>
