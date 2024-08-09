@@ -57,6 +57,8 @@ export const Firmas = () => {
 
   const guardarDatos = async (data) => {
     console.log("Datos guardados:", data);
+    console.log("Datos guardados:", data);
+
     try {
       await editarFirmas(data);
       setEsperarFirmas(true)
