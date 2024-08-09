@@ -44,7 +44,7 @@ export const TecnicoPage = () => {
       try {
         await traerOrdenesDeTrabajo();
         await getCantidadTotalOrden();
-      
+        console.log(informes)
         seTdatosCargados(true)
         setLoading(false);
       } catch (error) {
@@ -55,9 +55,9 @@ export const TecnicoPage = () => {
       fetchInfo()
     }
 
-  }, [traerOrdenesDeTrabajo, getCantidadTotalOrden, estadosTotales, datosCargados]);
+  }, [traerOrdenesDeTrabajo, getCantidadTotalOrden, datosCargados]);
 
-  
+
   const estadoDeclinado = estadosTotales[5];
 
   const handleDelete = async (id) => {
@@ -84,6 +84,7 @@ export const TecnicoPage = () => {
       (solicitud.informe?.tipoDeTrabajo?.toLowerCase().includes(terminoBusqueda)) ||
       (solicitud.informe?.tipoDeSolicitud?.toLowerCase().includes(terminoBusqueda)) ||
       (solicitud.informe?.descripcion?.toLowerCase().includes(terminoBusqueda)) ||
+      (solicitud.informe?.solicitud?.tecnicos?.nombreCompleto?.toLowerCase().includes(terminoBusqueda)) ||
       (solicitud.informe?.estado?.nombre?.toLowerCase().includes(terminoBusqueda))
     );
   }
@@ -99,10 +100,13 @@ export const TecnicoPage = () => {
     let sortableSolicitudes = [...filteredSolicitudes];
     if (sortConfig.key !== null) {
       sortableSolicitudes.sort((a, b) => {
-        if (a[sortConfig.key] < b[sortConfig.key]) {
+        const aKey = a.informe ? a.informe[sortConfig.key] : a[sortConfig.key];
+        const bKey = b.informe ? b.informe[sortConfig.key] : b[sortConfig.key];
+
+        if (aKey < bKey) {
           return sortConfig.direction === 'asc' ? -1 : 1;
         }
-        if (a[sortConfig.key] > b[sortConfig.key]) {
+        if (aKey > bKey) {
           return sortConfig.direction === 'asc' ? 1 : -1;
         }
         return 0;
@@ -266,6 +270,7 @@ export const TecnicoPage = () => {
             <Th onClick={() => requestSort('tipoDeTrabajo')} sortable={true}>TIPO DE TRABAJO</Th>
             <Th onClick={() => requestSort('tipoDeSolicitud')} sortable={true}>TIPO DE SOLICITUD</Th>
             <Th sortable={false} extraClass="w-2/12">DESCRIPCION DEL SERVICIO</Th>
+            <Th onClick={() => requestSort('tecnicos.nombreCompleto')} sortable={true}>TÉCNICO</Th>
             <Th sortable={false} >EVIDENCIAS</Th>
             <Th onClick={() => requestSort('estado.nombre')} sortable={true}>ESTADO</Th>
             <Th sortable={false}>ACCIONES</Th>
@@ -285,6 +290,7 @@ export const TecnicoPage = () => {
               <Td>{solicitud.informe.tipoDeTrabajo}</Td>
               <Td>{solicitud.informe.tipoDeSolicitud}</Td>
               <Td>{solicitud.informe.descripcion}</Td>
+              <Td>{solicitud.informe?.solicitud?.tecnicos?.nombreCompleto || "Sin Asignar"}</Td>
               <Td>
                 <Link to={`/evidencias/${solicitud._id}?`} className="text-black font-bold">
                   VER

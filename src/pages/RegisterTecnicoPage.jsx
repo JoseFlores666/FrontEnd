@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import "../css/solicitud.css";
 import { useForm } from "react-hook-form";
 import { useOrden } from "../context/ordenDeTrabajoContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "../css/Animaciones.css";
 import { AutocompleteInput } from "../components/ui/AutocompleteInput";
 import Swal from "sweetalert2";
@@ -12,6 +12,9 @@ import imgWord from '../img/imagenWord.png';
 
 export const RegisterTecnicoPage = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const editar = new URLSearchParams(location.search).get("editar");
+
 
   const {
     register,
@@ -37,13 +40,21 @@ export const RegisterTecnicoPage = () => {
 
   const inputRef = useRef([]);
 
-  const { crearOrdenTrabajo, traerFolioInternoInforme, miFolioInternoInfo, traerHistorialOrden, historialOrden } = useOrden();
+  const { crearOrdenTrabajo, traerFolioInternoInforme, miFolioInternoInfo,
+    traerHistorialOrden, historialOrden, traerUnaInfo, unaInfo, } = useOrden();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await traerFolioInternoInforme();
         await traerHistorialOrden();
+        if (editar && id) {
+          console.log(id)
+          await traerUnaInfo(id);
+          llenar();
+        } else {
+          await traerFolioInternoInforme();
+        }
+        setProjectsLoaded(true);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -51,9 +62,35 @@ export const RegisterTecnicoPage = () => {
 
     if (!projectsLoaded) {
       fetchData();
-      setProjectsLoaded(true);
     }
-  }, [projectsLoaded, traerFolioInternoInforme, traerHistorialOrden, miFolioInternoInfo, historialOrden]);
+  }, [, projectsLoaded, id, editar, traerFolioInternoInforme, traerHistorialOrden, traerUnaInfo]);
+
+  const llenar = async () => {
+    if (unaInfo)
+      console.log(unaInfo);
+    setValue("folio", unaInfo.informe.folio || "");
+    setFecha(unaInfo.informe.fecha ? unaInfo.informe.fecha.split("T")[0] : "");
+    setAreasoli(unaInfo.informe.Solicita ? unaInfo.informe.Solicita.areaSolicitante : "");
+    setSolicita(unaInfo.informe.Solicita ? unaInfo.informe.Solicita.nombre : "");
+    setEdificio(unaInfo.informe.Solicita ? unaInfo.informe.Solicita.edificio : "");
+    setDescripcion(unaInfo.informe.descripcion || "");
+    setValue("tipoMantenimiento", unaInfo.informe.tipoDeMantenimiento || "");
+    setValue("tipoTrabajo", unaInfo.informe.tipoDeTrabajo || "");
+    setValue("tipoSolicitud", unaInfo.informe.tipoDeSolicitud || "");
+
+  }
+  const limpiar = async () => {
+
+    setValue("folio", "");
+    setFecha("");
+    setAreasoli("");
+    setSolicita("");
+    setEdificio("");
+    setDescripcion("");
+    setValue("tipoMantenimiento", "");
+    setValue("tipoTrabajo", "");
+    setValue("tipoSolicitud", "");
+  }
 
   const saveData = async (data) => {
     try {
@@ -69,9 +106,13 @@ export const RegisterTecnicoPage = () => {
         tipoDeSolicitud: data.tipoSolicitud,
         descripcion,
       };
-      console.log("Datos del formulario:", informe);
 
-      await crearOrdenTrabajo(informe);
+      if (id && editar) {
+        await actualizarOrdenTrabajo(id, informe);
+      } else {
+        await crearOrdenTrabajo(informe);
+      }
+      limpiar()
       Swal.fire({
         title: "Completado!",
         text: "Registro Exitoso",
@@ -150,7 +191,7 @@ export const RegisterTecnicoPage = () => {
                 type="text"
                 className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                 {...register("folio")}
-                value={miFolioInternoInfo || ""}
+                value={miFolioInternoInfo || unaInfo.informe.folio + 1 || "Error"}
                 disabled
               />
             </div>
