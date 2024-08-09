@@ -153,10 +153,6 @@ export const RegisterSolicitudPage = () => {
           setMyActividad_(primeraActividad.nombre || "");
 
           setSelectedActividad({ id: primeraActividad.actividadRef, nombre: primeraActividad.nombreActividadPropio })
-<<<<<<< HEAD
-          
-=======
->>>>>>> 6db65fef0be546ba13f00db44a4f5c40b22d41ad
           setActividad(primeraActividad.actividadRef || "");
           setMyActividad_(primeraActividad.nombreActividadPropio || "");
         }

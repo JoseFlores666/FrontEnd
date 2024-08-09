@@ -16,9 +16,6 @@ export const RegisterTecnicoPage = () => {
   const { id } = useParams();
   const editar = new URLSearchParams(location.search).get("editar");
 
-
-  const { id } = useParams();
-  const editar = new URLSearchParams(location.search).get("editar");
   const {
     register,
     handleSubmit,
@@ -45,29 +42,14 @@ export const RegisterTecnicoPage = () => {
   const inputRef = useRef([]);
 
   const { crearOrdenTrabajo, traerFolioInternoInforme, miFolioInternoInfo,
-<<<<<<< HEAD
-    traerHistorialOrden, historialOrden, traerUnaInfo, unaInfo } = useOrden();
-=======
     traerHistorialOrden, historialOrden, traerUnaInfo, unaInfo, actualizarMyInforme } = useOrden();
->>>>>>> 6db65fef0be546ba13f00db44a4f5c40b22d41ad
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-<<<<<<< HEAD
-        await traerHistorialOrden();
-        if (!editar) {
-          await traerFolioInternoInforme();
-        } else {
-          await traerUnaInfo(id);
-          console.log(unaInfo)
-          llenar();
-        }
-=======
         limpiar()
         await traerHistorialOrden();
         await traerFolioInternoInforme();
->>>>>>> 6db65fef0be546ba13f00db44a4f5c40b22d41ad
         setProjectsLoaded(true);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -77,22 +59,6 @@ export const RegisterTecnicoPage = () => {
     if (!projectsLoaded && !editar) {
       fetchData();
     }
-<<<<<<< HEAD
-  },  [,projectsLoaded,id, editar, traerFolioInternoInforme, traerHistorialOrden, traerUnaInfo]);
-
-
-  const llenar = async () => {
-    if (unaInfo) {
-      setFecha(unaInfo.informe.fecha ? unaInfo.informe.fecha.split("T")[0] : "");
-      setAreasoli(unaInfo.informe.Solicita ? unaInfo.informe.Solicita.areaSolicitante : "");
-      setSolicita(unaInfo.informe.Solicita ? unaInfo.informe.Solicita.nombre : "");
-      setEdificio(unaInfo.informe.Solicita ? unaInfo.informe.Solicita.edificio : "");
-      setDescripcion(unaInfo.informe.descripcion || "");
-      setValue("tipoMantenimiento", unaInfo.informe.tipoDeMantenimiento || "");
-      setValue("tipoTrabajo", unaInfo.informe.tipoDeTrabajo || "");
-      setValue("tipoSolicitud", unaInfo.informe.tipoDeSolicitud || "");
-    }
-=======
   }, [, projectsLoaded, traerFolioInternoInforme, traerHistorialOrden, miFolioInternoInfo]);
 
   useEffect(() => {
@@ -148,7 +114,6 @@ export const RegisterTecnicoPage = () => {
     setValue("tipoMantenimiento", "");
     setValue("tipoTrabajo", "");
     setValue("tipoSolicitud", "");
->>>>>>> 6db65fef0be546ba13f00db44a4f5c40b22d41ad
   }
 
   const saveData = async (data) => {
@@ -166,19 +131,6 @@ export const RegisterTecnicoPage = () => {
         descripcion,
       };
 
-<<<<<<< HEAD
-      if (id) {
-        await actualizarOrdenTrabajo(id, informe);
-      } else {
-        await crearOrdenTrabajo(informe);
-      } Fragment
-      Swal.fire({
-        title: "Completado!",
-        text: "Registro Exitoso",
-        icon: "success",
-        confirmButtonText: "Cool",
-      });
-=======
       if (id && editar) {
         const res = await actualizarMyInforme(id, informe);
         if (res && res.data?.mensaje) {
@@ -196,7 +148,6 @@ export const RegisterTecnicoPage = () => {
       }
       limpiar()
 
->>>>>>> 6db65fef0be546ba13f00db44a4f5c40b22d41ad
       navigate('/tecnico/orden');
     } catch (error) {
       console.error("Error submitting form: ", error);
@@ -269,10 +220,6 @@ export const RegisterTecnicoPage = () => {
                 type="text"
                 className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                 {...register("folio")}
-<<<<<<< HEAD
-                value={miFolioInternoInfo || unaInfo.informe.folio}
-=======
->>>>>>> 6db65fef0be546ba13f00db44a4f5c40b22d41ad
                 disabled
               />
             </div>
@@ -424,12 +371,6 @@ export const RegisterTecnicoPage = () => {
             }}
           />
           <input name="descripcion" id="descripcion" type="hidden" value={descripcion} />
-<<<<<<< HEAD
-          {errors.tipoMantenimiento || errors.tipoTrabajo || errors.tipoSolicitud ? (
-            <div className="text-red-500">Por favor, complete todos los campos requeridos.</div>
-          ) : null}
-=======
->>>>>>> 6db65fef0be546ba13f00db44a4f5c40b22d41ad
           <div className="flex items-center justify-center">
             <button
               type="submit"

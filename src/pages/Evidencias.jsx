@@ -12,23 +12,11 @@ export const Evidencias = () => {
 
   useEffect(() => {
     const iniciarDatos = async () => {
-<<<<<<< HEAD
-      try {
-        await traerUnaInfo(id);
-        setSolicitudInfo(unaInfo);
-        await traerImagenInfo(id);
-        console.log(unaInfo)
-        setDatosCargados(true);
-      } catch (error) {
-        console.error("Error al cargar los datos", error);
-      }
-=======
       await traerUnaInfo(id);
       setSolicitudInfo(unaInfo);
       await traerImagenInfo(id);
       setDatosCargados(true);
       console.log('Descripcion:', unaInfo?.informe?.descripcion);
->>>>>>> 6db65fef0be546ba13f00db44a4f5c40b22d41ad
     };
     if (!cargarDatos) {
       iniciarDatos();
@@ -61,30 +49,10 @@ export const Evidencias = () => {
         const formData = new FormData();
         formData.append('numero_de_imagenes', imagenInfo.length);
 
-<<<<<<< HEAD
-      for (let i = 0; i < imagenInfo.length; i++) {
-        const imagen = imagenInfo[i];
-        const blob = await obtenerBlobDesdeUrl(imagen.secure_url);
-        formData.append('imagenes[]', blob, `imagen${i + 1}.jpg`);
-      }
-
-  
-      if (solicitudInfo && solicitudInfo.informe?.folio) {
-        formData.append('folio',solicitudInfo.informe?.folio);
-        console.log('Folio enviado:', solicitudInfo.informe?.folio);
-      } else {
-        console.error('Folio no disponible');
-      }
-
-      await axios.post('http://localhost/PlantillasWordyPdf/DescargarEvidencias.php', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-=======
         for (let i = 0; i < imagenInfo.length; i++) {
             const imagen = imagenInfo[i];
             const blob = await obtenerBlobDesdeUrl(imagen.secure_url);
             formData.append('imagenes[]', blob, `imagen${i + 1}.jpg`);
->>>>>>> 6db65fef0be546ba13f00db44a4f5c40b22d41ad
         }
 
         if (solicitudInfo && solicitudInfo.informe?.folio) {

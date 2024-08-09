@@ -12,9 +12,6 @@ const itemSchema = z.object({
 });
 
 export const formSchema = z.object({
-<<<<<<< HEAD
-=======
   
->>>>>>> 6db65fef0be546ba13f00db44a4f5c40b22d41ad
   items: z.array(itemSchema).min(1, { message: "Debe haber al menos un item" }),
 });
