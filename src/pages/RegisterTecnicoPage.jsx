@@ -42,29 +42,14 @@ export const RegisterTecnicoPage = () => {
   const inputRef = useRef([]);
 
   const { crearOrdenTrabajo, traerFolioInternoInforme, miFolioInternoInfo,
-<<<<<<< HEAD
-    traerHistorialOrden, historialOrden, traerUnaInfo, unaInfo, } = useOrden();
-=======
     traerHistorialOrden, historialOrden, traerUnaInfo, unaInfo, actualizarMyInforme } = useOrden();
->>>>>>> f61e376d83023e0c9d12df59a10976c2ffd15296
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-<<<<<<< HEAD
-        await traerHistorialOrden();
-        if (editar && id) {
-          console.log(id)
-          await traerUnaInfo(id);
-          llenar();
-        } else {
-          await traerFolioInternoInforme();
-        }
-=======
         limpiar()
         await traerHistorialOrden();
         await traerFolioInternoInforme();
->>>>>>> f61e376d83023e0c9d12df59a10976c2ffd15296
         setProjectsLoaded(true);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -74,14 +59,6 @@ export const RegisterTecnicoPage = () => {
     if (!projectsLoaded && !editar) {
       fetchData();
     }
-<<<<<<< HEAD
-  }, [, projectsLoaded, id, editar, traerFolioInternoInforme, traerHistorialOrden, traerUnaInfo]);
-
-  const llenar = async () => {
-    if (unaInfo)
-      console.log(unaInfo);
-    setValue("folio", unaInfo.informe.folio || "");
-=======
   }, [, projectsLoaded, traerFolioInternoInforme, traerHistorialOrden, miFolioInternoInfo]);
 
   useEffect(() => {
@@ -116,7 +93,6 @@ export const RegisterTecnicoPage = () => {
   const llenar = async () => {
 
     setValue("folio", unaInfo?.informe?.folio || "");
->>>>>>> f61e376d83023e0c9d12df59a10976c2ffd15296
     setFecha(unaInfo.informe.fecha ? unaInfo.informe.fecha.split("T")[0] : "");
     setAreasoli(unaInfo.informe.Solicita ? unaInfo.informe.Solicita.areaSolicitante : "");
     setSolicita(unaInfo.informe.Solicita ? unaInfo.informe.Solicita.nombre : "");
@@ -156,19 +132,6 @@ export const RegisterTecnicoPage = () => {
       };
 
       if (id && editar) {
-<<<<<<< HEAD
-        await actualizarOrdenTrabajo(id, informe);
-      } else {
-        await crearOrdenTrabajo(informe);
-      }
-      limpiar()
-      Swal.fire({
-        title: "Completado!",
-        text: "Registro Exitoso",
-        icon: "success",
-        confirmButtonText: "Cool",
-      });
-=======
         const res = await actualizarMyInforme(id, informe);
         if (res && res.data?.mensaje) {
           Swal.fire("Datos actualizados", res.data?.mensaje, "success");
@@ -185,7 +148,6 @@ export const RegisterTecnicoPage = () => {
       }
       limpiar()
 
->>>>>>> f61e376d83023e0c9d12df59a10976c2ffd15296
       navigate('/tecnico/orden');
     } catch (error) {
       console.error("Error submitting form: ", error);
@@ -258,10 +220,6 @@ export const RegisterTecnicoPage = () => {
                 type="text"
                 className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                 {...register("folio")}
-<<<<<<< HEAD
-                value={miFolioInternoInfo || unaInfo.informe.folio + 1 || "Error"}
-=======
->>>>>>> f61e376d83023e0c9d12df59a10976c2ffd15296
                 disabled
               />
             </div>
