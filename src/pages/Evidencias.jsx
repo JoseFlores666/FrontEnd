@@ -12,6 +12,7 @@ export const Evidencias = () => {
 
   useEffect(() => {
     const iniciarDatos = async () => {
+<<<<<<< HEAD
       try {
         await traerUnaInfo(id);
         setSolicitudInfo(unaInfo);
@@ -21,6 +22,13 @@ export const Evidencias = () => {
       } catch (error) {
         console.error("Error al cargar los datos", error);
       }
+=======
+      await traerUnaInfo(id);
+      setSolicitudInfo(unaInfo);
+      await traerImagenInfo(id);
+      setDatosCargados(true);
+      console.log('Descripcion:', unaInfo?.informe?.descripcion);
+>>>>>>> 6db65fef0be546ba13f00db44a4f5c40b22d41ad
     };
     if (!cargarDatos) {
       iniciarDatos();
@@ -45,14 +53,15 @@ export const Evidencias = () => {
 
   const enviarImagenes = async () => {
     if (imagenInfo.length === 0) {
-      console.log('No hay imágenes para enviar');
-      return;
+        console.log('No hay imágenes para enviar');
+        return;
     }
 
     try {
-      const formData = new FormData();
-      formData.append('numero_de_imagenes', imagenInfo.length);
+        const formData = new FormData();
+        formData.append('numero_de_imagenes', imagenInfo.length);
 
+<<<<<<< HEAD
       for (let i = 0; i < imagenInfo.length; i++) {
         const imagen = imagenInfo[i];
         const blob = await obtenerBlobDesdeUrl(imagen.secure_url);
@@ -70,37 +79,59 @@ export const Evidencias = () => {
       await axios.post('http://localhost/PlantillasWordyPdf/DescargarEvidencias.php', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
+=======
+        for (let i = 0; i < imagenInfo.length; i++) {
+            const imagen = imagenInfo[i];
+            const blob = await obtenerBlobDesdeUrl(imagen.secure_url);
+            formData.append('imagenes[]', blob, `imagen${i + 1}.jpg`);
+>>>>>>> 6db65fef0be546ba13f00db44a4f5c40b22d41ad
         }
-      }).then(response => {
-        console.log('Imágenes enviadas correctamente', response.data);
 
-        axios.post('http://localhost/PlantillasWordyPdf/GuardarFolio.php', {
-          folio: solicitudInfo.folio
-        }, {
-          headers: {
-            'Content-Type': 'application/json'
-          }
+        if (solicitudInfo && solicitudInfo.informe?.folio) {
+            formData.append('folio', solicitudInfo.informe.folio);
+            console.log('Folio enviado:', solicitudInfo.informe.folio);
+        }
+
+        if (solicitudInfo && solicitudInfo.informe?.descripcion) {
+            formData.append('descripcion', solicitudInfo.informe.descripcion);
+            console.log('Descripción enviada:', solicitudInfo.informe.descripcion);
+        }
+
+        await axios.post('http://localhost/PlantillasWordyPdf/DescargarEvidencias.php', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
         }).then(response => {
-          console.log(response.data.message);
+            console.log('Imágenes enviadas correctamente', response.data);
+
+            axios.post('http://localhost/PlantillasWordyPdf/GuardarFolio.php', {
+                folio: solicitudInfo.informe.folio,
+                descripcion: solicitudInfo.informe.descripcion
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                console.log(response.data.message);
+            }).catch(error => {
+                console.error('Error al guardar el folio y la descripción', error);
+            });
+
+            const save_as = '';
+            const downloadUrl = `http://localhost/PlantillasWordyPdf/DescargarEvidencias.php?save_as=${save_as}`;
+            window.location.href = downloadUrl;
+
+            setTimeout(() => {
+                eliminarImagenes();
+            }, 3000); // 3000 milisegundos = 3 segundos
+
         }).catch(error => {
-          console.error('Error al guardar el folio', error);
+            console.error('Error al enviar las imágenes', error);
         });
-
-        const save_as = '';
-        const downloadUrl = `http://localhost/PlantillasWordyPdf/DescargarEvidencias.php?save_as=${save_as}`;
-        window.location.href = downloadUrl;
-
-        setTimeout(() => {
-          eliminarImagenes();
-        }, 3000); // 3000 milisegundos = 3 segundos
-
-      }).catch(error => {
-        console.error('Error al enviar las imágenes', error);
-      });
     } catch (error) {
-      console.error('Error al enviar las imágenes', error);
+        console.error('Error al enviar las imágenes', error);
     }
-  };
+};
 
   const eliminarImagenes = async () => {
     try {
@@ -118,11 +149,12 @@ export const Evidencias = () => {
           <h1 className="text-2xl font-bold mb-4">EVIDENCIAS</h1>
           <table className="w-full caption-bottom text-sm border border-t border-gray-400 bg-white rounded-b-lg mb-6">
             <thead className="[&_tr]:border border-gray-400">
-              <tr className="border transition-colors hover:bg-gray-100 border-b border-gray-400 hover:bg-muted/50 data-[state=selected]:bg-muted">
-                <th colSpan="2" className="h-12 text-center px-4 hover:bg-gray-100 border-b border-gray-400 align-middle font-medium text-black">
-                  Solicitud: {solicitudInfo ? solicitudInfo.informe?.folio : 'Cargando...'}
-                </th>
-              </tr>
+                <tr className="border transition-colors hover:bg-gray-100 border-b border-gray-400 hover:bg-muted/50 data-[state=selected]:bg-muted">
+                  <th colSpan="2" className="h-12 text-center px-4 hover:bg-gray-100 border-b border-gray-400 align-middle font-medium text-black">
+                    Solicitud: {solicitudInfo ? solicitudInfo.informe?.folio : 'Cargando...'}<br />
+                    Descripción:<br /> {solicitudInfo ? solicitudInfo.informe?.descripcion:'Cargando...'}
+                  </th>
+                </tr>
             </thead>
             <tbody className="[&_tr:last-child]:border-0 border-b border-gray-400">
               {imagenesPares.length > 0 ? (

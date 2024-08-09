@@ -13,6 +13,9 @@ import { Fragment } from "react";
 
 export const RegisterTecnicoPage = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const editar = new URLSearchParams(location.search).get("editar");
+
 
   const { id } = useParams();
   const editar = new URLSearchParams(location.search).get("editar");
@@ -37,15 +40,21 @@ export const RegisterTecnicoPage = () => {
   const [descripcion, setDescripcion] = useState("");
   const [recentSuggestions, setRecentSuggestions] = useState([]);
   const [projectsLoaded, setProjectsLoaded] = useState(false);
+  const [cargandoInforme, setCargandoInforme] = useState(editar);
 
   const inputRef = useRef([]);
 
   const { crearOrdenTrabajo, traerFolioInternoInforme, miFolioInternoInfo,
+<<<<<<< HEAD
     traerHistorialOrden, historialOrden, traerUnaInfo, unaInfo } = useOrden();
+=======
+    traerHistorialOrden, historialOrden, traerUnaInfo, unaInfo, actualizarMyInforme } = useOrden();
+>>>>>>> 6db65fef0be546ba13f00db44a4f5c40b22d41ad
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+<<<<<<< HEAD
         await traerHistorialOrden();
         if (!editar) {
           await traerFolioInternoInforme();
@@ -54,15 +63,21 @@ export const RegisterTecnicoPage = () => {
           console.log(unaInfo)
           llenar();
         }
+=======
+        limpiar()
+        await traerHistorialOrden();
+        await traerFolioInternoInforme();
+>>>>>>> 6db65fef0be546ba13f00db44a4f5c40b22d41ad
         setProjectsLoaded(true);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
 
-    if (!projectsLoaded) {
+    if (!projectsLoaded && !editar) {
       fetchData();
     }
+<<<<<<< HEAD
   },  [,projectsLoaded,id, editar, traerFolioInternoInforme, traerHistorialOrden, traerUnaInfo]);
 
 
@@ -77,6 +92,63 @@ export const RegisterTecnicoPage = () => {
       setValue("tipoTrabajo", unaInfo.informe.tipoDeTrabajo || "");
       setValue("tipoSolicitud", unaInfo.informe.tipoDeSolicitud || "");
     }
+=======
+  }, [, projectsLoaded, traerFolioInternoInforme, traerHistorialOrden, miFolioInternoInfo]);
+
+  useEffect(() => {
+    const traerInfo = async () => {
+      try {
+        console.log("Fetching data for id:", id);
+        await traerUnaInfo(id);
+        if (unaInfo && Object.keys(unaInfo).length > 0) {
+          setCargandoInforme(false);
+          llenar();
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    if (id && cargandoInforme) {
+      traerInfo();
+    }
+  }, [id, cargandoInforme, editar, traerUnaInfo, unaInfo]);
+
+  if (miFolioInternoInfo && !editar) {
+    setValue("folio", miFolioInternoInfo);
+  }
+
+  useEffect(() => {
+    if (unaInfo && Object.keys(unaInfo).length > 0) {
+      llenar();
+    }
+  }, [unaInfo]);
+
+  const llenar = async () => {
+
+    setValue("folio", unaInfo?.informe?.folio || "");
+    setFecha(unaInfo.informe.fecha ? unaInfo.informe.fecha.split("T")[0] : "");
+    setAreasoli(unaInfo.informe.Solicita ? unaInfo.informe.Solicita.areaSolicitante : "");
+    setSolicita(unaInfo.informe.Solicita ? unaInfo.informe.Solicita.nombre : "");
+    setEdificio(unaInfo.informe.Solicita ? unaInfo.informe.Solicita.edificio : "");
+    setDescripcion(unaInfo.informe.descripcion || "");
+    setValue("tipoMantenimiento", unaInfo.informe.tipoDeMantenimiento || "");
+    setValue("tipoTrabajo", unaInfo.informe.tipoDeTrabajo || "");
+    setValue("tipoSolicitud", unaInfo.informe.tipoDeSolicitud || "");
+
+  }
+  const limpiar = async () => {
+
+    setValue("folio", "");
+    setFecha("");
+    setAreasoli("");
+    setSolicita("");
+    setEdificio("");
+    setDescripcion("");
+    setValue("tipoMantenimiento", "");
+    setValue("tipoTrabajo", "");
+    setValue("tipoSolicitud", "");
+>>>>>>> 6db65fef0be546ba13f00db44a4f5c40b22d41ad
   }
 
   const saveData = async (data) => {
@@ -94,6 +166,7 @@ export const RegisterTecnicoPage = () => {
         descripcion,
       };
 
+<<<<<<< HEAD
       if (id) {
         await actualizarOrdenTrabajo(id, informe);
       } else {
@@ -105,6 +178,25 @@ export const RegisterTecnicoPage = () => {
         icon: "success",
         confirmButtonText: "Cool",
       });
+=======
+      if (id && editar) {
+        const res = await actualizarMyInforme(id, informe);
+        if (res && res.data?.mensaje) {
+          Swal.fire("Datos actualizados", res.data?.mensaje, "success");
+        } else {
+          Swal.fire("Error", res?.error || "Error desconocido", "error");
+        }
+      } else {
+        const res = await crearOrdenTrabajo(informe);
+        if (res && res.data?.mensaje) {
+          Swal.fire("Orden creada", res.data?.mensaje, "success");
+        } else {
+          Swal.fire("Error", res?.error || "Error desconocido", "error");
+        }
+      }
+      limpiar()
+
+>>>>>>> 6db65fef0be546ba13f00db44a4f5c40b22d41ad
       navigate('/tecnico/orden');
     } catch (error) {
       console.error("Error submitting form: ", error);
@@ -177,7 +269,10 @@ export const RegisterTecnicoPage = () => {
                 type="text"
                 className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                 {...register("folio")}
+<<<<<<< HEAD
                 value={miFolioInternoInfo || unaInfo.informe.folio}
+=======
+>>>>>>> 6db65fef0be546ba13f00db44a4f5c40b22d41ad
                 disabled
               />
             </div>
@@ -277,6 +372,8 @@ export const RegisterTecnicoPage = () => {
                 <option value="Mobiliario">Mobiliario</option>
                 <option value="Instalaciones">Instalaciones</option>
               </select>
+              {errors.tipoMantenimiento ? (
+                <div className="text-red-500">El tipo de mantenimiento es requerido.</div>) : null}
             </div>
             <div>
               <Label>Tipo de Trabajo:</Label>
@@ -290,6 +387,8 @@ export const RegisterTecnicoPage = () => {
                 <option value="Preventivo">Preventivo</option>
                 <option value="Correctivo">Correctivo</option>
               </select>
+              {errors.tipoTrabajo ? (
+                <div className="text-red-500">El tipo de trabajo es requerido.</div>) : null}
             </div>
             <div>
               <Label>Tipo de Solicitud:</Label>
@@ -303,6 +402,8 @@ export const RegisterTecnicoPage = () => {
                 <option value="Normal">Normal</option>
                 <option value="Urgente">Urgente</option>
               </select>
+              {errors.tipoSolicitud ? (
+                <div className="text-red-500">El tipo de mantenimiento es requerido.</div>) : null}
             </div>
           </GridContainer>
           <Label>Descripción (servicio requerido)</Label>
@@ -323,9 +424,12 @@ export const RegisterTecnicoPage = () => {
             }}
           />
           <input name="descripcion" id="descripcion" type="hidden" value={descripcion} />
+<<<<<<< HEAD
           {errors.tipoMantenimiento || errors.tipoTrabajo || errors.tipoSolicitud ? (
             <div className="text-red-500">Por favor, complete todos los campos requeridos.</div>
           ) : null}
+=======
+>>>>>>> 6db65fef0be546ba13f00db44a4f5c40b22d41ad
           <div className="flex items-center justify-center">
             <button
               type="submit"

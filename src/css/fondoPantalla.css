@@ -115,5 +115,14 @@ body {
   }
   100% {
     transform: translateY(0);
+<<<<<<< HEAD
   }
 }
+=======
+    -webkit-transform: translateY(0);
+    -moz-transform: translateY(0);
+    -ms-transform: translateY(0);
+    -o-transform: translateY(0);
+}
+}
+>>>>>>> 6db65fef0be546ba13f00db44a4f5c40b22d41ad

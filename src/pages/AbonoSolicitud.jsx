@@ -94,7 +94,10 @@ export const AbonoSolicitud = () => {
         try {
             data.id = id;
             data.user = user;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6db65fef0be546ba13f00db44a4f5c40b22d41ad
             const { NumEntregas, ...restData } = data;
             delete restData[""];
 
