@@ -17,6 +17,9 @@ export const getUnaInfome = async (id) => axios.get(`/informe/${id}`);
 export const getImagenInfome = async (id) =>
   axios.get(`/informe/traerImagenes/${id}`);
 
+export const actualizarInformes = async (id, informe) =>
+  axios.put(`/informe/actualizarInformes/${id}`, informe );
+
 export const evaluacionDelInfome = async (id, idTecnico) =>
   axios.put(`/informe/AsignarTecnico/${id}`, { idTecnico });
 

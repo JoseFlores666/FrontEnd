@@ -37,15 +37,21 @@ export const RegisterTecnicoPage = () => {
   const [descripcion, setDescripcion] = useState("");
   const [recentSuggestions, setRecentSuggestions] = useState([]);
   const [projectsLoaded, setProjectsLoaded] = useState(false);
+  const [cargandoInforme, setCargandoInforme] = useState(editar);
 
   const inputRef = useRef([]);
 
   const { crearOrdenTrabajo, traerFolioInternoInforme, miFolioInternoInfo,
+<<<<<<< HEAD
     traerHistorialOrden, historialOrden, traerUnaInfo, unaInfo, } = useOrden();
+=======
+    traerHistorialOrden, historialOrden, traerUnaInfo, unaInfo, actualizarMyInforme } = useOrden();
+>>>>>>> f61e376d83023e0c9d12df59a10976c2ffd15296
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+<<<<<<< HEAD
         await traerHistorialOrden();
         if (editar && id) {
           console.log(id)
@@ -54,21 +60,63 @@ export const RegisterTecnicoPage = () => {
         } else {
           await traerFolioInternoInforme();
         }
+=======
+        limpiar()
+        await traerHistorialOrden();
+        await traerFolioInternoInforme();
+>>>>>>> f61e376d83023e0c9d12df59a10976c2ffd15296
         setProjectsLoaded(true);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
 
-    if (!projectsLoaded) {
+    if (!projectsLoaded && !editar) {
       fetchData();
     }
+<<<<<<< HEAD
   }, [, projectsLoaded, id, editar, traerFolioInternoInforme, traerHistorialOrden, traerUnaInfo]);
 
   const llenar = async () => {
     if (unaInfo)
       console.log(unaInfo);
     setValue("folio", unaInfo.informe.folio || "");
+=======
+  }, [, projectsLoaded, traerFolioInternoInforme, traerHistorialOrden, miFolioInternoInfo]);
+
+  useEffect(() => {
+    const traerInfo = async () => {
+      try {
+        console.log("Fetching data for id:", id);
+        await traerUnaInfo(id);
+        if (unaInfo && Object.keys(unaInfo).length > 0) {
+          setCargandoInforme(false);
+          llenar();
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    if (id && cargandoInforme) {
+      traerInfo();
+    }
+  }, [id, cargandoInforme, editar, traerUnaInfo, unaInfo]);
+
+  if (miFolioInternoInfo && !editar) {
+    setValue("folio", miFolioInternoInfo);
+  }
+
+  useEffect(() => {
+    if (unaInfo && Object.keys(unaInfo).length > 0) {
+      llenar();
+    }
+  }, [unaInfo]);
+
+  const llenar = async () => {
+
+    setValue("folio", unaInfo?.informe?.folio || "");
+>>>>>>> f61e376d83023e0c9d12df59a10976c2ffd15296
     setFecha(unaInfo.informe.fecha ? unaInfo.informe.fecha.split("T")[0] : "");
     setAreasoli(unaInfo.informe.Solicita ? unaInfo.informe.Solicita.areaSolicitante : "");
     setSolicita(unaInfo.informe.Solicita ? unaInfo.informe.Solicita.nombre : "");
@@ -108,6 +156,7 @@ export const RegisterTecnicoPage = () => {
       };
 
       if (id && editar) {
+<<<<<<< HEAD
         await actualizarOrdenTrabajo(id, informe);
       } else {
         await crearOrdenTrabajo(informe);
@@ -119,6 +168,24 @@ export const RegisterTecnicoPage = () => {
         icon: "success",
         confirmButtonText: "Cool",
       });
+=======
+        const res = await actualizarMyInforme(id, informe);
+        if (res && res.data?.mensaje) {
+          Swal.fire("Datos actualizados", res.data?.mensaje, "success");
+        } else {
+          Swal.fire("Error", res?.error || "Error desconocido", "error");
+        }
+      } else {
+        const res = await crearOrdenTrabajo(informe);
+        if (res && res.data?.mensaje) {
+          Swal.fire("Orden creada", res.data?.mensaje, "success");
+        } else {
+          Swal.fire("Error", res?.error || "Error desconocido", "error");
+        }
+      }
+      limpiar()
+
+>>>>>>> f61e376d83023e0c9d12df59a10976c2ffd15296
       navigate('/tecnico/orden');
     } catch (error) {
       console.error("Error submitting form: ", error);
@@ -191,7 +258,10 @@ export const RegisterTecnicoPage = () => {
                 type="text"
                 className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                 {...register("folio")}
+<<<<<<< HEAD
                 value={miFolioInternoInfo || unaInfo.informe.folio + 1 || "Error"}
+=======
+>>>>>>> f61e376d83023e0c9d12df59a10976c2ffd15296
                 disabled
               />
             </div>
