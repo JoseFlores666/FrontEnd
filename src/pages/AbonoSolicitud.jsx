@@ -153,7 +153,7 @@ export const AbonoSolicitud = () => {
         <div className="mx-auto max-w-6xl p-4 text-black">
             <form ref={formRef} onSubmit={handleSubmit(onSubmit)} className="slide-down">
                 <div className="bg-white p-6 rounded-md shadow-md mb-4">
-                    <Title>Área de Entregas </Title>
+                    <Title showBackButton={true}>Área de Entregas </Title>
                     <GridContainer>
                         <div>
                             <Label>No. de folio:</Label>

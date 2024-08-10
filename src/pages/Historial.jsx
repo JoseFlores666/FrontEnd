@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {  faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useSoli } from '../context/SolicitudContext';
 import { useAuth } from '../context/authContext';
 import { useParams } from "react-router-dom";
-import { Label, Td, Th } from "../components/ui";
+import { BackButton, Label, Td, Th } from "../components/ui";
 
 export function Historial() {
     const { id } = useParams();
@@ -99,37 +99,80 @@ export function Historial() {
 
     return (
         <div className="overflow-x-auto p-4">
-            <div className="mb-8 flex justify-between items-center">
-                <div className="relative">
-                    <div className="relative">
-                        <div className="absolute inset-y-0 left-0 flex items-center ps-3 pointer-events-none">
-                            <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd"></path>
-                            </svg>
-                        </div>
-                        <input
-                            type="text"
-                            id="table-search"
-                            className="block p-2 ps-10 text-sm text-black border border-black rounded-lg w-80 bg-white focus:ring-blue-500 focus:border-blue-500"
-                            placeholder="Buscar..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                        {searchTerm && (
-                            <button
-                                className="absolute inset-y-0 right-0 flex items-center pr-3"
-                                onClick={clearSearch}
-                            >
-                                <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fillRule="evenodd" d="M10 8.586l3.707-3.707a1 1 0 011.414 1.414L11.414 10l3.707 3.707a1 1 0 01-1.414 1.414L10 11.414l-3.707 3.707a1 1 0 01-1.414-1.414L8.586 10 4.879 6.293a1 1 0 011.414-1.414L10 8.586z" clipRule="evenodd"></path>
-                                </svg>
-                            </button>
-                        )}
-                    </div>
+            <div className="mb-8 flex items-center">
+                <div className="flex-1">
+                    <BackButton />
                 </div>
-                <h1 className="text-2xl text-center font-bold">HISTORIAL DE MOVIMIENTOS</h1>
+                <div className="flex-1 text-center">
+                    <h1 className="text-2xl font-bold">HISTORIAL DE MOVIMIENTOS</h1>
+                </div>
+                <div className="flex-1"></div>
+            </div>
+            <div className="grid grid-cols-6 md:grid-cols-6 mb-2">
+                <div className="relative">
+                    <div className="absolute inset-y-0 left-0 flex items-center ps-3 pointer-events-none">
+                        <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <input
+                        type="text"
+                        id="table-search"
+                        className="block p-2 ps-10 text-sm text-black border border-black rounded-lg w-64 bg-white focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Buscar..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    {searchTerm && (
+                        <button
+                            className="absolute inset-y-0 right-0 flex items-center pr-3"
+                            onClick={clearSearch}
+                        >
+                            <svg className="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M10 8.586l3.707-3.707a1 1 0 011.414 1.414L11.414 10l3.707 3.707a1 1 0 01-1.414 1.414L10 11.414l-3.707 3.707a1 1 0 01-1.414-1.414L8.586 10 4.879 6.293a1 1 0 011.414-1.414L10 8.586z" clipRule="evenodd"></path>
+                            </svg>
+                        </button>
+                    )}
+                </div>
+                <div className="flex items-center space-x-1 justify-center">
+                    <Label>Año:</Label>
+                    <input
+                        type="text"
+                        id="filtro-ano"
+                        className="p-1 border w-28 border-black rounded-lg text-black"
+                        value={filtroAno}
+                        onChange={(e) => setFiltroAno(e.target.value)}
+                        placeholder="YYYY"
+                    />
+                </div>
+                <div className="flex items-center space-x-1 justify-center">
+                    <Label>Mes:</Label>
+                    <input
+                        type="text"
+                        id="filtro-mes"
+                        className="p-1 border w-28 border-black rounded-lg text-black"
+                        value={filtroMes}
+                        onChange={(e) => setFiltroMes(e.target.value)}
+                        placeholder="MM"
+                    />
+                </div>
+
+                <div className="flex items-center space-x-1 justify-center">
+                    <Label>Día:</Label>
+                    <input
+                        type="text"
+                        id="filtro-dia"
+                        className="p-1 border w-28 border-black rounded-lg text-black"
+                        value={filtroDia}
+                        onChange={(e) => setFiltroDia(e.target.value)}
+                        placeholder="DD"
+                    />
+                </div>
+                <div className="flex items-center justify-center">
+                    <button onClick={abrirModalFiltro} className="px-4 py-2 bg-blue-500 text-white rounded-lg">Filtrar Movimientos</button>
+                </div>
                 <div>
-                    <Label htmlFor="entries-per-page" className="mr-2 text-white">Entradas por página:</Label>
+                    <Label htmlFor="entries-per-page" className=" text-white">Entradas por página:</Label>
                     <select
                         id="entries-per-page"
                         className="p-1 border border-black rounded-lg text-black"
@@ -142,45 +185,6 @@ export function Historial() {
                         <option value={50}>50</option>
                     </select>
                 </div>
-            </div>
-            <div className="grid grid-cols-4 md:grid-cols-4 mb-2">
-                <div className="flex items-center space-x-1 justify-center">
-                    <Label>Año:</Label>
-                    <input
-                        type="text"
-                        id="filtro-ano"
-                        className="p-1 border border-black rounded-lg text-black"
-                        value={filtroAno}
-                        onChange={(e) => setFiltroAno(e.target.value)}
-                        placeholder="YYYY"
-                    />
-                </div>
-                <div className="flex items-center space-x-1 justify-center">
-                    <Label>Mes:</Label>
-                    <input
-                        type="text"
-                        id="filtro-mes"
-                        className="p-1 border border-black rounded-lg text-black"
-                        value={filtroMes}
-                        onChange={(e) => setFiltroMes(e.target.value)}
-                        placeholder="MM"
-                    />
-                </div>
-                <div className="flex items-center space-x-1 justify-center">
-                    <Label>Día:</Label>
-                    <input
-                        type="text"
-                        id="filtro-dia"
-                        className="p-1 border border-black rounded-lg text-black"
-                        value={filtroDia}
-                        onChange={(e) => setFiltroDia(e.target.value)}
-                        placeholder="DD"
-                    />
-                </div>
-                <div className="flex items-center justify-center">
-                    <button onClick={abrirModalFiltro} className="px-4 py-2 bg-blue-500 text-white rounded-lg">Filtrar Movimientos</button>
-                </div>
-
             </div>
             <table className="w-full min-w-full divide-y divide-white-200 text-sm text-black rounded-lg overflow-hidden">
                 <thead className="bg-black text-white">

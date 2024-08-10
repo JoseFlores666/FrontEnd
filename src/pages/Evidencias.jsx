@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useOrden } from '../context/ordenDeTrabajoContext';
+import { Title } from '../components/ui';
 
 export const Evidencias = () => {
   const { id } = useParams();
@@ -114,7 +115,7 @@ export const Evidencias = () => {
     <div className="mx-auto max-w-5xl p-4 text-center text-black">
       <form onSubmit={(e) => { e.preventDefault(); enviarImagenes(); }} encType='multipart/form-data'>
         <div className="bg-white p-6 rounded-md shadow-md">
-          <h1 className="text-2xl font-bold mb-4">EVIDENCIAS</h1>
+<Title showBackButton={true}>Evidencias</Title>
           <table className="w-full caption-bottom text-sm border border-t border-gray-400 bg-white rounded-b-lg mb-6">
             <thead className="[&_tr]:border border-gray-400">
                 <tr className="border transition-colors hover:bg-gray-100 border-b border-gray-400 hover:bg-muted/50 data-[state=selected]:bg-muted">

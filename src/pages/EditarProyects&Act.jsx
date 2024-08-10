@@ -348,8 +348,7 @@ export const ProjectAndActManager = () => {
     return (
         <div className="mx-auto max-w-7xl p-4 text-black">
             <div className="bg-white p-8 rounded-lg shadow-lg">
-                <Title >Gestión De Proyectos y Actividades</Title>
-                {/* Tabla de Proyectos con Actividades */}
+                <Title showBackButton={true}>Gestión De Proyectos y Actividades</Title>
                 <div>
                     <h2 className="text-xl font-bold mb-4">Ver Proyectos con Actividades</h2>
                     <table className="w-full caption-bottom text-sm border">

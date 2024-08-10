@@ -72,7 +72,7 @@ export const Firmas = () => {
   return (
     <div className="flex items-center justify-center mx-auto max-w-7xl p-4 text-black" style={{ height: '90vh' }}>
       <div className="bg-white p-6 rounded-lg shadow-md border border-black slide-down">
-        <Title>Editar Firmas</Title>
+        <Title showBackButton={true}>Editar Firmas</Title>
         <div>
           <form onSubmit={handleSubmit(guardarDatos)} >
             <div className="grid grid-cols-2 md:grid-cols-2 gap-6 mb-8 text-center">

@@ -30,7 +30,7 @@ export const VerInforme = () => {
         <div className="mx-auto max-w-6xl p-4 text-black">
             {datosCargados && unaInfo ? (
                 <div className="bg-white p-6 rounded-md shadow-md">
-                    <Title>Informe Completo de Mantenimiento</Title>
+                    <Title showBackButton={true}>Informe Completo de Mantenimiento</Title>
                     <GridContainer>
                         <div className="bg-slate-200 rounded p-2">
                             <Label>Fecha:</Label>

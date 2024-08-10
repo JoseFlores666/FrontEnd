@@ -82,57 +82,11 @@ export default function AsignarTecnico() {
     }
 
     return (
-        <div className="flex items-center justify-center mx-auto max-w-7xl p-4 text-black" style={{ height: '90vh' }}>
+        <div className="flex items-center justify-center mx-auto max-w-7xl p-4 text-black" >
             <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-6xl">
                 <div className="bg-white p-6 rounded-md shadow-md">
-                    <Title>Asignar tecnico</Title>
-                    {/*    <GridContainer>
-                        <div className="bg-slate-200 rounded p-2">
-                            <Label>Fecha:</Label>
-                            <p className="w-full rounded-md">{unaInfo.informe?.fecha}</p>
-                        </div>
-                        <div className="bg-slate-200 rounded p-2">
-                            <Label>Solicita:</Label>
-                            <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.nombre}</p>
-                        </div>
-                        <div className="bg-slate-200 rounded p-2">
-                            <Label>Folio: </Label>
-                            <p className="w-full rounded-md">{unaInfo.informe?.folio}</p>
-                        </div>
-                    </GridContainer>
-                    <GridContainer>
-                        <div className="bg-slate-200 rounded p-2">
-                            <Label>Tipo de Solicitud:</Label>
-                            <p className="w-full rounded-md">{unaInfo.informe?.tipoDeSolicitud}</p>
-                        </div>
-                        <div className="bg-slate-200 rounded p-2">
-                            <Label>Tipo de Mantenimiento:</Label>
-                            <p className="w-full rounded-md">{unaInfo.informe?.tipoDeMantenimiento}</p>
-                        </div>
-                        <div className="bg-slate-200 rounded p-2">
-                            <Label>Tipo de Trabajo:</Label>
-                            <p className="w-full rounded-md">{unaInfo.informe?.tipoDeTrabajo}</p>
-                        </div>
-                    </GridContainer>
-                    <GridContainer>
-                        <div className="bg-slate-200 rounded p-2">
-                            <Label>Área solicitante:</Label>
-                            <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.areaSolicitante}</p>
-                        </div>
-
-                        <div className="bg-slate-200 rounded p-2">
-                            <Label>Edificio:</Label>
-                            <p className="w-full rounded-md">{unaInfo.informe?.Solicita?.edificio}</p>
-                        </div>
-                    </GridContainer>
-
-                    <div className="bg-slate-200 rounded p-2 mb-4">
-                        <Label>Descripción:</Label>
-                        <p>{unaInfo.informe?.descripcion}</p>
-                    </div> */}
+                    <Title showBackButton={true}>Asignar tecnico</Title>
                     <EncabezadoFormulario unaInfo={unaInfo} />
-
-
                     <Label>Encargado de la actividad:</Label>
                     <select
                         {...register("tecnico", { required: "Seleccionar un técnico es requerido" })}

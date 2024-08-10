@@ -9,23 +9,19 @@ import Swal from "sweetalert2";
 import { GridContainer, Label, Title } from "../components/ui";
 import imgPDF from '../img/imagenPDF.png';
 import imgWord from '../img/imagenWord.png';
-import { Fragment } from "react";
+import { ValidacionOrden } from "../schemas/ValidacionOrden";
 
 export const RegisterTecnicoPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const editar = new URLSearchParams(location.search).get("editar");
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, setValue, formState: { errors }, } = useForm();
+  const [errors2, setErrors2] = useState({});
 
   const [fecha, setFecha] = useState(() => {
-    const today = new Date();
-    return today.toISOString().split("T")[0];
+    const today = new Date().toISOString().split("T")[0]; // Formato YYYY
+    return today;
   });
 
   const [isOpen, setIsOpen] = useState(false);
@@ -38,6 +34,8 @@ export const RegisterTecnicoPage = () => {
   const [recentSuggestions, setRecentSuggestions] = useState([]);
   const [projectsLoaded, setProjectsLoaded] = useState(false);
   const [cargandoInforme, setCargandoInforme] = useState(editar);
+  const showBackButton = editar;
+  const titleText = editar ? "Actualizar Orden de trabajo" : "Orden De Trabajo De Mantenimiento A Mobiliario E Instalaciones";
 
   const inputRef = useRef([]);
 
@@ -47,7 +45,11 @@ export const RegisterTecnicoPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        limpiar()
+        await limpiar();
+
+        const today = new Date().toISOString().split("T")[0];
+        setFecha(today);
+
         await traerHistorialOrden();
         await traerFolioInternoInforme();
         setProjectsLoaded(true);
@@ -59,7 +61,8 @@ export const RegisterTecnicoPage = () => {
     if (!projectsLoaded && !editar) {
       fetchData();
     }
-  }, [, projectsLoaded, traerFolioInternoInforme, traerHistorialOrden, miFolioInternoInfo]);
+  }, [projectsLoaded, editar, traerFolioInternoInforme, traerHistorialOrden]);
+
 
   useEffect(() => {
     const traerInfo = async () => {
@@ -200,7 +203,20 @@ export const RegisterTecnicoPage = () => {
 
   const handleOpenModal = (event) => {
     event.preventDefault();
-    setIsOpen(true);
+    const fields = { fecha, areasoli, solicita, edificio, descripcion };
+    const newErrors = ValidacionOrden(fields);
+    setErrors2(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      setIsOpen(true);
+    } else {
+      Swal.fire({
+        title: "Alerta!",
+        text: "Complete todos los componentes",
+        icon: "warning",
+        confirmButtonText: "Cool",
+      });
+    }
   };
 
   const handleCloseModal = (event) => {
@@ -208,11 +224,14 @@ export const RegisterTecnicoPage = () => {
     setIsOpen(false);
   };
 
+
   return (
     <div className="mx-auto max-w-6xl p-4 text-black">
       <form onSubmit={handleSubmit(handleFormSubmit)} className="slide-down">
         <div className="bg-white p-6 rounded-md shadow-md">
-          <Title>Orden De Trabajo De Mantenimiento A Mobiliario E Instalaciones</Title>
+          <Title showBackButton={showBackButton}>
+            {titleText}
+          </Title>
           <GridContainer>
             <div>
               <Label>No. de folio Externo:</Label>
@@ -236,6 +255,7 @@ export const RegisterTecnicoPage = () => {
                 value={fecha}
                 onChange={(e) => setFecha(e.target.value)}
               />
+              {errors2.fecha && <p className="text-red-500">{errors2.fecha}</p>}
             </div>
           </GridContainer>
           <GridContainer>
@@ -260,6 +280,7 @@ export const RegisterTecnicoPage = () => {
                   className: "w-full text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
                 }}
               />
+              {errors2.areasoli && <p className="text-red-500">{errors2.areasoli}</p>}
             </div>
             <div>
               <Label>Solicita:</Label>
@@ -282,6 +303,7 @@ export const RegisterTecnicoPage = () => {
                   className: "w-full text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
                 }}
               />
+              {errors2.solicita && <p className="text-red-500">{errors2.solicita}</p>}
             </div>
             <div>
               <Label>Edificio:</Label>
@@ -304,6 +326,7 @@ export const RegisterTecnicoPage = () => {
                   className: "w-full text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
                 }}
               />
+              {errors2.edificio && <p className="text-red-500">{errors2.edificio}</p>}
             </div>
           </GridContainer>
           <GridContainer>
@@ -319,8 +342,7 @@ export const RegisterTecnicoPage = () => {
                 <option value="Mobiliario">Mobiliario</option>
                 <option value="Instalaciones">Instalaciones</option>
               </select>
-              {errors.tipoMantenimiento ? (
-                <div className="text-red-500">El tipo de mantenimiento es requerido.</div>) : null}
+              {errors2.tipoMantenimiento && <p className="text-red-500">{errors2.tipoMantenimiento}</p>}
             </div>
             <div>
               <Label>Tipo de Trabajo:</Label>
@@ -334,8 +356,7 @@ export const RegisterTecnicoPage = () => {
                 <option value="Preventivo">Preventivo</option>
                 <option value="Correctivo">Correctivo</option>
               </select>
-              {errors.tipoTrabajo ? (
-                <div className="text-red-500">El tipo de trabajo es requerido.</div>) : null}
+              {errors2.tipoTrabajo && <p className="text-red-500">{errors2.tipoTrabajo}</p>}
             </div>
             <div>
               <Label>Tipo de Solicitud:</Label>
@@ -349,8 +370,7 @@ export const RegisterTecnicoPage = () => {
                 <option value="Normal">Normal</option>
                 <option value="Urgente">Urgente</option>
               </select>
-              {errors.tipoSolicitud ? (
-                <div className="text-red-500">El tipo de mantenimiento es requerido.</div>) : null}
+              {errors2.tipoSolicitud && <p className="text-red-500">{errors2.tipoSolicitud}</p>}
             </div>
           </GridContainer>
           <Label>Descripción (servicio requerido)</Label>
@@ -367,9 +387,11 @@ export const RegisterTecnicoPage = () => {
             inputProps={{
               type: "text",
               maxLength: 500,
-              className: "w-full mb-5 resize-none text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
+              className: "w-full resize-none text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
             }}
           />
+          {errors2.descripcion && <p className="text-red-500">{errors2.descripcion}</p>}
+
           <input name="descripcion" id="descripcion" type="hidden" value={descripcion} />
           <div className="flex items-center justify-center">
             <button

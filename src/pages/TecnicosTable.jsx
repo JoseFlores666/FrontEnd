@@ -131,7 +131,7 @@ export const TecnicosTable = () => {
   return (
     <div className="container mx-auto p-4 max-w-4xl text-black">
       <form onSubmit={handleSubmit} className="bg-white shadow-lg rounded-lg px-8 pt-2 pb-8 mb-6">
-        <Title>Gestión de Personal Técnico</Title>
+        <Title showBackButton={true}>Gestión de Personal Técnico</Title>
         
         <div className="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
          

@@ -28,6 +28,9 @@ export const RegisterSolicitudPage = () => {
   const editar = new URLSearchParams(location.search).get("editar");
   const duplicar = new URLSearchParams(location.search).get("duplicar");
 
+  const showBackButton = editar || duplicar;
+  const titleText = editar ? "Actualizar Solicitud" : "Solicitud de Servicios y Bienes de Consumo Final";
+
   const [folioInterno, setFolioInterno] = useState("");
 
   const [isOpen, setIsOpen] = useState(false);
@@ -426,7 +429,9 @@ export const RegisterSolicitudPage = () => {
     <div className="mx-auto max-w-6xl p-4 text-black">
       <form onSubmit={subirDatos} className="slide-down">
         <div className="bg-white p-6 rounded-md shadow-md">
-          <Title>{editar ? "Actualizar Solicitud" : "Solicitud de Servicios y Bienes de Consumo Final"}</Title>
+          <Title showBackButton={showBackButton}>
+            {duplicar ? "Solicitud de Servicios y Bienes de Consumo Final" : titleText}
+          </Title>
           <GridContainer>
             <div>
               <Label>No. de folio:</Label>
@@ -640,7 +645,7 @@ export const RegisterSolicitudPage = () => {
             </table>
 
             <div className="p-4 bg-white border-b border-r border-l border-gray-400 rounded-b-md">
-            {errors.items && <p className="text-red-600 mt-2">{errors.items}</p>}
+              {errors.items && <p className="text-red-600 mt-2">{errors.items}</p>}
 
               <button
                 onClick={(e) => agregarItem(e)}

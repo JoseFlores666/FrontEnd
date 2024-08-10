@@ -108,7 +108,7 @@ export const FolioExterno = () => {
         <div className="flex items-center justify-center mx-auto max-w-8xl p-4 text-black" style={{ height: '90vh' }}>
             <form onSubmit={handleSubmit(onSubmit)} className="slide-down">
                 <div className="bg-white p-6 rounded-md shadow-md">
-                    <Title>Asignar Folio</Title>
+                    <Title showBackButton={true}>Asignar Folio</Title>
                     <GridContainer>
                         <div>
                             <Label>Fecha:</Label>
