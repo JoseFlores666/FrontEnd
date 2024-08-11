@@ -2,12 +2,12 @@ import React, { useRef, useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { folioExternoSchema } from '../schemas/folio.js';
+import { folioExternoSchema } from '../../schemas/folio.js';
 import Swal from "sweetalert2";
-import { useSoli } from "../context/SolicitudContext";
-import { useAuth } from "../context/authContext.jsx";
-import "../css/Animaciones.css";
-import { GridContainer, Label, Title } from "../components/ui";
+import { useSoli } from "../../context/SolicitudContext.jsx";
+import { useAuth } from "../../context/authContext.jsx";
+import "../../css/Animaciones.css";
+import { GridContainer, Label, Title } from "../../components/ui/index.js";
 
 export const FolioExterno = () => {
     const { id } = useParams();

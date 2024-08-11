@@ -2,12 +2,12 @@ import React, { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Swal from "sweetalert2";
-import { firmasSchema } from "../schemas/Firmas";
-import "../css/solicitud.css";
-import { useSoli } from "../context/SolicitudContext";
-import "../css/Animaciones.css";
-import { AutocompleteInput } from '../components/ui/AutocompleteInput'
-import { Title } from "../components/ui";
+import { firmasSchema } from "../../schemas/Firmas";
+import "../../css/solicitud.css";
+import { useSoli } from "../../context/SolicitudContext";
+import "../../css/Animaciones.css";
+import { AutocompleteInput } from '../../components/ui/AutocompleteInput'
+import { Title } from "../../components/ui";
 
 export const Firmas = () => {
   const {

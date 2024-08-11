@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { useSoli } from '../context/SolicitudContext';
-import { useAuth } from '../context/authContext';
+import { useSoli } from '../../context/SolicitudContext';
+import { useAuth } from '../../context/authContext';
 import { useParams } from "react-router-dom";
-import { BackButton, Label, Td, Th } from "../components/ui";
+import { BackButton, Label, Td, Th } from "../../components/ui";
 
 export function Historial() {
     const { id } = useParams();

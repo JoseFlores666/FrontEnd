@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import "../css/solicitud.css";
-import { GridContainer, Label, Title } from "../components/ui";
-import { useOrden } from "../context/ordenDeTrabajoContext";
+import "../../css/solicitud.css";
+import { GridContainer, Label, Title } from "../../components/ui";
+import { useOrden } from "../../context/ordenDeTrabajoContext";
 
 export const VerInforme = () => {
     const { id } = useParams();

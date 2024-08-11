@@ -1,18 +1,18 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { AutocompleteInput } from "../components/ui/AutocompleteInput";
+import { AutocompleteInput } from "../../components/ui/AutocompleteInput";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useParams, useNavigate } from "react-router-dom";
-import SubiendoImagenes from "../components/ui/SubiendoImagenes"
+import SubiendoImagenes from "../../components/ui/SubiendoImagenes"
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { formSchema } from '../schemas/RegisterTecPage2'
+import { formSchema } from '../../schemas/RegisterTecPage2'
 import { faTrashAlt, faEye, faEdit, faClone } from '@fortawesome/free-solid-svg-icons';
 import Swal from "sweetalert2";
-import "../css/solicitud.css";
-import "../css/Animaciones.css";
-import { GridContainer, Label, Title } from "../components/ui";
-import { useOrden } from "../context/ordenDeTrabajoContext";
+import "../../css/solicitud.css";
+import "../../css/Animaciones.css";
+import { GridContainer, Label, Title } from "../../components/ui";
+import { useOrden } from "../../context/ordenDeTrabajoContext";
 
 export const RegisterTecPage2 = () => {
 

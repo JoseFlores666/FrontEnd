@@ -5,8 +5,8 @@ import { Await, Link } from 'react-router-dom';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { ImFileEmpty } from "react-icons/im";
 // import TablaVistaOrden from './TablaVistaOrden';
-import { Th, Td, EstadoButton } from '../components/ui';
-import { useOrden } from '../context/ordenDeTrabajoContext';
+import { Th, Td, EstadoButton } from '../../../components/ui';
+import { useOrden } from '../../../context/ordenDeTrabajoContext';
 import Swal from 'sweetalert2';
 
 export const TecnicoPage = () => {

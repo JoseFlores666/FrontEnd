@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
 import { Link, useParams } from 'react-router-dom';
-import { asignarTecnicoSchema } from '../schemas/AsignarTecnico.js'
+import { asignarTecnicoSchema } from '../../schemas/AsignarTecnico.js'
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from "react-router-dom";
 import { ImFileEmpty } from "react-icons/im";
 import Swal from "sweetalert2";
-import { Title, Label, GridContainer } from '../components/ui';
-import { useOrden } from '../context/ordenDeTrabajoContext';
-import { EncabezadoFormulario } from '../components/ui/Encabezado.jsx';
+import { Title, Label, GridContainer } from '../../components/ui/index.js';
+import { useOrden } from '../../context/ordenDeTrabajoContext.jsx';
+import { EncabezadoFormulario } from '../../components/ui/Encabezado.jsx';
 
 export default function AsignarTecnico() {
     const navigate = useNavigate();

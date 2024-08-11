@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faKey, faEye, faEyeSlash, faEdit, faUserPlus, faRedo } from '@fortawesome/free-solid-svg-icons';
-import { useSoli } from "../context/SolicitudContext";
+import { useSoli } from "../../context/SolicitudContext";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 

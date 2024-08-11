@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useOrden } from '../context/ordenDeTrabajoContext';
+import { useOrden } from '../../context/ordenDeTrabajoContext';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faClone, faEdit } from '@fortawesome/free-solid-svg-icons';
-import { Label, Title } from '../components/ui';
+import { Label, Title } from '../../components/ui';
 
 export const TecnicosTable = () => {
   const [form, setForm] = useState({

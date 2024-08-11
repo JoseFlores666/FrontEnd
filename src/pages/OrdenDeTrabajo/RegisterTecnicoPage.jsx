@@ -1,15 +1,15 @@
 import React, { useRef, useState, useEffect } from "react";
-import "../css/solicitud.css";
+import "../../css/solicitud.css";
 import { useForm } from "react-hook-form";
-import { useOrden } from "../context/ordenDeTrabajoContext";
+import { useOrden } from "../../context/ordenDeTrabajoContext";
 import { useNavigate, useParams } from "react-router-dom";
-import "../css/Animaciones.css";
-import { AutocompleteInput } from "../components/ui/AutocompleteInput";
+import "../../css/Animaciones.css";
+import { AutocompleteInput } from "../../components/ui/AutocompleteInput";
 import Swal from "sweetalert2";
-import { GridContainer, Label, Title } from "../components/ui";
-import imgPDF from '../img/imagenPDF.png';
-import imgWord from '../img/imagenWord.png';
-import { ValidacionOrden } from "../schemas/ValidacionOrden";
+import { GridContainer, Label, Title } from "../../components/ui";
+import imgPDF from '../../img/imagenPDF.png';
+import imgWord from '../../img/imagenWord.png';
+import { ValidacionOrden } from "../../schemas/ValidacionOrden";
 
 export const RegisterTecnicoPage = () => {
   const navigate = useNavigate();

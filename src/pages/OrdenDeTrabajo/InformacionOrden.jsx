@@ -1,17 +1,17 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useParams,useNavigate  } from "react-router-dom";
-import { asignarTecnicoSchema } from '../schemas/AsignarTecnico.js'
-import { useOrden } from "../context/ordenDeTrabajoContext";
+import { asignarTecnicoSchema } from '../../schemas/AsignarTecnico.js'
+import { useOrden } from "../../context/ordenDeTrabajoContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Swal from "sweetalert2";
-import "../css/solicitud.css";
-import "../css/Animaciones.css";
+import "../../css/solicitud.css";
+import "../../css/Animaciones.css";
 import { Link } from "react-router-dom";
-import { AutocompleteInput } from "../components/ui/AutocompleteInput";
-import SubiendoImagenes from "../components/ui/SubiendoImagenes"
-import { Title, Label, GridContainer } from "../components/ui";
-import { EncabezadoFormulario } from "../components/ui/Encabezado.jsx";
+import { AutocompleteInput } from "../../components/ui/AutocompleteInput";
+import SubiendoImagenes from "../../components/ui/SubiendoImagenes"
+import { Title, Label, GridContainer } from "../../components/ui";
+import { EncabezadoFormulario } from "../../components/ui/Encabezado.jsx";
 
 export const InformacionOrden = () => {
     const { id } = useParams();

@@ -1,14 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useSoli } from "../context/SolicitudContext";
-import { useAuth } from "../context/authContext";
-import "../css/solicitud.css";
+import { useSoli } from "../../context/SolicitudContext";
+import { useAuth } from "../../context/authContext";
+import "../../css/solicitud.css";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { ImFileEmpty } from "react-icons/im";
 import { useForm } from "react-hook-form";
-import "../css/Animaciones.css";
-import { GridContainer, Label, Title } from "../components/ui";
+import "../../css/Animaciones.css";
+import { GridContainer, Label, Title } from "../../components/ui";
 import { Link } from "react-router-dom";
 import { FaCheckCircle } from "react-icons/fa";
 

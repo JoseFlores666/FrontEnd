@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useSoli } from "../context/SolicitudContext";
+import { useSoli } from "../../context/SolicitudContext";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faFileAlt, faEdit, faTruck, faTimesCircle, faCopy, faSave, faTimes } from "@fortawesome/free-solid-svg-icons";

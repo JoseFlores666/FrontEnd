@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faEdit, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { useSoli } from '../context/SolicitudContext';
+import { useSoli } from '../../context/SolicitudContext';
 import { ImFileEmpty } from "react-icons/im";
 import Swal from "sweetalert2";
-import { Card, Message, Button, Input, Label, Title } from "../components/ui";
+import { Card, Message, Button, Input, Label, Title } from "../../components/ui";
 
 
 export const ProjectAndActManager = () => {

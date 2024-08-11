@@ -1,17 +1,17 @@
 import React, { useRef, useState, useEffect } from "react";
-import { useSoli } from "../context/SolicitudContext";
-import { useAuth } from "../context/authContext";
+import { useSoli } from "../../context/SolicitudContext";
+import { useAuth } from "../../context/authContext";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
-import imgPDF from '../img/imagenPDF.png';
-import imgWord from '../img/imagenWord.png';
+import imgPDF from '../../img/imagenPDF.png';
+import imgWord from '../../img/imagenWord.png';
 import Swal from "sweetalert2";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faClone } from '@fortawesome/free-solid-svg-icons';
-import "../css/Animaciones.css";
-import { AutocompleteInput } from "../components/ui/AutocompleteInput";
-import { GridContainer, Label, Title } from "../components/ui";
-import { ValidacionSoli } from "../schemas/ValidacionSoli";
+import "../../css/Animaciones.css";
+import { AutocompleteInput } from "../../components/ui/AutocompleteInput";
+import { GridContainer, Label, Title } from "../../components/ui";
+import { ValidacionSoli } from "../../schemas/ValidacionSoli";
 
 export const RegisterSolicitudPage = () => {
   const navigate = useNavigate();

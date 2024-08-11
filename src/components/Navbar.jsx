@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/authContext";
-import { DashboardMenu } from '../pages/DashboardMenu'; // Importa el componente
+import { DashboardMenu } from './ui/DashboardMenu'; // Importa el componente
 
 export function Navbar() {
   const { isAuthenticated, logout, user } = useAuth();
