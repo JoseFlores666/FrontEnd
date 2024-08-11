@@ -57,6 +57,7 @@ export function SolicitudTable({ }) {
         await getSoli();
         await VercantTotalEstado();
         setSolicitudesFetched(true);
+        console.log(soli)
         setLoading(false);
       } catch (error) {
         console.error("Error fetching solicitudes:", error);
@@ -241,7 +242,7 @@ export function SolicitudTable({ }) {
 
   const handleFilterChange = async () => {
     try {
-      const selectedYear = parseInt(año, 10);
+      const selectedYear = isNaN(parseInt(año, 10)) ? null : parseInt(año, 10);
       const selectedMonth = mes !== "" ? parseInt(mes, 10) : null;
       const selectedEstado = cantidadEstados.find(estado => estado.nombre === estadoSeleccionado) || null;
 
@@ -384,7 +385,7 @@ export function SolicitudTable({ }) {
           {currentSolicitudes.map((solicitud, index) => (
             <tr key={index} className={`text-left ${rejectedSolicitudes.includes(solicitud._id) ? 'border-red-500' : ''}`}>
               <Td>{solicitud.folio}</Td>
-              <Td>{solicitud.fecha}</Td>
+              <Td>{new Date(solicitud.fecha).toLocaleDateString()}</Td>
               <Td>{solicitud.folioExterno || "No asignado"}</Td>
               <Td>{solicitud.tipoSuministro}</Td>
               <Td>{solicitud.procesoClave}</Td>
@@ -556,7 +557,7 @@ export function SolicitudTable({ }) {
                       value={año}
                       onChange={(e) => setAño(e.target.value)}
                       className="border text-black border-gray-300 rounded p-1 w-full"
-                      min="2024"
+                      min="2022"
                       max={new Date().getFullYear()}
                     />
                   </div>

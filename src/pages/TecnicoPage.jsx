@@ -147,7 +147,7 @@ export const TecnicoPage = () => {
   };
 
   const handleFilterChange = async () => {
-    const selectedYear = parseInt(año, 10);
+    const selectedYear = isNaN(parseInt(año, 10)) ? null : parseInt(año, 10);
     const selectedMonth = mes !== "" ? parseInt(mes, 10) : null;
     const selectedEstado = estadosTotales.find(estado => estado.nombre === estadoSeleccionado) || null;
 
@@ -431,7 +431,7 @@ export const TecnicoPage = () => {
                       value={año}
                       onChange={(e) => setAño(e.target.value)}
                       className="border text-black border-gray-300 rounded p-1 w-full"
-                      min="2024"
+                      min="2022"
                       max={new Date().getFullYear()}
                     />
                   </div>

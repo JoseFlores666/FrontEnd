@@ -1,19 +1,18 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { AutocompleteInput } from "../components/ui/AutocompleteInput";
-import { useAuth } from "../context/authContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useParams, useNavigate } from "react-router-dom";
 import SubiendoImagenes from "../components/ui/SubiendoImagenes"
-import { faTrashAlt, faClone } from '@fortawesome/free-solid-svg-icons';
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formSchema } from '../schemas/RegisterTecPage2'
+import { faTrashAlt, faEye, faEdit, faClone } from '@fortawesome/free-solid-svg-icons';
 import Swal from "sweetalert2";
 import "../css/solicitud.css";
 import "../css/Animaciones.css";
 import { GridContainer, Label, Title } from "../components/ui";
 import { useOrden } from "../context/ordenDeTrabajoContext";
-// import { EncabezadoFormulario } from '../components/ui/Encabezado'
 
 export const RegisterTecPage2 = () => {
 
@@ -21,7 +20,7 @@ export const RegisterTecPage2 = () => {
     const subiendoImagenesRef = useRef(null);
     const navigate = useNavigate();
 
-    const { register, handleSubmit, formState: { errors }, setValue, reset ,setError } = useForm({
+    const { register, handleSubmit, formState: { errors }, setValue, reset, setError } = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
             items: [{ cantidad: "", descripcion: "" }],
@@ -29,11 +28,20 @@ export const RegisterTecPage2 = () => {
         }
     });
 
+    const [showModal, setShowModal] = useState(false);
+    const [selectedImage, setSelectedImage] = useState(null);
+
+    const handleClose = () => setShowModal(false);
+    const handleShow = (image) => {
+        setSelectedImage(image);
+        setShowModal(true);
+    };
     const { traerUnaInfo, unaInfo,
         traerHistorialOrden, historialOrden, traerFolioInternoInforme,
-        miFolioInternoInfo, crearDEPInforme } = useOrden();
+        miFolioInternoInfo, crearDEPInforme, traerImagenInfo, imagenInfo, } = useOrden();
 
     const [recentSuggestions, setRecentSuggestions] = useState([]);
+
     const [fechaOrden, setFechaOrden] = useState(() => {
         const today = new Date();
         return today.toISOString().split("T")[0];
@@ -43,6 +51,20 @@ export const RegisterTecPage2 = () => {
     const [items, setItems] = useState([{ cantidad: "", descripcion: "" }]);
     const refs = useRef([]);
 
+    const [cargarDatos, setDatosCargados] = useState(false);
+
+    useEffect(() => {
+        const iniciarDatos = async () => {
+            await traerImagenInfo(id);
+            setDatosCargados(true);
+        };
+        if (!cargarDatos) {
+            iniciarDatos();
+        }
+    }, [id, traerImagenInfo, cargarDatos]);
+
+    console.log(imagenInfo
+    )
     const onSubmit = async (data) => {
         try {
             if (subiendoImagenesRef.current && !subiendoImagenesRef.current.hasFiles()) {
@@ -212,7 +234,6 @@ export const RegisterTecPage2 = () => {
 
                     </div>
 
-                    {/* <EncabezadoFormulario unaInfo={unaInfo} /> */}
                     <div className="flex items-center justify-center w-full h-11 p-3 rounded-md">
                         <p className="font-bold">Llenado Exclusivo Para El DEP MSG:</p>
                     </div>
@@ -300,7 +321,68 @@ export const RegisterTecPage2 = () => {
                                     Agregar más
                                 </button>
                             </div>
+                        </div>
 
+                        <div className="image-lists mt-4">
+                            <div className="image-list">
+                                <h5>Lista de Imágenes</h5>
+                                <ul>
+                                    {imagenInfo.map((image, index) => (
+                                        <li key={index}>
+                                            {image.name}
+                                            <utton
+                                                variant="primary"
+                                                onClick={() => handleShow(image)}
+                                                className="ml-2"
+                                            >
+                                                Ver Imagen
+                                            </utton>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                            <div className="p-4 space-y-4">
+                                <div className="relative w-full">
+                                    <table className="w-full text-sm border">
+                                        <thead>
+                                            <tr className="border">
+                                                <th className="h-12 px-4 text-center border">Nº</th>
+                                                <th className="h-12 px-4 text-center border">Nombre</th>
+                                                <th className="h-12 px-4 text-center border">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {imagenInfo.map((image, index) => (
+                                                <tr key={index} className="border-b">
+                                                    <td className="text-center py-2 border">{index + 1}</td>
+                                                    <td className="text-center py-2 border">{image.name}</td>
+                                                    <td className="text-center py-2 border">
+                                                        <button
+                                                            className="text-blue-500 hover:text-blue-700 mx-1"
+                                                            onClick={() => handleShow(image)}
+                                                        >
+                                                            <FontAwesomeIcon icon={faEye} />
+                                                        </button>
+                                                        <button
+                                                            className="text-yellow-500 hover:text-yellow-700 mx-1"
+                                                            onClick={() => alert('Editar imagen')}
+                                                        >
+                                                            <FontAwesomeIcon icon={faEdit} />
+                                                        </button>
+                                                        <button
+                                                            className="text-red-500 hover:text-red-700 mx-1"
+                                                            onClick={() => alert('Eliminar imagen')}
+                                                        >
+                                                            <FontAwesomeIcon icon={faTrashAlt} />
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
                             <div>
                                 <SubiendoImagenes ref={subiendoImagenesRef} />
                                 {errors.images && <div className="text-red-500">{errors.images.message}</div>}
@@ -316,7 +398,7 @@ export const RegisterTecPage2 = () => {
                         </div>
                     </div>
                 </div>
-            </form>
-        </div>
+            </form >
+        </div >
     );
 };
