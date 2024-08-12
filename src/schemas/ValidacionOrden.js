@@ -7,8 +7,8 @@ export const ValidacionOrden = (fields) => {
     if (!fields.edificio) errors2.edificio = "El proyecto es requerido.";
     if (!fields.descripcion) errors2.descripcion = "La actividad es requerida.";
   
-    if (!fields.tipoMantenimiento) errors2.tipoMantenimiento = "El Proceso Clave (PC) es requerido.";
-    if (!fields.tipoTrabajo) errors2.tipoTrabajo = "El proyecto es requerido.";
-    if (!fields.tipoSolicitud) errors2.tipoSolicitud = "La actividad es requerida.";
+    // if (!fields.tipoMantenimiento) errors2.tipoMantenimiento = "El Proceso Clave (PC) es requerido.";
+    // if (!fields.tipoTrabajo) errors2.tipoTrabajo = "El proyecto es requerido.";
+    // if (!fields.tipoSolicitud) errors2.tipoSolicitud = "La actividad es requerida.";
     return errors2;
   };

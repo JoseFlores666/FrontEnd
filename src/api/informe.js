@@ -18,13 +18,16 @@ export const getImagenInfome = async (id) =>
   axios.get(`/informe/traerImagenes/${id}`);
 
 export const actualizarInformes = async (id, informe) =>
-  axios.put(`/informe/actualizarInformes/${id}`, informe );
+  axios.put(`/informe/actualizarInformes/${id}`, informe);
 
 export const evaluacionDelInfome = async (id, idTecnico) =>
   axios.put(`/informe/AsignarTecnico/${id}`, { idTecnico });
 
 export const capturarDiagnostico = async (id, diagnostico) =>
   axios.put(`/informe/capturarDiagnostico/${id}`, diagnostico);
+
+export const eliminarUnaImagen = async (id, public_id) =>
+  axios.delete(`/informe/eliminarUnaImagen/${id}`, { data: { public_id } });
 
 //estado
 export const editarEstadoInforme = async (id) =>

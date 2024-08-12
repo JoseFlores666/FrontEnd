@@ -17,7 +17,7 @@ import {
     getEstadosOrdenTrabajo,
     createTecnico, deleteTecnico,
     getTecnicoPorId, getTecnicosPorInforme,
-    updateTecnico, actualizarInformes,
+    updateTecnico, actualizarInformes,eliminarUnaImagen,
 } from "../api/informe";
 
 import { gethistorialOrdenTrabajo } from '../api/historialInput'
@@ -161,6 +161,16 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
     const eliminarInfo = async (id) => {
         try {
             const res = await deleteInfome(id);
+            return res;
+        } catch (error) {
+            console.error("Error al eliminar informe:", error);
+            setErrores(["Error al eliminar informe"]);
+        }
+    };
+    const eliminaImagen = async (id,public_id) => {
+        try {
+            const res = await eliminarUnaImagen(id,public_id);
+            console.log(res)
             return res;
         } catch (error) {
             console.error("Error al eliminar informe:", error);
@@ -343,7 +353,6 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
                 traerHistorialOrden,
                 traerFolioInternoInforme,
                 // Otras funciones y estados...
-
                 actualizarEstadosOrden,
                 crearEstadosOrdenTrabajo,
                 declinarSoliOrdenTrabajo,
@@ -355,6 +364,7 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
                 traerTecnicosPorInforme,
                 actualizarTecnico,
                 actualizarMyInforme,
+                eliminaImagen,
             }}
         >
             {children}

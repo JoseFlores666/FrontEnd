@@ -5,6 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useParams, useNavigate } from "react-router-dom";
 import SubiendoImagenes from "../../components/ui/SubiendoImagenes"
 
+import { faChevronLeft, faChevronRight, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { Blurhash } from "react-blurhash";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formSchema } from '../../schemas/RegisterTecPage2'
 import { faTrashAlt, faEye, faEdit, faClone } from '@fortawesome/free-solid-svg-icons';
@@ -28,17 +30,32 @@ export const RegisterTecPage2 = () => {
         }
     });
 
-    const [showModal, setShowModal] = useState(false);
-    const [selectedImage, setSelectedImage] = useState(null);
+    const [show, setShow] = useState(false);
+    const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
-    const handleClose = () => setShowModal(false);
-    const handleShow = (image) => {
-        setSelectedImage(image);
-        setShowModal(true);
+    const handleShow = (index) => {
+        setSelectedImageIndex(index);
+        setShow(true);
     };
+
+    const handleClose = () => setShow(false);
+
+    const handleNext = () => {
+        setSelectedImageIndex((prevIndex) =>
+            prevIndex === imagenInfo.length - 1 ? 0 : prevIndex + 1
+        );
+    };
+
+    const handlePrevious = () => {
+        setSelectedImageIndex((prevIndex) =>
+            prevIndex === 0 ? imagenInfo.length - 1 : prevIndex - 1
+        );
+    };
+
+
     const { traerUnaInfo, unaInfo,
         traerHistorialOrden, historialOrden, traerFolioInternoInforme,
-        miFolioInternoInfo, crearDEPInforme, traerImagenInfo, imagenInfo, } = useOrden();
+        miFolioInternoInfo, crearDEPInforme, traerImagenInfo, imagenInfo, eliminaImagen } = useOrden();
 
     const [recentSuggestions, setRecentSuggestions] = useState([]);
 
@@ -63,8 +80,6 @@ export const RegisterTecPage2 = () => {
         }
     }, [id, traerImagenInfo, cargarDatos]);
 
-    console.log(imagenInfo
-    )
     const onSubmit = async (data) => {
         try {
             if (subiendoImagenesRef.current && !subiendoImagenesRef.current.hasFiles()) {
@@ -161,6 +176,20 @@ export const RegisterTecPage2 = () => {
     const formatFecha = (fecha) => {
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         return new Date(fecha).toLocaleDateString(undefined, options);
+    };
+    const eliminarImagen = async (e, public_id) => {
+        e.preventDefault()
+        try {
+            const res = await eliminaImagen(id, public_id)
+            if (res && res.data?.mensaje) {
+                setDatosCargados(false)
+                Swal.fire("Imagen eliminada", res.data?.mensaje, "success");
+            } else {
+                Swal.fire("Error", res?.error || "Error desconocido", "error");
+            }
+        } catch (error) {
+            console.error('Error al eliminar técnico:', error);
+        }
     };
 
     return (
@@ -322,24 +351,9 @@ export const RegisterTecPage2 = () => {
                                 </button>
                             </div>
                         </div>
-
                         <div className="image-lists mt-4">
-                            <div className="image-list">
+                            <div className="image-list text-center">
                                 <h5>Lista de Imágenes</h5>
-                                <ul>
-                                    {imagenInfo.map((image, index) => (
-                                        <li key={index}>
-                                            {image.name}
-                                            <utton
-                                                variant="primary"
-                                                onClick={() => handleShow(image)}
-                                                className="ml-2"
-                                            >
-                                                Ver Imagen
-                                            </utton>
-                                        </li>
-                                    ))}
-                                </ul>
                             </div>
                             <div className="p-4 space-y-4">
                                 <div className="relative w-full">
@@ -347,46 +361,79 @@ export const RegisterTecPage2 = () => {
                                         <thead>
                                             <tr className="border">
                                                 <th className="h-12 px-4 text-center border">Nº</th>
-                                                <th className="h-12 px-4 text-center border">Nombre</th>
+                                                <th className="h-12 px-4 text-center border">Vista Previa</th>
                                                 <th className="h-12 px-4 text-center border">Acciones</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {imagenInfo.map((image, index) => (
-                                                <tr key={index} className="border-b">
-                                                    <td className="text-center py-2 border">{index + 1}</td>
-                                                    <td className="text-center py-2 border">{image.name}</td>
-                                                    <td className="text-center py-2 border">
-                                                        <button
-                                                            className="text-blue-500 hover:text-blue-700 mx-1"
-                                                            onClick={() => handleShow(image)}
-                                                        >
-                                                            <FontAwesomeIcon icon={faEye} />
-                                                        </button>
-                                                        <button
-                                                            className="text-yellow-500 hover:text-yellow-700 mx-1"
-                                                            onClick={() => alert('Editar imagen')}
-                                                        >
-                                                            <FontAwesomeIcon icon={faEdit} />
-                                                        </button>
-                                                        <button
-                                                            className="text-red-500 hover:text-red-700 mx-1"
-                                                            onClick={() => alert('Eliminar imagen')}
-                                                        >
-                                                            <FontAwesomeIcon icon={faTrashAlt} />
-                                                        </button>
+                                            {imagenInfo.length > 0 ? (
+                                                imagenInfo.map((image, index) => (
+                                                    <tr key={index} className="border-b">
+                                                        <td className="text-center py-2 border">{index + 1}</td>
+                                                        <td className="text-center py-2 border">
+                                                            <button
+                                                                onClick={() => handleShow(index)}
+                                                            >
+                                                                {image.nombre}   </button>
+                                                        </td>
+                                                        <td className="text-center py-2 border">
+
+                                                            <button
+                                                                className="text-red-500 hover:text-red-700 mx-1"
+                                                                onClick={(e) => eliminarImagen(e, image.public_id)}
+                                                            >
+                                                                <FontAwesomeIcon icon={faTrashAlt} />
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ))) : (
+                                                <tr >
+                                                    <td colSpan="3" className="text-center py-2 border">
+                                                        No se encontrarón imágenes
                                                     </td>
                                                 </tr>
-                                            ))}
+                                            )}
                                         </tbody>
                                     </table>
                                 </div>
+                            </div>
 
-                            </div>
-                            <div>
-                                <SubiendoImagenes ref={subiendoImagenesRef} />
-                                {errors.images && <div className="text-red-500">{errors.images.message}</div>}
-                            </div>
+                            {show && (
+                                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
+                                    <div className="relative max-w-3xl w-full bg-white p-4">
+                                        <button
+                                            className="absolute w-8 h-8 top-2 right-2 flex items-center justify-center text-white bg-red-700 bg-opacity-60 rounded-md hover:bg-opacity-80 hover:text-white transition duration-300 ease-in-out shadow-lg"
+                                            onClick={handleClose}
+                                        >
+                                            <FontAwesomeIcon icon={faTimes} size="lg" />
+                                        </button>
+
+                                        <img
+                                            src={imagenInfo[selectedImageIndex].secure_url} // URL de la imagen en alta resolución
+                                            alt={imagenInfo[selectedImageIndex].public_id}
+                                            className="w-2/3 max-h-screen object-contain mx-auto"
+                                        />
+
+                                        <button
+                                            className="absolute top-1/2 left-0 transform -translate-y-1/2 bg-gray-800 text-white p-2"
+                                            onClick={handlePrevious}
+                                        >
+                                            <FontAwesomeIcon icon={faChevronLeft} />
+                                        </button>
+                                        <button
+                                            className="absolute top-1/2 right-0 transform -translate-y-1/2 bg-gray-800 text-white p-2"
+                                            onClick={handleNext}
+                                        >
+                                            <FontAwesomeIcon icon={faChevronRight} />
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        <div>
+                            <SubiendoImagenes ref={subiendoImagenesRef} />
+                            {errors.images && <div className="text-red-500">{errors.images.message}</div>}
                         </div>
                         <div className="flex justify-center mt-4">
                             <button
