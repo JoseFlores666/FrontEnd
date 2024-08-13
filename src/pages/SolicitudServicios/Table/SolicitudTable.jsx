@@ -56,6 +56,7 @@ export function SolicitudTable({ }) {
       try {
         await getSoli();
         await VercantTotalEstado();
+        console.log(soli)
         setSolicitudesFetched(true);
         setLoading(false);
       } catch (error) {
