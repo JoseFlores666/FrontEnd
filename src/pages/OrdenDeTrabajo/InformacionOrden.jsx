@@ -53,7 +53,6 @@ export const InformacionOrden = () => {
 
     const onSubmit = async (flag, e) => {
         e.preventDefault();
-
         if (flag === false) {
             if (subiendoImagenesRef.current && !subiendoImagenesRef.current.hasFiles()) {
                 Swal.fire("Evidencia requerida", "Ingrese su evidencia", "info");
@@ -62,6 +61,7 @@ export const InformacionOrden = () => {
             }
         }
         if (diagnostico.trim() !== "") {
+
             try {
 
 
@@ -89,7 +89,6 @@ export const InformacionOrden = () => {
                 }
             } catch (error) {
                 console.error("Error al crear solicitud:", error);
-                console.log(error)
                 Swal.fire("Error", error?.response?.data?.mensaje || "Error desconocido", "error");
             }
         }
