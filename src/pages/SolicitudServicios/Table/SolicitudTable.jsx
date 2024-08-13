@@ -3,7 +3,7 @@ import { useSoli } from "../../../context/SolicitudContext";
 import { useAuth } from "../../../context/authContext";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faFileAlt, faEdit, faTruck, faTimesCircle, faCopy, faHistory } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faFileAlt, faEdit, faTruck, faTimesCircle, faCopy, faHistory, } from "@fortawesome/free-solid-svg-icons";
 import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { ImFileEmpty } from "react-icons/im";
 import { Td, Th, EstadoButton } from "../../../components/ui";

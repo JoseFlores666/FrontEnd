@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faEdit, faCheck, faInfoCircle, faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { Await, Link } from 'react-router-dom';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faEdit, faSave, faTimes, faUserTie, faClipboard, faShippingFast } from '@fortawesome/free-solid-svg-icons';
+
+import { Link } from 'react-router-dom';
 import { ImFileEmpty } from "react-icons/im";
-// import TablaVistaOrden from './TablaVistaOrden';
 import { Th, Td, EstadoButton } from '../../../components/ui';
 import { useOrden } from '../../../context/ordenDeTrabajoContext';
 import Swal from 'sweetalert2';
@@ -336,7 +335,7 @@ export const TecnicoPage = () => {
                         className="text-blue-600 hover:text-blue-800"
                         to={`/asignarTec/${solicitud._id}?`}
                       >
-                        <FontAwesomeIcon icon={faCheck} />
+                        <FontAwesomeIcon icon={faUserTie} />
                       </Link>
                     )}
 
@@ -345,7 +344,7 @@ export const TecnicoPage = () => {
                         className="text-blue-600 hover:text-blue-800"
                         to={`/informacionOrden/${solicitud._id}?`}
                       >
-                        <FontAwesomeIcon icon={faInfoCircle} />
+                        <FontAwesomeIcon icon={faClipboard} />
                       </Link>
                     )}
 
@@ -354,7 +353,7 @@ export const TecnicoPage = () => {
                         className="text-blue-600 hover:text-blue-800"
                         to={`/tecnico2/${solicitud._id}?`}
                       >
-                        <FontAwesomeIcon icon={faPlus} />
+                        <FontAwesomeIcon icon={faShippingFast} />
                       </Link>
                     )}
 
