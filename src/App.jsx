@@ -4,25 +4,25 @@ import { Navbar } from "./components/Navbar";
 import { AuthProvider } from "./context/authContext";
 import { OrdenDeTrabajoProvider } from "./context/ordenDeTrabajoContext";
 import { ProtectedRoute } from "./routes";
-import { Firmas } from "./pages/Firmas";
+import { Firmas } from "./pages/Desplegable/Firmas";
 import RegisterPage from "./pages/RegisterPage";
 import { LoginPage } from "./pages/LoginPage";
 import { SoliProvider } from "./context/SolicitudContext";
-import { RegisterSolicitudPage } from "./pages/RegisterSolicitudPage";
-import { SolicitudTable } from "./pages/SolicitudTable";
-import { RegisterTecnicoPage } from "./pages/RegisterTecnicoPage";
-import { TecnicoPage } from "./pages/TecnicoPage";
-import { AbonoSolicitud } from "./pages/AbonoSolicitud";
-import { FolioExterno } from "./pages/FolioExterno";
-import { RegisterTecPage2 } from "./pages/RegisterTecPage2";
-import { DashboardMenu } from "./pages/DashboardMenu";
-import { Evidencias } from "./pages/Evidencias"
-import AsignarTecnico from "./pages/AsignarTecnico"
-import {TecnicosTable} from "./pages/TecnicosTable"
-import { ProjectAndActManager } from "./pages/EditarProyects&Act"
-import { VerInforme } from "./pages/VerInformePage"
-import { InformacionOrden } from "./pages/InformacionOrden"
-import { Historial } from "./pages/Historial"
+import { RegisterSolicitudPage } from "./pages/SolicitudServicios/RegisterSolicitudPage";
+import { SolicitudTable } from "./pages/SolicitudServicios/Table/SolicitudTable";
+import { RegisterTecnicoPage } from "./pages/OrdenDeTrabajo/RegisterTecnicoPage";
+import { TecnicoPage } from "./pages/OrdenDeTrabajo/Table/TecnicoPage";
+import { AbonoSolicitud } from "./pages/SolicitudServicios/AbonoSolicitud";
+import { FolioExterno } from "./pages/SolicitudServicios/FolioExterno";
+import { RegisterTecPage2 } from "./pages/OrdenDeTrabajo/RegisterTecPage2";
+import { DashboardMenu } from "./components/ui/DashboardMenu";
+import { Evidencias } from "./pages/OrdenDeTrabajo/Evidencias"
+import AsignarTecnico from "./pages/OrdenDeTrabajo/AsignarTecnico"
+import {TecnicosTable} from "./pages/Desplegable/TecnicosTable"
+import { ProjectAndActManager } from "./pages/Desplegable/EditarProyects&Act"
+import { VerInforme } from "./pages/OrdenDeTrabajo/VerInformePage"
+import { InformacionOrden } from "./pages/OrdenDeTrabajo/InformacionOrden"
+import { Historial } from "./pages/SolicitudServicios/Historial"
 // import { EncabezadoFormulario } from "./pages/Encabezado";
 
 function App() {
