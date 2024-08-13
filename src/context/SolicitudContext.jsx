@@ -60,7 +60,7 @@ export function SoliProvider({ children }) {
   const [misActividades, setMisActividades] = useState([]);
   const [actSinAsignar, setActSinAsignar] = useState([]);
 
-  
+
   //Solicitudes
   const getSoli = async () => {
     try {
@@ -266,8 +266,8 @@ export function SoliProvider({ children }) {
   const editarFirmas = async (nombrefirmas) => {
     try {
       const id = "664d5e645db2ce15d4468548";
-      await editarNombreFirmas(id, nombrefirmas);
-      console.log("Actulizado con exito");
+      const res = await editarNombreFirmas(id, nombrefirmas);
+      return res;
     } catch (error) {
       console.error("Error al editar firmas", error);
       setErrors(["Error editar firmas"]);

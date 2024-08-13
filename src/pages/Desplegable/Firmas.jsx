@@ -6,7 +6,7 @@ import { firmasSchema } from "../../schemas/Firmas";
 import "../../css/solicitud.css";
 import { useSoli } from "../../context/SolicitudContext";
 import "../../css/Animaciones.css";
-import { AutocompleteInput } from '../../components/ui/AutocompleteInput'
+import { AutocompleteInput } from '../../components/ui/AutocompleteInput';
 import { Title } from "../../components/ui";
 
 export const Firmas = () => {
@@ -19,15 +19,12 @@ export const Firmas = () => {
     resolver: zodResolver(firmasSchema),
   });
 
-  const refs = useRef([])
+  const refs = useRef([]);
+  const [firmas, setFirmas] = useState({ solicitud: "", jefeInmediato: "", direccion: "", autorizo: "" });
 
   const { editarFirmas, getFirmas, nombresFirmas } = useSoli();
   const [esperarFirmas, setEsperarFirmas] = useState(false);
   const [recentSuggestions, setRecentSuggestions] = useState("");
-  const [solicitud, setSolicitud] = useState("");
-  const [jefeInmediato, setJefeInmediato] = useState("");
-  const [direccion, setDireccion] = useState("");
-  const [autorizo, setAutorizo] = useState("");
 
   useEffect(() => {
     const llamaFirmas = async () => {
@@ -48,21 +45,20 @@ export const Firmas = () => {
   const llenadoFirmas = () => {
     if (nombresFirmas.length > 0) {
       const { solicitud, revision, validacion, autorizacion } = nombresFirmas[0];
-      setSolicitud(solicitud);
-      setJefeInmediato(revision);
-      setDireccion(validacion);
-      setAutorizo(autorizacion);
+      setFirmas({ solicitud, jefeInmediato: revision, direccion: validacion, autorizo: autorizacion });
     }
   };
 
-  const guardarDatos = async (data) => {
-    console.log("Datos guardados:", data);
-    console.log("Datos guardados:", data);
-
+  const guardarDatos = async () => {
     try {
-      await editarFirmas(data);
-      setEsperarFirmas(true)
-      Swal.fire("Datos guardados", "", "success");
+      const res = await editarFirmas(firmas);
+     
+      if (res && res.data?.mensaje) {
+        Swal.fire("Datos actualizados", res.data?.mensaje, "success");
+        setEsperarFirmas(true);
+      } else {
+        Swal.fire("Error", res?.error || "Error desconocido", "error");
+      }
     } catch (error) {
       console.error("Error al guardar los datos:", error);
       Swal.fire("Error al guardar los datos", "", "error");
@@ -80,42 +76,40 @@ export const Firmas = () => {
                 <label htmlFor="solicitud" className="block text-lg font-bold">Solicitud</label>
                 <AutocompleteInput
                   index={0}
-                  value={solicitud || ""}
-                  onChange={(newValue) => setSolicitud(newValue)}
+                  value={firmas.solicitud || ""}
+                  onChange={(newValue) => setFirmas((prev) => ({ ...prev, solicitud: newValue }))}
                   data={nombresFirmas}
                   recentSuggestions={recentSuggestions}
                   setRecentSuggestions={setRecentSuggestions}
                   inputRefs={refs}
                   placeholder="Nombre del Solicitante"
-                  fieldsToCheck={['autorizacion', 'revision', 'solicitud', 'validacion',]}
+                  fieldsToCheck={['autorizacion', 'revision', 'solicitud', 'validacion']}
                   inputProps={{
                     type: "text",
                     maxLength: 200,
                     className: "w-full resize-none text-center text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
                   }}
                 />
-
               </div>
 
               <div className="mb-4 gap-8 mx-10">
                 <label htmlFor="JefeInmediato" className="block text-lg font-bold">Revisión</label>
                 <AutocompleteInput
                   index={1}
-                  value={jefeInmediato || ""}
-                  onChange={(newValue) => setJefeInmediato(newValue)}
+                  value={firmas.jefeInmediato || ""}
+                  onChange={(newValue) => setFirmas((prev) => ({ ...prev, jefeInmediato: newValue }))}
                   data={nombresFirmas}
                   recentSuggestions={recentSuggestions}
                   setRecentSuggestions={setRecentSuggestions}
                   inputRefs={refs}
-                  placeholder="Nombre de el jefeInmediato"
-                  fieldsToCheck={['autorizacion', 'revision', 'solicitud', 'validacion',]}
+                  placeholder="Nombre del Jefe Inmediato"
+                  fieldsToCheck={['autorizacion', 'revision', 'solicitud', 'validacion']}
                   inputProps={{
                     type: "text",
                     maxLength: 200,
                     className: "w-full resize-none text-center text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
                   }}
                 />
-
               </div>
             </div>
 
@@ -124,14 +118,14 @@ export const Firmas = () => {
                 <label htmlFor="Validacion" className="block text-lg font-bold">Validación</label>
                 <AutocompleteInput
                   index={2}
-                  value={direccion || ""}
-                  onChange={(newValue) => setDireccion(newValue)}
+                  value={firmas.direccion || ""}
+                  onChange={(newValue) => setFirmas((prev) => ({ ...prev, direccion: newValue }))}
                   data={nombresFirmas}
                   recentSuggestions={recentSuggestions}
                   setRecentSuggestions={setRecentSuggestions}
                   inputRefs={refs}
-                  placeholder="Nombre de el direccion"
-                  fieldsToCheck={['autorizacion', 'revision', 'solicitud', 'validacion',]}
+                  placeholder="Nombre de la Dirección"
+                  fieldsToCheck={['autorizacion', 'revision', 'solicitud', 'validacion']}
                   inputProps={{
                     type: "text",
                     maxLength: 200,
@@ -139,18 +133,19 @@ export const Firmas = () => {
                   }}
                 />
               </div>
+
               <div className="mb-4 gap-8 mx-10">
                 <label htmlFor="Autorizo" className="block text-lg font-bold">Autorizó</label>
                 <AutocompleteInput
                   index={3}
-                  value={autorizo || ""}
-                  onChange={(newValue) => setAutorizo(newValue)}
+                  value={firmas.autorizo || ""}
+                  onChange={(newValue) => setFirmas((prev) => ({ ...prev, autorizo: newValue }))}
                   data={nombresFirmas}
                   recentSuggestions={recentSuggestions}
                   setRecentSuggestions={setRecentSuggestions}
                   inputRefs={refs}
                   placeholder="Nombre del que autoriza"
-                  fieldsToCheck={['autorizacion', 'revision', 'solicitud', 'validacion',]}
+                  fieldsToCheck={['autorizacion', 'revision', 'solicitud', 'validacion']}
                   inputProps={{
                     type: "text",
                     maxLength: 200,
@@ -159,7 +154,6 @@ export const Firmas = () => {
                 />
               </div>
             </div>
-
 
             <div className="flex justify-center mt-8">
               <button

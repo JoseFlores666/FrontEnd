@@ -37,7 +37,7 @@ export const InformacionOrden = () => {
                 await await traerUnaInfo(id);
                 await await traerHistorialOrden(id);
                 if (unaInfo.informe?.solicitud?.diagnostico) {
-                    setDiagnostico(unaInfo.informe?.solicitud?.diagnostico)
+                    setDiagnostico()
                 }
             } catch (error) {
                 console.error("Error al cargar los datos", error);
@@ -48,7 +48,7 @@ export const InformacionOrden = () => {
 
             setDatosCargados(true);
         }
-    }, [traerUnaInfo, traerHistorialOrden, datosCargados]);
+    }, [traerUnaInfo, traerHistorialOrden, datosCargados,unaInfo]);
 
 
     const onSubmit = async (flag, e) => {
@@ -115,7 +115,7 @@ export const InformacionOrden = () => {
                         <Label>Observaciones del servicio requerido</Label>
                         <AutocompleteInput
                             index={3}
-                            value={diagnostico}
+                            value={diagnostico || unaInfo.informe?.solicitud?.diagnostico}
                             onChange={(newValue) => setDiagnostico(newValue)}
                             data={historialOrden}
                             recentSuggestions={recentSuggestions}
