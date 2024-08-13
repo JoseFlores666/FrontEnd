@@ -45,6 +45,8 @@ export const AbonoSolicitud = () => {
         if (id && !datosCargados) {
             cargarSolicitud();
         }
+        scrollToTop();
+
     }, [id, datosCargados, getunSolitud]);
 
     useEffect(() => {

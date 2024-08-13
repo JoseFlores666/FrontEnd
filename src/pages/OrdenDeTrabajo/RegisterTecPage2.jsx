@@ -78,6 +78,8 @@ export const RegisterTecPage2 = () => {
         if (!cargarDatos) {
             iniciarDatos();
         }
+        scrollToTop();
+
     }, [id, traerImagenInfo, cargarDatos]);
 
 

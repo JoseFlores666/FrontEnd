@@ -22,6 +22,8 @@ export const Evidencias = () => {
     if (!cargarDatos) {
       iniciarDatos();
     }
+    scrollToTop();
+
   }, [id, traerUnaInfo, traerImagenInfo, unaInfo, cargarDatos]);
 
   const dividirEnPares = (arr) => {

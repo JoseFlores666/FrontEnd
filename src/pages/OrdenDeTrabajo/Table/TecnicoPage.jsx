@@ -8,6 +8,7 @@ import { ImFileEmpty } from "react-icons/im";
 import { Th, Td, EstadoButton } from '../../../components/ui';
 import { useOrden } from '../../../context/ordenDeTrabajoContext';
 import Swal from 'sweetalert2';
+import scrollToTop from '../../../util/Scroll';
 
 export const TecnicoPage = () => {
 
@@ -54,7 +55,7 @@ export const TecnicoPage = () => {
     if (!datosCargados) {
       fetchInfo()
     }
-
+    scrollToTop();
   }, [traerOrdenesDeTrabajo, getCantidadTotalOrden, datosCargados]);
 
 

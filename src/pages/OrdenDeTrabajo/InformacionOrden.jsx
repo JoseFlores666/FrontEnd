@@ -47,6 +47,8 @@ export const InformacionOrden = () => {
             iniciarDatos();
 
             setDatosCargados(true);
+            scrollToTop();
+
         }
     }, [traerUnaInfo, traerHistorialOrden, datosCargados, unaInfo]);
 
