@@ -124,6 +124,7 @@ export const RegisterSolicitudPage = () => {
     try {
       if (id) {
         await getunSolitud(id);
+        console.log(unasoli)
         setSolicitudLoaded(true);
       }
     } catch (error) {
@@ -147,9 +148,10 @@ export const RegisterSolicitudPage = () => {
         setMyProyecto_(unasoli.proyecto.nombre || "");
 
         getIdsProyectYAct(unasoli.proyecto._id);
-        console.log(unasoli)
-
+       
         if (unasoli.actividades && unasoli.actividades.length > 0) {
+          console.log(unasoli.actividades)
+
           const primeraActividad = unasoli.actividades[0];
         
           setActividad(primeraActividad.actividadRef || "");

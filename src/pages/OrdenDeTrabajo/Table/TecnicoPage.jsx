@@ -45,7 +45,6 @@ export const TecnicoPage = () => {
       try {
         await traerOrdenesDeTrabajo();
         await getCantidadTotalOrden();
-        console.log(informes)
         seTdatosCargados(true)
         setLoading(false);
       } catch (error) {
@@ -323,7 +322,7 @@ export const TecnicoPage = () => {
                   </div>
                 ) : (
                   <div className="flex justify-center items-center space-x-2">
-                    {solicitud.informe?.estado?.id !== 2 && solicitud.informe?.estado?.id !== 3 && solicitud.informe?.estado?.id !== 4 && (
+                    {solicitud.informe?.estado?.id !== 2 && solicitud.informe?.estado?.id !== 3 && solicitud.informe?.estado?.id !== 4 && solicitud.informe?.estado?.id !== 5 && (
                       <Link
                         className="text-blue-600 hover:text-blue-800"
                         to={`/tecnico/${solicitud._id}?editar=true`}
@@ -332,7 +331,7 @@ export const TecnicoPage = () => {
                       </Link>
                     )}
 
-                    {solicitud.informe?.estado?.id !== 3 && solicitud.informe?.estado?.id !== 4 && (
+                    {solicitud.informe?.estado?.id !== 3 && solicitud.informe?.estado?.id !== 4 && solicitud.informe?.estado?.id !== 5 && (
                       <Link
                         className="text-blue-600 hover:text-blue-800"
                         to={`/asignarTec/${solicitud._id}?`}

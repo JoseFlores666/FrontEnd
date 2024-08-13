@@ -20,11 +20,12 @@ export const InformacionOrden = () => {
         traerUnaInfo, unaInfo, diagnosticoDelTecnico, editarEstadoInfo, } = useOrden();
 
 
-    const { register, handleSubmit, formState: { errors }, setValue, reset,setError } = useForm(
-        //     {
-        //     resolver: zodResolver(asignarTecnicoSchema),
-        // }
-    );
+    const { register, handleSubmit, formState: { errors }, setValue, reset, setError } = useForm({
+        resolver: zodResolver(asignarTecnicoSchema),
+        defaultValues: {
+            diagnostico: '',
+        },
+    });
     const [datosCargados, setDatosCargados] = useState(false);
     const [diagnostico, setDiagnostico] = useState('');
     const subiendoImagenesRef = useRef(null);
@@ -35,6 +36,9 @@ export const InformacionOrden = () => {
             try {
                 await await traerUnaInfo(id);
                 await await traerHistorialOrden(id);
+                if (unaInfo.informe?.solicitud?.diagnostico) {
+                    setDiagnostico(unaInfo.informe?.solicitud?.diagnostico)
+                }
             } catch (error) {
                 console.error("Error al cargar los datos", error);
             }
@@ -50,13 +54,14 @@ export const InformacionOrden = () => {
     const onSubmit = async (flag, e) => {
         e.preventDefault();
         try {
-            if (flag === false){
+            if (flag === false) {
                 if (subiendoImagenesRef.current && !subiendoImagenesRef.current.hasFiles()) {
                     Swal.fire("Evidencia requerida", "Ingrese su evidencia", "info");
                     setError("images", { type: "manual", message: "Debe subir al menos una imagen como evidencia." });
                     return;
                 }
             }
+
             const formData = new FormData();
             const files = subiendoImagenesRef.current.getFiles();
 
@@ -117,8 +122,10 @@ export const InformacionOrden = () => {
                                 type: "text",
                                 maxLength: 500,
                                 className: "w-full resize-none text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
+                                onBlur: () => setValue(`diagnostico`, diagnostico, { shouldValidate: true })
                             }}
                         />
+                        {errors.diagnostico && <div className="text-red-500">{errors.diagnostico.message}</div>}
 
                     </div>
 
