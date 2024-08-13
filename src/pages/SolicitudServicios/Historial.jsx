@@ -40,6 +40,8 @@ export function Historial() {
         if (!cargarDatos) {
             iniciarDatos(id);
         }
+        scrollToTop();
+
     }, [cargarDatos, id, traehisorialDeUnaSoli,]);
 
     const abrirModalFiltro = () => setIsFiltroModalOpen(true);

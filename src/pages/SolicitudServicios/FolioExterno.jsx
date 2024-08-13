@@ -40,6 +40,8 @@ export const FolioExterno = () => {
         if (id && !datosCargados) {
             cargarSolicitud();
         }
+        scrollToTop();
+
     }, [id, datosCargados, getunSolitud]);
 
     useEffect(() => {

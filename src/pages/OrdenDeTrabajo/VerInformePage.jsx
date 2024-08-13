@@ -21,6 +21,8 @@ export const VerInforme = () => {
         if (!datosCargados) {
             traerdatos();
         }
+        scrollToTop();
+
     }, [datosCargados, traerUnaInfo, unaInfo]);
 
     const hasInforme = unaInfo && unaInfo.informe;

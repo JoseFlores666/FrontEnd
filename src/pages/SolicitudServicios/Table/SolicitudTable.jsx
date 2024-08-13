@@ -67,6 +67,8 @@ export function SolicitudTable({ }) {
     if (!solicitudesFetched) {
       fetchSoliYEstados();
     }
+    scrollToTop();
+
   }, [solicitudesFetched, getSoli, VercantTotalEstado]);
 
   useEffect(() => {
@@ -287,9 +289,6 @@ export function SolicitudTable({ }) {
     }
   };
 
-
-
-
   const handleEditClick = () => {
     const dataWithId = cantidadEstados.map(item => ({
       id: item.id, // Suponiendo que `_id` es el campo de identificador
@@ -299,7 +298,6 @@ export function SolicitudTable({ }) {
     setEditedData(dataWithId);
     setIsEditing(true);
   };
-
 
   const handleSaveClick = async () => {
 

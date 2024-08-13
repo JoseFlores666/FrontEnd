@@ -38,6 +38,8 @@ export default function AsignarTecnico() {
             iniciarDatos();
             llenarDatos();
         }
+        scrollToTop();
+
     }, [traerTecnicos, traerUnaInfo, datosCargados]);
 
     const llenarDatos = () => {
