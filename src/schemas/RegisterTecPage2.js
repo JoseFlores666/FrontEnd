@@ -8,6 +8,7 @@ const itemSchema = z.object({
     .refine((val) => val >= 0, {
       message: "La cantidad debe ser un número positivo o 0",
     }),
+  unidad: z.string().nonempty({ message: "La unidad es requerida" }),
   descripcion: z.string().nonempty({ message: "Descripción es requerida" }),
 });
 

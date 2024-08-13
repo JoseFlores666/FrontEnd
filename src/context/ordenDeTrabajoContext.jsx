@@ -17,7 +17,7 @@ import {
     getEstadosOrdenTrabajo,
     createTecnico, deleteTecnico,
     getTecnicoPorId, getTecnicosPorInforme,
-    updateTecnico,
+    updateTecnico, actualizarInformes,eliminarUnaImagen,
 } from "../api/informe";
 
 import { gethistorialOrdenTrabajo } from '../api/historialInput'
@@ -68,8 +68,8 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
 
     const crearOrdenTrabajo = async (info) => {
         try {
-            const respuesta = await createInfome(info);
-            setInformes([...informes, respuesta.data]);
+            const res = await createInfome(info);
+            return res;
         } catch (error) {
             console.error("Error al crear informe:", error);
             setErrores(prevErrores => [...prevErrores, "Error al crear informe"]);
@@ -92,6 +92,15 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
             setInformes(informes.map(informe =>
                 informe._id === info._id ? respuesta.data : informe
             ));
+        } catch (error) {
+            console.error("Error al actualizar informe:", error);
+            setErrores(prevErrores => [...prevErrores, "Error al actualizar informe"]);
+        }
+    };
+    const actualizarMyInforme = async (id, info) => {
+        try {
+            const res = await actualizarInformes(id, info);
+            return res;
         } catch (error) {
             console.error("Error al actualizar informe:", error);
             setErrores(prevErrores => [...prevErrores, "Error al actualizar informe"]);
@@ -152,6 +161,16 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
     const eliminarInfo = async (id) => {
         try {
             const res = await deleteInfome(id);
+            return res;
+        } catch (error) {
+            console.error("Error al eliminar informe:", error);
+            setErrores(["Error al eliminar informe"]);
+        }
+    };
+    const eliminaImagen = async (id,public_id) => {
+        try {
+            const res = await eliminarUnaImagen(id,public_id);
+            console.log(res)
             return res;
         } catch (error) {
             console.error("Error al eliminar informe:", error);
@@ -234,7 +253,7 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
     const getCantidadTotalOrden = async (mesAnioIdestado) => {
         try {
             const res = await getCantidadTotalOrdenTrabajoEstados(mesAnioIdestado);
-        
+
             setEstadosTotales(res.data);
         } catch (error) {
             console.error("Error al obtener la cantidad total de estados de la orden de trabajo:", error);
@@ -334,7 +353,6 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
                 traerHistorialOrden,
                 traerFolioInternoInforme,
                 // Otras funciones y estados...
-
                 actualizarEstadosOrden,
                 crearEstadosOrdenTrabajo,
                 declinarSoliOrdenTrabajo,
@@ -345,6 +363,8 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
                 traerTecnicoPorId,
                 traerTecnicosPorInforme,
                 actualizarTecnico,
+                actualizarMyInforme,
+                eliminaImagen,
             }}
         >
             {children}
