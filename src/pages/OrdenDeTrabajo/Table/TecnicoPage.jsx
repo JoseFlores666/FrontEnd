@@ -95,7 +95,7 @@ export const TecnicoPage = () => {
     setFilteredSolicitudes(results);
     setCurrentPage(1);
   }, [searchTerm, informes]);
-  
+
   const sortedSolicitudes = useMemo(() => {
     let sortableSolicitudes = [...filteredSolicitudes];
     if (sortConfig.key === 'estado') {
@@ -103,7 +103,7 @@ export const TecnicoPage = () => {
         // Obtener los nombres del estado, manejando casos en que el estado puede no estar definido
         const estadoA = a.informe && a.informe.estado ? a.informe.estado.nombre.toLowerCase() : '';
         const estadoB = b.informe && b.informe.estado ? b.informe.estado.nombre.toLowerCase() : '';
-  
+
         if (estadoA < estadoB) {
           return sortConfig.direction === 'asc' ? -1 : 1;
         }
@@ -116,7 +116,7 @@ export const TecnicoPage = () => {
       sortableSolicitudes.sort((a, b) => {
         const aKey = a.informe ? a.informe[sortConfig.key] : a[sortConfig.key];
         const bKey = b.informe ? b.informe[sortConfig.key] : b[sortConfig.key];
-  
+
         if (aKey < bKey) {
           return sortConfig.direction === 'asc' ? -1 : 1;
         }
@@ -128,7 +128,7 @@ export const TecnicoPage = () => {
     }
     return sortableSolicitudes;
   }, [filteredSolicitudes, sortConfig]);
-  
+
 
   const requestSort = (key) => {
     let direction = 'asc';
