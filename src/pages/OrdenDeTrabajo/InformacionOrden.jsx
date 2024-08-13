@@ -53,43 +53,49 @@ export const InformacionOrden = () => {
 
     const onSubmit = async (flag, e) => {
         e.preventDefault();
-        try {
-            if (flag === false) {
-                if (subiendoImagenesRef.current && !subiendoImagenesRef.current.hasFiles()) {
-                    Swal.fire("Evidencia requerida", "Ingrese su evidencia", "info");
-                    setError("images", { type: "manual", message: "Debe subir al menos una imagen como evidencia." });
-                    return;
+
+        if (flag === false) {
+            if (subiendoImagenesRef.current && !subiendoImagenesRef.current.hasFiles()) {
+                Swal.fire("Evidencia requerida", "Ingrese su evidencia", "info");
+                setError("images", { type: "manual", message: "Debe subir al menos una imagen como evidencia." });
+                return;
+            }
+        }
+        if (diagnostico.trim() !== "") {
+            try {
+
+
+                const formData = new FormData();
+                const files = subiendoImagenesRef.current.getFiles();
+
+                if (files.length > 0) {
+                    for (let i = 0; i < files.length; i++) {
+                        formData.append(`imagen-${i}`, files[i]);
+                        console.log(`imagen - ${i}`, files[i]);
+                    }
                 }
-            }
 
-            const formData = new FormData();
-            const files = subiendoImagenesRef.current.getFiles();
+                formData.append('id', id);
+                formData.append('diagnostico', diagnostico);
+                formData.append('accion', flag ? 'continuar' : 'declinar');
 
-            if (files.length > 0) {
-                for (let i = 0; i < files.length; i++) {
-                    formData.append(`imagen-${i}`, files[i]);
-                    console.log(`imagen - ${i}`, files[i]);
+                const res = await diagnosticoDelTecnico(id, formData);
+                if (res && res.data?.mensaje) {
+                    Swal.fire("Completado", res.data?.mensaje, "success");
+                    clearForm();
+                    navigate('/tecnico/orden');
+                } else {
+                    Swal.fire("Error", res?.data?.error || "Error desconocido", "error");
                 }
+            } catch (error) {
+                console.error("Error al crear solicitud:", error);
+                console.log(error)
+                Swal.fire("Error", error?.response?.data?.mensaje || "Error desconocido", "error");
             }
-
-            formData.append('id', id);
-            formData.append('diagnostico', diagnostico);
-            formData.append('accion', flag ? 'continuar' : 'declinar');
-
-            const res = await diagnosticoDelTecnico(id, formData);
-            if (res && res.data?.mensaje) {
-                Swal.fire("Completado", res.data?.mensaje, "success");
-                clearForm();
-                navigate('/tecnico/orden');
-            } else {
-                Swal.fire("Error", res?.data?.error || "Error desconocido", "error");
-            }
-        } catch (error) {
-            console.error("Error al crear solicitud:", error);
-            console.log(error)
-            Swal.fire("Error", error?.response?.data?.mensaje || "Error desconocido", "error");
         }
     }
+
+
     const clearForm = () => {
         reset();
 
