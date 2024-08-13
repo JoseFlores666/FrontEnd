@@ -67,7 +67,6 @@ export const RegisterTecnicoPage = () => {
   useEffect(() => {
     const traerInfo = async () => {
       try {
-        console.log("Fetching data for id:", id);
         await traerUnaInfo(id);
         if (unaInfo && Object.keys(unaInfo).length > 0) {
           setCargandoInforme(false);
@@ -107,7 +106,6 @@ export const RegisterTecnicoPage = () => {
 
   }
   const limpiar = async () => {
-
     setValue("folio", "");
     setFecha("");
     setAreasoli("");

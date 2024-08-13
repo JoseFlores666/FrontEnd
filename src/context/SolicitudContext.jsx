@@ -60,7 +60,7 @@ export function SoliProvider({ children }) {
   const [misActividades, setMisActividades] = useState([]);
   const [actSinAsignar, setActSinAsignar] = useState([]);
 
-
+  
   //Solicitudes
   const getSoli = async () => {
     try {
@@ -92,7 +92,6 @@ export function SoliProvider({ children }) {
   const getunSolitud = async (id) => {
     try {
       const res = await getUnaSoli(id);
-
       setUnaSoli(res.data);
     } catch (error) {
       console.error("Error fetching solitudes:", error);
