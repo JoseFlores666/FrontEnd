@@ -48,7 +48,7 @@ export const InformacionOrden = () => {
 
             setDatosCargados(true);
         }
-    }, [traerUnaInfo, traerHistorialOrden, datosCargados,unaInfo]);
+    }, [traerUnaInfo, traerHistorialOrden, datosCargados, unaInfo]);
 
 
     const onSubmit = async (flag, e) => {
@@ -81,9 +81,11 @@ export const InformacionOrden = () => {
 
                 const res = await diagnosticoDelTecnico(id, formData);
                 if (res && res.data?.mensaje) {
-                    Swal.fire("Completado", res.data?.mensaje, "success");
                     clearForm();
-                    navigate('/tecnico/orden');
+                    Swal.fire("Completado", res.data?.mensaje, "success").then(() => {
+                        navigate('/tecnico/orden');
+                    });
+                  
                 } else {
                     Swal.fire("Error", res?.data?.error || "Error desconocido", "error");
                 }

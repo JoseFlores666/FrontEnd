@@ -106,9 +106,10 @@ export const RegisterTecPage2 = () => {
 
             const res = await crearDEPInforme(id, formData);
             if (res && res.data?.mensaje) {
-                Swal.fire("Completado", res.data?.mensaje, "success");
                 limpiar();
-                navigate('/tecnico/orden');
+                Swal.fire("Completado", res.data?.mensaje, "success").then(() => {
+                    navigate('/tecnico/orden');
+                });
             } else {
                 Swal.fire("Error", res?.error || "Error desconocido", "error");
             }

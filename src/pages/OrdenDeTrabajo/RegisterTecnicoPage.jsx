@@ -135,21 +135,23 @@ export const RegisterTecnicoPage = () => {
       if (id && editar) {
         const res = await actualizarMyInforme(id, informe);
         if (res && res.data?.mensaje) {
-          Swal.fire("Datos actualizados", res.data?.mensaje, "success");
+          Swal.fire("Datos actualizados", res.data?.mensaje, "success").then(() => {
+            navigate('/tecnico/orden');
+        });
         } else {
           Swal.fire("Error", res?.error || "Error desconocido", "error");
         }
       } else {
         const res = await crearOrdenTrabajo(informe);
         if (res && res.data?.mensaje) {
-          Swal.fire("Orden creada", res.data?.mensaje, "success");
+          Swal.fire("Orden creada", res.data?.mensaje, "success").then(() => {
+            navigate('/tecnico/orden');
+        });
         } else {
           Swal.fire("Error", res?.error || "Error desconocido", "error");
         }
       }
       limpiar()
-
-      navigate('/tecnico/orden');
     } catch (error) {
       console.error("Error submitting form: ", error);
     }

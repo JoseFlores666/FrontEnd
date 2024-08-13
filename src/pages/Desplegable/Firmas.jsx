@@ -8,6 +8,7 @@ import { useSoli } from "../../context/SolicitudContext";
 import "../../css/Animaciones.css";
 import { AutocompleteInput } from '../../components/ui/AutocompleteInput';
 import { Title } from "../../components/ui";
+import { useNavigate } from "react-router-dom";
 
 export const Firmas = () => {
   const {
@@ -18,7 +19,7 @@ export const Firmas = () => {
   } = useForm({
     resolver: zodResolver(firmasSchema),
   });
-
+  const navigate = useNavigate();
   const refs = useRef([]);
   const [firmas, setFirmas] = useState({ solicitud: "", jefeInmediato: "", direccion: "", autorizo: "" });
 
@@ -52,9 +53,11 @@ export const Firmas = () => {
   const guardarDatos = async () => {
     try {
       const res = await editarFirmas(firmas);
-     
+
       if (res && res.data?.mensaje) {
-        Swal.fire("Datos actualizados", res.data?.mensaje, "success");
+        Swal.fire("Datos actualizados", res.data?.mensaje, "success").then(() => {
+          navigate('/soli/registro/:id');
+        });
         setEsperarFirmas(true);
       } else {
         Swal.fire("Error", res?.error || "Error desconocido", "error");

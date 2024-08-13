@@ -50,15 +50,14 @@ export default function AsignarTecnico() {
         e.preventDefault();
         try {
             const formData = new FormData();
-            console.log("Datos recibidos:", data);
-            navigate('/tecnico/orden');
-
             formData.append('id', id);
             formData.append('idTecnico', data.tecnico);
 
             const res = await evaluarInforme(id, data.tecnico);
             if (res && res.data?.mensaje) {
-                Swal.fire("Registro Exitoso", res.data?.mensaje, "success");
+                Swal.fire("Registro Exitoso", res.data?.mensaje, "success").then(() => {
+                    navigate('/tecnico/orden');
+                });
                 setDatosCargados(false);
             } else {
                 Swal.fire("Error", res?.error || "Error desconocido", "error");
