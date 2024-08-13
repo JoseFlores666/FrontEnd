@@ -147,11 +147,11 @@ export const RegisterSolicitudPage = () => {
         setMyProyecto_(unasoli.proyecto.nombre || "");
 
         getIdsProyectYAct(unasoli.proyecto._id);
-
+        console.log(unasoli)
 
         if (unasoli.actividades && unasoli.actividades.length > 0) {
           const primeraActividad = unasoli.actividades[0];
-
+        
           setActividad(primeraActividad.actividadRef || "");
           setMyActividad_(primeraActividad.nombre || "");
 
