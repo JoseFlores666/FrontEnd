@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useParams, useNavigate } from "react-router-dom";
-import { asignarTecnicoSchema } from '../../schemas/AsignarTecnico.js'
+import { diagnosticoSchema } from '../../schemas/AsignarTecnico.js'
 import { useOrden } from "../../context/ordenDeTrabajoContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Swal from "sweetalert2";
@@ -22,7 +22,7 @@ export const InformacionOrden = () => {
 
 
     const { register, handleSubmit, formState: { errors }, setValue, reset, setError } = useForm({
-        resolver: zodResolver(asignarTecnicoSchema),
+        resolver: zodResolver(diagnosticoSchema),
         defaultValues: {
             diagnostico: '',
         },
