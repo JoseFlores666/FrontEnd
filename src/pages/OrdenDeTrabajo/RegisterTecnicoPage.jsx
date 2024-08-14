@@ -205,7 +205,7 @@ export const RegisterTecnicoPage = () => {
                 {...register("fecha")}
                 onChange={handleFechaChange}
               />
-              {errors.fecha && <p className="text-red-500">{errors.fecha}</p>}
+              {errors.fecha && <p className="text-red-500">{errors.fecha.message}</p>}
             </div>
           </GridContainer>
           <GridContainer>

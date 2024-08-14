@@ -301,7 +301,9 @@ export const TecnicoPage = () => {
               <Td>{solicitud.informe.descripcion}</Td>
               <Td>{solicitud.informe?.solicitud?.tecnicos?.nombreCompleto || "Sin Asignar"}</Td>
               <Td>
-                <Link to={`/evidencias/${solicitud._id}?`} className="text-black font-bold">
+                <Link to={`/evidencias/${solicitud._id}?`} className="text-black font-bold"
+                 title="Ver imagenes"
+                >
                   VER
                 </Link>
               </Td>
@@ -315,8 +317,10 @@ export const TecnicoPage = () => {
                     <button
                       onClick={() => handleDelete(solicitud._id)}
                       className="text-red-500 hover"
+                      title="Eliminar Infome"
                     >
                       <FontAwesomeIcon icon={faTrash} />
+
                     </button>
                   </div>
                 ) : (
@@ -325,6 +329,7 @@ export const TecnicoPage = () => {
                       <Link
                         className="text-blue-600 hover:text-blue-800"
                         to={`/tecnico/${solicitud._id}?editar=true`}
+                        title="Editar informe"
                       >
                         <FontAwesomeIcon icon={faEdit} />
                       </Link>
@@ -334,6 +339,7 @@ export const TecnicoPage = () => {
                       <Link
                         className="text-blue-600 hover:text-blue-800"
                         to={`/asignarTec/${solicitud._id}?`}
+                        title="Asignar técnico"
                       >
                         <FontAwesomeIcon icon={faUserTie} />
                       </Link>
@@ -343,6 +349,7 @@ export const TecnicoPage = () => {
                       <Link
                         className="text-blue-600 hover:text-blue-800"
                         to={`/informacionOrden/${solicitud._id}?`}
+                        title="Realizar Diagnostico"
                       >
                         <FontAwesomeIcon icon={faClipboard} />
                       </Link>
@@ -352,6 +359,7 @@ export const TecnicoPage = () => {
                       <Link
                         className="text-blue-600 hover:text-blue-800"
                         to={`/tecnico2/${solicitud._id}?`}
+                        title="Área de entrega del material"
                       >
                         <FontAwesomeIcon icon={faShippingFast} />
                       </Link>
@@ -360,6 +368,7 @@ export const TecnicoPage = () => {
                     <button
                       onClick={() => handleDelete(solicitud._id)}
                       className="text-red-500 hover"
+                      title="Eliminar Informe"
                     >
                       <FontAwesomeIcon icon={faTrash} />
                     </button>
@@ -367,7 +376,9 @@ export const TecnicoPage = () => {
                 )}
               </Td>
               <Td>
-                <Link to={`/verInforme/${solicitud._id}?`} className="text-black font-bold">
+                <Link to={`/verInforme/${solicitud._id}?`} className="text-black font-bold"
+                 title="Ver Informe"
+                >
                   CONSULTAR
                 </Link>
               </Td>
