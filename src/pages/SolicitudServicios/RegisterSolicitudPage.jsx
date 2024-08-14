@@ -369,7 +369,7 @@ export const RegisterSolicitudPage = () => {
       id: selectedActividad ? selectedActividad._id : "",
       nombre: selectedActividad ? selectedActividad.nombre : ""
     });
-    setMyActividad_(selectedActividad || "");
+    setMyActividad_(selectedActividad.nombre || "");
     setMyProyecto_(selectedActividad ? selectedActividad.nombre : "");
 
   };
@@ -421,6 +421,7 @@ export const RegisterSolicitudPage = () => {
   const descargarWORD = () => {
     const a = document.createElement('a');
     a.href = 'http://localhost/PlantillasWordyPdf/DescargarWordSoli.php';
+
     a.download = 'formSolicitud.docx';
     document.body.appendChild(a);
     a.click();
