@@ -12,6 +12,7 @@ import { AutocompleteInput } from "../../components/ui/AutocompleteInput";
 import SubiendoImagenes from "../../components/ui/SubiendoImagenes"
 import { Title, Label } from "../../components/ui";
 import { EncabezadoFormulario } from "../../components/ui/Encabezado.jsx";
+import scrollToTop from "../../util/Scroll";
 
 export const InformacionOrden = () => {
     const { id } = useParams();

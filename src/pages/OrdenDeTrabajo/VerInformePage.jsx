@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import "../../css/solicitud.css";
 import { GridContainer, Label, Title } from "../../components/ui";
 import { useOrden } from "../../context/ordenDeTrabajoContext";
+import scrollToTop from "../../util/Scroll";
 
 export const VerInforme = () => {
     const { id } = useParams();
@@ -10,6 +11,39 @@ export const VerInforme = () => {
     const [datosCargados, setDatosCargados] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [clickedPDF, setClickedPDF] = useState(false);
+
+    const handleCloseModal = (event) => {
+        event.preventDefault();
+        setIsOpen(false);
+      };
+
+      const handleFormSubmit = async (data, event) => {
+        event.preventDefault();
+        await saveData(data);
+    
+        const form = event.target;
+        const formData = new FormData(form);
+        const url = 'http://localhost/PlantillasWordyPdf/ManejoOrden.php';
+    
+        fetch(url, {
+          method: 'POST',
+          body: formData,
+        })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.text();
+          })
+          .then(text => {
+            console.log('Formulario enviado correctamente:', text);
+            if (clickedPDF) {
+              openVentana();
+            } else {
+              descargarWORD();
+            }
+          });
+      };
 
     useEffect(() => {
         const traerdatos = async () => {
@@ -125,12 +159,20 @@ export const VerInforme = () => {
                                         )}
                                     </ul>
                                 </div>
-                                <div className="bg-slate-200 rounded p-2">
+                                <div className="bg-slate-200 rounded p-2 mb-4">
                                     <Label>Observaciones técnicas:</Label>
                                     <p className="w-full rounded-md">{hasSolicitud ? unaInfo.informe?.solicitud?.diagnostico : 'Diagnostoco técnico no disponibles'}</p>
                                 </div>
                             </>
                         )}
+                        <div className="flex items-center justify-center">
+                            <button
+                                type="submit"
+                                className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md border border-black"
+                            >
+                                Guardar cambios
+                            </button>
+                        </div>
                     </div>
                 ) : (
                     <p>Cargando datos...</p>

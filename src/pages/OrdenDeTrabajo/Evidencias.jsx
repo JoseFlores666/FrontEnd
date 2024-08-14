@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useOrden } from '../../context/ordenDeTrabajoContext';
 import { Title } from '../../components/ui';
+import scrollToTop from "../../util/Scroll";
 
 export const Evidencias = () => {
   const { id } = useParams();

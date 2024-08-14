@@ -7,8 +7,6 @@ import "../../css/Animaciones.css";
 import { AutocompleteInput } from "../../components/ui/AutocompleteInput";
 import Swal from "sweetalert2";
 import { GridContainer, Label, Title } from "../../components/ui";
-import imgPDF from '../../img/imagenPDF.png';
-import imgWord from '../../img/imagenWord.png';
 import { ValidacionOrden } from "../../schemas/ValidacionOrden";
 
 export const RegisterTecnicoPage = () => {
@@ -116,6 +114,23 @@ export const RegisterTecnicoPage = () => {
 
   const saveData = async (data) => {
     try {
+      // Campos que deben ser validados
+      const fields = { fecha, areasoli, solicita, edificio, descripcion };
+      // Validación de los campos
+      const newErrors = ValidacionOrden(fields);
+      setErrors2(newErrors);
+
+      // Verificar si hay errores antes de continuar
+      if (Object.keys(newErrors).length > 0) {
+        Swal.fire({
+          title: "Alerta!",
+          text: "Complete todos los campos obligatorios",
+          icon: "warning",
+          confirmButtonText: "OK",
+        });
+        return; // Detener la ejecución si hay errores
+      }
+
       const informe = {
         Solicita: {
           nombre: solicita,
@@ -129,85 +144,39 @@ export const RegisterTecnicoPage = () => {
         descripcion,
       };
 
+      let res;
       if (id && editar) {
-        const res = await actualizarMyInforme(id, informe);
-        if (res && res.data?.mensaje) {
-          Swal.fire("Datos actualizados", res.data?.mensaje, "success").then(() => {
-            navigate('/tecnico/orden');
-        });
-        } else {
-          Swal.fire("Error", res?.error || "Error desconocido", "error");
-        }
+        res = await actualizarMyInforme(id, informe);
       } else {
-        const res = await crearOrdenTrabajo(informe);
-        if (res && res.data?.mensaje) {
-          Swal.fire("Orden creada", res.data?.mensaje, "success").then(() => {
-            navigate('/tecnico/orden');
-        });
-        } else {
-          Swal.fire("Error", res?.error || "Error desconocido", "error");
-        }
+        res = await crearOrdenTrabajo(informe);
       }
-      limpiar()
+
+      if (res && res.data?.mensaje) {
+        Swal.fire({
+          title: id && editar ? "Datos actualizados" : "Orden creada",
+          text: res.data?.mensaje,
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then(() => {
+          navigate('/tecnico/orden');
+        });
+        limpiar();
+      } else {
+        Swal.fire("Error", res?.error || "Error desconocido", "error");
+      }
     } catch (error) {
       console.error("Error submitting form: ", error);
+      Swal.fire("Error", "Ocurrió un error al guardar la información", "error");
     }
   };
+
 
   const handleFormSubmit = async (data, event) => {
     event.preventDefault();
-    setIsOpen(false);
+
     await saveData(data);
 
-    const form = event.target;
-    const formData = new FormData(form);
-    const url = 'http://localhost/PlantillasWordyPdf/ManejoOrden.php';
-
-    fetch(url, {
-      method: 'POST',
-      body: formData,
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.text();
-      })
-      .then(text => {
-        console.log('Formulario enviado correctamente:', text);
-        if (clickedPDF) {
-          openVentana();
-        } else {
-          descargarWORD();
-        }
-      });
   };
-
- 
-
-  const handleOpenModal = (event) => {
-    event.preventDefault();
-    const fields = { fecha, areasoli, solicita, edificio, descripcion };
-    const newErrors = ValidacionOrden(fields);
-    setErrors2(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      setIsOpen(true);
-    } else {
-      Swal.fire({
-        title: "Alerta!",
-        text: "Complete todos los componentes",
-        icon: "warning",
-        confirmButtonText: "Cool",
-      });
-    }
-  };
-
-  const handleCloseModal = (event) => {
-    event.preventDefault();
-    setIsOpen(false);
-  };
-
 
   return (
     <div className="mx-auto max-w-6xl p-4 text-black">
@@ -379,18 +348,14 @@ export const RegisterTecnicoPage = () => {
           <input name="descripcion" id="descripcion" type="hidden" value={descripcion} />
           <div className="flex items-center justify-center">
             <button
-              type="submit"
-              onClick={handleOpenModal}
+              type="button"
+              onClick={saveData}
               className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md border border-black"
             >
-              Guardar cambios
+              {editar ? "Actualizar cambios" : "Guardar cambios"}
             </button>
           </div>
         </div>
-
-        
-
-
       </form>
     </div>
   );

@@ -11,6 +11,7 @@ import "../../css/Animaciones.css";
 import { GridContainer, Label, Title } from "../../components/ui";
 import { Link } from "react-router-dom";
 import { FaCheckCircle } from "react-icons/fa";
+import scrollToTop from "../../util/Scroll";
 
 export const AbonoSolicitud = () => {
     const { id } = useParams();

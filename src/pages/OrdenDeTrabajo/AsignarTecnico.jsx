@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import { Title, Label, GridContainer } from '../../components/ui/index.js';
 import { useOrden } from '../../context/ordenDeTrabajoContext.jsx';
 import { EncabezadoFormulario } from '../../components/ui/Encabezado.jsx';
+import scrollToTop from "../../util/Scroll";
 
 export default function AsignarTecnico() {
     const navigate = useNavigate();
