@@ -351,28 +351,30 @@ export const VerInforme = () => {
                                     />
                                 </div>
                                 <div className="grid grid-cols-2 text-center">
-                                    <div>
-                                        <Label>Nombre del Personal del DEP MSG</Label>
-                                        <AutocompleteInput
-                                            index={0}
-                                            value={personalDEP || ""}
-                                            onChange={(newValue) => setPersonalDEP(newValue)}
-                                            data={historialOrden}
-                                            recentSuggestions={recentSuggestions}
-                                            setRecentSuggestions={setRecentSuggestions}
-                                            inputRefs={inputRef}
-                                            placeholder="Ingrese el nombre del Personal del DEP MSG"
-                                            fieldsToCheck={['personalDEPMSG']}
-                                            ConvertirAInput={true}
-                                            inputProps={{
-                                                type: "text",
-                                                maxLength: 500,
-                                                className: "w-full text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
-                                            }}
-
-                                        />
-                                        <input type="hidden" id="personalDEP" name="personalDEP" value={personalDEP} />
+                                    <div className="grid grid-cols-2 text-center gap-4 mb-4">
+                                        <div>
+                                            <Label>Nombre del Personal del DEP MSG</Label>
+                                            <AutocompleteInput
+                                                index={0}
+                                                value={personalDEP || ""}
+                                                onChange={(newValue) => setPersonalDEP(newValue)}
+                                                data={historialOrden}
+                                                recentSuggestions={recentSuggestions}
+                                                setRecentSuggestions={setRecentSuggestions}
+                                                inputRefs={inputRef}
+                                                placeholder="Ingrese el nombre del Personal del DEP MSG"
+                                                fieldsToCheck={['personalDEPMSG']}
+                                                ConvertirAInput={true}
+                                                inputProps={{
+                                                    type: "text",
+                                                    maxLength: 500,
+                                                    className: "w-full text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
+                                                }}
+                                            />
+                                            <input type="hidden" id="personalDEP" name="personalDEP" value={personalDEP} />
+                                        </div>
                                     </div>
+
                                     <div>
                                         <Label>Nombre y Firma de Conformidad del Servicio
                                             (Directivo y/o Jefatura de Dep., y/o Responsable de Área)
