@@ -8,6 +8,7 @@ import { useSoli } from "../../context/SolicitudContext.jsx";
 import { useAuth } from "../../context/authContext.jsx";
 import "../../css/Animaciones.css";
 import { GridContainer, Label, Title } from "../../components/ui/index.js";
+import scrollToTop from "../../util/Scroll";
 
 export const FolioExterno = () => {
     const { id } = useParams();

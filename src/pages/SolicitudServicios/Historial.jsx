@@ -5,6 +5,7 @@ import { useSoli } from '../../context/SolicitudContext';
 import { useAuth } from '../../context/authContext';
 import { useParams } from "react-router-dom";
 import { BackButton, Label, Td, Th } from "../../components/ui";
+import scrollToTop from "../../util/Scroll";
 
 export function Historial() {
     const { id } = useParams();

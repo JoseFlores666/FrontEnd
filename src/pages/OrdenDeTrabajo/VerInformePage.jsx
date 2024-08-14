@@ -12,6 +12,39 @@ export const VerInforme = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [clickedPDF, setClickedPDF] = useState(false);
 
+    const handleCloseModal = (event) => {
+        event.preventDefault();
+        setIsOpen(false);
+      };
+
+      const handleFormSubmit = async (data, event) => {
+        event.preventDefault();
+        await saveData(data);
+    
+        const form = event.target;
+        const formData = new FormData(form);
+        const url = 'http://localhost/PlantillasWordyPdf/ManejoOrden.php';
+    
+        fetch(url, {
+          method: 'POST',
+          body: formData,
+        })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.text();
+          })
+          .then(text => {
+            console.log('Formulario enviado correctamente:', text);
+            if (clickedPDF) {
+              openVentana();
+            } else {
+              descargarWORD();
+            }
+          });
+      };
+
     useEffect(() => {
         const traerdatos = async () => {
             try {
@@ -139,6 +172,14 @@ export const VerInforme = () => {
                                 </div>
                             </>
                         )}
+                        <div className="flex items-center justify-center">
+                            <button
+                                type="submit"
+                                className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md border border-black"
+                            >
+                                Guardar cambios
+                            </button>
+                        </div>
                     </div>
                 ) : (
                     <p>Cargando datos...</p>

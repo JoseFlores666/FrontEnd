@@ -88,7 +88,6 @@ export const InformacionOrden = () => {
                     Swal.fire("Completado", res.data?.mensaje, "success").then(() => {
                         navigate('/tecnico/orden');
                     });
-                  
                 } else {
                     Swal.fire("Error", res?.data?.error || "Error desconocido", "error");
                 }
