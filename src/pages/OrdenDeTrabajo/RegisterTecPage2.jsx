@@ -13,6 +13,7 @@ import "../../css/solicitud.css";
 import "../../css/Animaciones.css";
 import { GridContainer, Label, Title } from "../../components/ui";
 import { useOrden } from "../../context/ordenDeTrabajoContext";
+import scrollToTop from '../../util/Scroll';
 
 export const RegisterTecPage2 = () => {
 

@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import "../../css/solicitud.css";
 import { GridContainer, Label, Title } from "../../components/ui";
 import { useOrden } from "../../context/ordenDeTrabajoContext";
+import scrollToTop from '../../util/Scroll';
 
 export const VerInforme = () => {
     const { id } = useParams();
@@ -15,6 +16,7 @@ export const VerInforme = () => {
         const traerdatos = async () => {
             try {
                 await traerUnaInfo(id);
+                console.log(unaInfo)
                 setDatosCargados(true);
             } catch (error) {
                 console.error("Error al ejecutar la funcion traer datos", error);
@@ -62,7 +64,7 @@ export const VerInforme = () => {
                             </div>
                             <div className="bg-slate-200 rounded p-2">
                                 <Label>Folio:</Label>
-                                <p className="w-full rounded-md">{unaInfo.folio || 'Folio no disponible'}</p>
+                                <p className="w-full rounded-md">{unaInfo.informe?.folio || 'Folio no disponible'}</p>
                             </div>
                         </GridContainer>
                         <GridContainer>
@@ -94,18 +96,21 @@ export const VerInforme = () => {
                             <Label>Descripción del servicio:</Label>
                             <p className="w-full">{hasInforme ? unaInfo.informe.descripcion : 'Descripción no disponible'}</p>
                         </div>
-                        <div className="bg-slate-200 rounded p-2 mb-5">
+                        <div className="bg-slate-200 rounded text-center p-2 mb-5">
                             <Label>Tecnico Encargado:</Label>
                             <p className="w-full">{hasInforme ? unaInfo.informe?.solicitud?.tecnicos?.nombreCompleto : 'Tenico no disponible'}</p>
                         </div>
-
+                        <div className="bg-slate-200 rounded p-2">
+                            <Label>Observaciones técnicas:</Label>
+                            <p className="w-full rounded-md">{hasSolicitud ? unaInfo.informe?.solicitud?.diagnostico : 'Diagnostoco técnico no disponibles'}</p>
+                        </div>
                         {unaInfo.estado !== "Declinada" && hasSolicitud && (
                             <>
                                 <h2 className="text-xl text-center mb-5 font-bold text-black">Solicitud</h2>
                                 <GridContainer>
                                     <div className="bg-slate-200 rounded p-2">
                                         <Label>Fecha de atención:</Label>
-                                        <p className="w-full rounded-md">{hasSolicitud && unaInfo.informe?.solicitud?.fechaAtencion ? new Date(unaInfo.informe?.solicitud?.fechaAtencion).toLocaleDateString() : 'Fecha de atención no disponible'}</p>
+                                        <p className="w-full rounded-md">{hasSolicitud && unaInfo.informe?.solicitud?.fechaAtencion ? new Date(unaInfo.informe?.solicitud?.fechaAtencion).toLocaleDateString() : 'El material aun no ha sido entregado'}</p>
                                     </div>
                                     <div></div>
                                     <div className="bg-slate-200 rounded p-2">
@@ -114,20 +119,23 @@ export const VerInforme = () => {
                                     </div>
                                 </GridContainer>
                                 <div className="bg-slate-200 rounded p-2 mb-4">
-                                    <Label>Insumos solicitados:</Label>
+                                    <div className="text-center">
+                                        <Label>Insumos solicitados:</Label>
+                                    </div>
                                     <ul className="list-disc pl-5">
                                         {hasSolicitud && unaInfo.informe?.solicitud?.material?.length > 0 ? (
                                             unaInfo.informe?.solicitud?.material?.map((mymaterial) => (
-                                                <li key={mymaterial._id}>{mymaterial.descripcion} - {mymaterial.cantidad}</li>
+                                                <li key={mymaterial._id} className="grid grid-cols-3 gap-4">
+                                                    <span>Unidad: {mymaterial.unidad}</span>
+                                                    <span>Material Entregado: {mymaterial.descripcion}</span>
+                                                    <span>Cantidad: {mymaterial.cantidad}</span>
+                                                </li>
+
                                             ))
                                         ) : (
-                                            <li>Insumos no disponibles</li>
+                                            <li>El material aun no ha sido entregado</li>
                                         )}
                                     </ul>
-                                </div>
-                                <div className="bg-slate-200 rounded p-2">
-                                    <Label>Observaciones técnicas:</Label>
-                                    <p className="w-full rounded-md">{hasSolicitud ? unaInfo.informe?.solicitud?.diagnostico : 'Diagnostoco técnico no disponibles'}</p>
                                 </div>
                             </>
                         )}

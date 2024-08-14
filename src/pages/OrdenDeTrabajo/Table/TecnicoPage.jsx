@@ -71,7 +71,6 @@ export const TecnicoPage = () => {
 
   useEffect(() => {
     setFilteredSolicitudes(informes);
-
   }, [informes]);
 
   const filtrarSolicitud = (solicitud) => {

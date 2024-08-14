@@ -8,7 +8,7 @@ export const ProtectedRoute = () => {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-        <div className="bg-white p-6 rounded-lg shadow-lg">
+        <div className="bg-white p-6 rounded-lg shadow-lg fondo">
           <h1 className="text-2xl font-bold text-red-500 mb-4">Imposible</h1>
           <p className="text-lg text-gray-700">Regresa e inicia sesión o crea una cuenta :b</p>
         </div>
