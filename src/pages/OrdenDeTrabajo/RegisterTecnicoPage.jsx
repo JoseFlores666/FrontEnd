@@ -7,25 +7,34 @@ import "../../css/Animaciones.css";
 import { AutocompleteInput } from "../../components/ui/AutocompleteInput";
 import Swal from "sweetalert2";
 import { GridContainer, Label, Title } from "../../components/ui";
-import { ValidacionOrden } from "../../schemas/ValidacionOrden";
+import { registerTecnicoPageSchema } from '../../schemas/RegisterTecnicoPage'
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export const RegisterTecnicoPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const editar = new URLSearchParams(location.search).get("editar");
 
-  const { register, handleSubmit, setValue, formState: { errors }, } = useForm();
-  const [errors2, setErrors2] = useState({});
+  const { register, handleSubmit, setValue, formState: { errors }, trigger } = useForm({
+    resolver: zodResolver(registerTecnicoPageSchema),
+  });
 
   const [fecha, setFecha] = useState(() => {
-    const today = new Date().toISOString().split("T")[0]; // Formato YYYY
+    const today = new Date().toISOString().split("T")[0];
     return today;
   });
 
-  const [areasoli, setAreasoli] = useState("");
-  const [solicita, setSolicita] = useState("");
-  const [edificio, setEdificio] = useState("");
-  const [descripcion, setDescripcion] = useState("");
+  const [informe, setInforme] = useState({
+    fecha: "",
+    areasoli: "",
+    solicita: "",
+    edificio: "",
+    tipoDeMantenimiento: "",
+    tipoDeTrabajo: "",
+    tipoDeSolicitud: "",
+    descripcion: ""
+  });
+
   const [recentSuggestions, setRecentSuggestions] = useState([]);
   const [projectsLoaded, setProjectsLoaded] = useState(false);
   const [cargandoInforme, setCargandoInforme] = useState(editar);
@@ -34,19 +43,27 @@ export const RegisterTecnicoPage = () => {
 
   const inputRef = useRef([]);
 
-  const { crearOrdenTrabajo, traerFolioInternoInforme, miFolioInternoInfo,
-    traerHistorialOrden, historialOrden, traerUnaInfo, unaInfo, actualizarMyInforme } = useOrden();
+  const {
+    crearOrdenTrabajo,
+    traerFolioInternoInforme,
+    miFolioInternoInfo,
+    traerHistorialOrden,
+    historialOrden,
+    traerUnaInfo,
+    unaInfo,
+    actualizarMyInforme
+  } = useOrden();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await limpiar();
 
         const today = new Date().toISOString().split("T")[0];
         setFecha(today);
 
         await traerHistorialOrden();
         await traerFolioInternoInforme();
+
         setProjectsLoaded(true);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -57,7 +74,6 @@ export const RegisterTecnicoPage = () => {
       fetchData();
     }
   }, [projectsLoaded, editar, traerFolioInternoInforme, traerHistorialOrden]);
-
 
   useEffect(() => {
     const traerInfo = async () => {
@@ -77,9 +93,11 @@ export const RegisterTecnicoPage = () => {
     }
   }, [id, cargandoInforme, editar, traerUnaInfo, unaInfo]);
 
-  if (miFolioInternoInfo && !editar) {
-    setValue("folio", miFolioInternoInfo);
-  }
+  useEffect(() => {
+    if (miFolioInternoInfo && !editar) {
+      setValue("folio", miFolioInternoInfo);
+    }
+  }, [miFolioInternoInfo, editar, setValue]);
 
   useEffect(() => {
     if (unaInfo && Object.keys(unaInfo).length > 0) {
@@ -87,63 +105,40 @@ export const RegisterTecnicoPage = () => {
     }
   }, [unaInfo]);
 
-  const llenar = async () => {
+  const llenar = () => {
+    if (id && editar) {
+      setValue("folio", unaInfo?.informe?.folio || "");
+      setFecha(unaInfo.informe.fecha ? unaInfo.informe.fecha.split("T")[0] : "");
+      setInforme({
+        fecha: unaInfo.informe.fecha ? unaInfo.informe.fecha.split("T")[0] : "",
+        areasoli: unaInfo.informe.Solicita ? unaInfo.informe.Solicita.areaSolicitante : "",
+        solicita: unaInfo.informe.Solicita ? unaInfo.informe.Solicita.nombre : "",
+        edificio: unaInfo.informe.Solicita ? unaInfo.informe.Solicita.edificio : "",
+        tipoDeMantenimiento: unaInfo.informe.tipoDeMantenimiento || "",
+        tipoDeTrabajo: unaInfo.informe.tipoDeTrabajo || "",
+        tipoDeSolicitud: unaInfo.informe.tipoDeSolicitud || "",
+        descripcion: unaInfo.informe.descripcion || ""
+      });
+    }
+  };
 
-    setValue("folio", unaInfo?.informe?.folio || "");
-    setFecha(unaInfo.informe.fecha ? unaInfo.informe.fecha.split("T")[0] : "");
-    setAreasoli(unaInfo.informe.Solicita ? unaInfo.informe.Solicita.areaSolicitante : "");
-    setSolicita(unaInfo.informe.Solicita ? unaInfo.informe.Solicita.nombre : "");
-    setEdificio(unaInfo.informe.Solicita ? unaInfo.informe.Solicita.edificio : "");
-    setDescripcion(unaInfo.informe.descripcion || "");
-    setValue("tipoMantenimiento", unaInfo.informe.tipoDeMantenimiento || "");
-    setValue("tipoTrabajo", unaInfo.informe.tipoDeTrabajo || "");
-    setValue("tipoSolicitud", unaInfo.informe.tipoDeSolicitud || "");
-
-  }
-  const limpiar = async () => {
+  const limpiar = () => {
     setValue("folio", "");
     setFecha("");
-    setAreasoli("");
-    setSolicita("");
-    setEdificio("");
-    setDescripcion("");
-    setValue("tipoMantenimiento", "");
-    setValue("tipoTrabajo", "");
-    setValue("tipoSolicitud", "");
-  }
+    setInforme({
+      fecha: "",
+      areasoli: "",
+      solicita: "",
+      edificio: "",
+      tipoDeMantenimiento: "",
+      tipoDeTrabajo: "",
+      tipoDeSolicitud: "",
+      descripcion: ""
+    });
+  };
 
-  const saveData = async (data) => {
+  const handleFormSubmit = async () => {
     try {
-      // Campos que deben ser validados
-      const fields = { fecha, areasoli, solicita, edificio, descripcion };
-      // Validación de los campos
-      const newErrors = ValidacionOrden(fields);
-      setErrors2(newErrors);
-
-      // Verificar si hay errores antes de continuar
-      if (Object.keys(newErrors).length > 0) {
-        Swal.fire({
-          title: "Alerta!",
-          text: "Complete todos los campos obligatorios",
-          icon: "warning",
-          confirmButtonText: "OK",
-        });
-        return; // Detener la ejecución si hay errores
-      }
-
-      const informe = {
-        Solicita: {
-          nombre: solicita,
-          areaSolicitante: areasoli,
-          edificio,
-        },
-        fecha,
-        tipoDeMantenimiento: data.tipoMantenimiento,
-        tipoDeTrabajo: data.tipoTrabajo,
-        tipoDeSolicitud: data.tipoSolicitud,
-        descripcion,
-      };
-
       let res;
       if (id && editar) {
         res = await actualizarMyInforme(id, informe);
@@ -170,12 +165,14 @@ export const RegisterTecnicoPage = () => {
     }
   };
 
-
-  const handleFormSubmit = async (data, event) => {
-    event.preventDefault();
-
-    await saveData(data);
-
+  const handleFechaChange = (e) => {
+    const newFecha = e.target.value;
+    setFecha(newFecha);
+    setInforme((prev) => ({
+      ...prev,
+      fecha: newFecha,
+    }));
+    trigger("fecha"); // Disparar validación manualmente
   };
 
   return (
@@ -196,19 +193,19 @@ export const RegisterTecnicoPage = () => {
               />
             </div>
             <div>
-              <input type="hidden" name="folio" id="folio" value={miFolioInternoInfo} />
             </div>
             <div>
               <Label>Selecciona la fecha:</Label>
               <input
                 type="date"
                 id="fechaOrden"
-                name="fechaOrden"
+                name="fecha"
                 className="w-full text-black p-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                 value={fecha}
-                onChange={(e) => setFecha(e.target.value)}
+                {...register("fecha")}
+                onChange={handleFechaChange}
               />
-              {errors2.fecha && <p className="text-red-500">{errors2.fecha}</p>}
+              {errors.fecha && <p className="text-red-500">{errors.fecha.message}</p>}
             </div>
           </GridContainer>
           <GridContainer>
@@ -216,8 +213,8 @@ export const RegisterTecnicoPage = () => {
               <Label>Area solicitante:</Label>
               <AutocompleteInput
                 index={0}
-                value={areasoli}
-                onChange={(newValue) => setAreasoli(newValue)}
+                value={informe.areasoli}
+                onChange={(newValue) => setInforme((prev) => ({ ...prev, areasoli: newValue }))}
                 data={historialOrden}
                 recentSuggestions={recentSuggestions}
                 setRecentSuggestions={setRecentSuggestions}
@@ -231,16 +228,19 @@ export const RegisterTecnicoPage = () => {
                   type: "text",
                   maxLength: 500,
                   className: "w-full text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
+                  onBlur: () => setValue(`areasoli`, informe.areasoli, { shouldValidate: true })
                 }}
               />
-              {errors2.areasoli && <p className="text-red-500">{errors2.areasoli}</p>}
+              {errors.areasoli && <p className="text-red-500">{errors.areasoli.message}</p>}
             </div>
             <div>
               <Label>Solicita:</Label>
               <AutocompleteInput
                 index={1}
-                value={solicita}
-                onChange={(newValue) => setSolicita(newValue)}
+                value={informe.solicita}
+                onChange={(newValue) =>
+                  setInforme((prev) => ({ ...prev, solicita: newValue }))
+                }
                 data={historialOrden}
                 recentSuggestions={recentSuggestions}
                 setRecentSuggestions={setRecentSuggestions}
@@ -254,16 +254,19 @@ export const RegisterTecnicoPage = () => {
                   type: "text",
                   maxLength: 500,
                   className: "w-full text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
+                  onBlur: () => setValue(`solicita`, informe.solicita, { shouldValidate: true })
                 }}
               />
-              {errors2.solicita && <p className="text-red-500">{errors2.solicita}</p>}
+              {errors.solicita && <p className="text-red-500">{errors.solicita.message}</p>}
             </div>
             <div>
               <Label>Edificio:</Label>
               <AutocompleteInput
                 index={2}
-                value={edificio}
-                onChange={(newValue) => setEdificio(newValue)}
+                value={informe.edificio}
+                onChange={(newValue) =>
+                  setInforme((prev) => ({ ...prev, edificio: newValue }))
+                }
                 data={historialOrden}
                 recentSuggestions={recentSuggestions}
                 setRecentSuggestions={setRecentSuggestions}
@@ -277,9 +280,12 @@ export const RegisterTecnicoPage = () => {
                   type: "text",
                   maxLength: 500,
                   className: "w-full text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
+                  onBlur: () => setValue(`edificio`, informe.edificio, { shouldValidate: true })
                 }}
               />
-              {errors2.edificio && <p className="text-red-500">{errors2.edificio}</p>}
+
+
+              {errors.edificio && <p className="text-red-500">{errors.edificio.message}</p>}
             </div>
           </GridContainer>
           <GridContainer>
@@ -287,50 +293,79 @@ export const RegisterTecnicoPage = () => {
               <Label>Tipo de Mantenimiento:</Label>
               <select
                 id="tipoMantenimiento"
-                {...register("tipoMantenimiento", { required: true })}
-                name="tipoMantenimiento"
+                {...register("tipoDeMantenimiento", { required: true })}
+                name="tipoDeMantenimiento"
                 className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                value={informe.tipoDeMantenimiento}
+                onChange={(e) => {
+                  setInforme({ ...informe, tipoDeMantenimiento: e.target.value });
+                  setValue("tipoDeMantenimiento", e.target.value, { shouldValidate: true });
+                }}
               >
                 <option value="">Seleccione un tipo de mantenimiento</option>
                 <option value="Mobiliario">Mobiliario</option>
                 <option value="Instalaciones">Instalaciones</option>
               </select>
-              {errors2.tipoMantenimiento && <p className="text-red-500">{errors2.tipoMantenimiento}</p>}
+              {errors.tipoDeMantenimiento && (
+                <p className="text-red-500">{errors.tipoDeMantenimiento.message}</p>
+              )}
             </div>
             <div>
               <Label>Tipo de Trabajo:</Label>
               <select
                 id="tipoTrabajo"
-                {...register("tipoTrabajo", { required: true })}
-                name="tipoTrabajo"
+                {...register("tipoDeTrabajo", { required: true })}
+                name="tipoDeTrabajo"
                 className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                value={informe.tipoDeTrabajo}
+                onChange={(e) => {
+                  setInforme((prev) => ({
+                    ...prev,
+                    tipoDeTrabajo: e.target.value,
+                  }));
+                  setValue("tipoDeTrabajo", e.target.value, { shouldValidate: true });
+                }}
               >
                 <option value="">Seleccione el tipo de trabajo</option>
                 <option value="Preventivo">Preventivo</option>
                 <option value="Correctivo">Correctivo</option>
               </select>
-              {errors2.tipoTrabajo && <p className="text-red-500">{errors2.tipoTrabajo}</p>}
+              {errors.tipoDeTrabajo && (
+                <p className="text-red-500">{errors.tipoDeTrabajo.message}</p>
+              )}
             </div>
             <div>
               <Label>Tipo de Solicitud:</Label>
               <select
                 id="tipoSolicitud"
-                {...register("tipoSolicitud", { required: true })}
-                name="tipoSolicitud"
+                {...register("tipoDeSolicitud", { required: true })}
+                name="tipoDeSolicitud"
                 className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                value={informe.tipoDeSolicitud}
+                onChange={(e) => {
+                  setInforme((prev) => ({
+                    ...prev,
+                    tipoDeSolicitud: e.target.value,
+                  }));
+                  setValue("tipoDeSolicitud", e.target.value, { shouldValidate: true });
+                }}
               >
                 <option value="">Seleccione el tipo de solicitud</option>
                 <option value="Normal">Normal</option>
                 <option value="Urgente">Urgente</option>
               </select>
-              {errors2.tipoSolicitud && <p className="text-red-500">{errors2.tipoSolicitud}</p>}
+              {errors.tipoDeSolicitud && (
+                <p className="text-red-500">{errors.tipoDeSolicitud.message}</p>
+              )}
             </div>
           </GridContainer>
           <Label>Descripción (servicio requerido)</Label>
           <AutocompleteInput
             index={3}
-            value={descripcion}
-            onChange={(newValue) => setDescripcion(newValue)}
+            value={informe.descripcion}
+            onChange={(newValue) =>
+              setInforme((prev) => ({ ...prev, descripcion: newValue }))
+            }
             data={historialOrden}
             recentSuggestions={recentSuggestions}
             setRecentSuggestions={setRecentSuggestions}
@@ -341,15 +376,15 @@ export const RegisterTecnicoPage = () => {
               type: "text",
               maxLength: 500,
               className: "w-full resize-none text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
+              onBlur: () => setValue(`descripcion`, informe.descripcion, { shouldValidate: true })
             }}
           />
-          {errors2.descripcion && <p className="text-red-500">{errors2.descripcion}</p>}
-
-          <input name="descripcion" id="descripcion" type="hidden" value={descripcion} />
+          {errors.descripcion && (
+            <p className="text-red-500">{errors.descripcion.message}</p>
+          )}
           <div className="flex items-center justify-center">
             <button
-              type="button"
-              onClick={saveData}
+              type="submit"
               className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md border border-black"
             >
               {editar ? "Actualizar cambios" : "Guardar cambios"}

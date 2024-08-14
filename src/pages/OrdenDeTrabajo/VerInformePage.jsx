@@ -23,7 +23,7 @@ export const VerInforme = () => {
             alert('El campo "Solicita" está vacío.');
             return false;
         }
-        if (!unaInfo?.folio) {
+        if (!unaInfo?.informe.folio) {
             alert('El campo "Folio" está vacío.');
             return false;
         }
@@ -63,7 +63,7 @@ export const VerInforme = () => {
             alert('El campo "Observaciones técnicas" está vacío.');
             return false;
         }
-    
+
         return true;
     };
     const handleDownloadClick = (event) => {
@@ -72,8 +72,8 @@ export const VerInforme = () => {
             setIsOpen(true);
         }
     };
-        
-    
+
+
     const handleCloseModal = (event) => {
         event.preventDefault();
         setIsOpen(false);
@@ -117,6 +117,7 @@ export const VerInforme = () => {
         const traerdatos = async () => {
             try {
                 await traerUnaInfo(id);
+                console.log(unaInfo)
                 setDatosCargados(true);
             } catch (error) {
                 console.error("Error al ejecutar la funcion traer datos", error);
@@ -173,10 +174,11 @@ export const VerInforme = () => {
                             </div>
                             <div className="bg-slate-200 rounded p-2">
                                 <Label>Folio:</Label>
-                                <p className="w-full rounded-md">{unaInfo.folio || 'Folio no disponible'}</p>
+                                <p className="w-full rounded-md">{unaInfo.informe.folio || 'Folio no disponible'}</p>
                                 <input
+                                    id="folio"
                                     name="folio"
-                                    value={unaInfo.folio || ''}
+                                    value={unaInfo.informe.folio || ''}
                                     type="hidden"
                                 />
                             </div>
@@ -275,14 +277,20 @@ export const VerInforme = () => {
                                     </div>
                                 </GridContainer>
                                 <div className="bg-slate-200 rounded p-2 mb-4">
-                                    <Label>Insumos solicitados:</Label>
+                                    <div className="text-center">
+                                        <Label>Insumos solicitados:</Label>
+                                    </div>
                                     <ul className="list-disc pl-5">
                                         {hasSolicitud && unaInfo.informe?.solicitud?.material?.length > 0 ? (
                                             unaInfo.informe?.solicitud?.material?.map((mymaterial) => (
-                                                <li key={mymaterial._id}>{mymaterial.descripcion} - {mymaterial.cantidad}</li>
+                                                <li key={mymaterial._id} className="grid grid-cols-3 gap-4">
+                                                    <span>Unidad: {mymaterial.unidad}</span> {/* Campo de unidad */}
+                                                    <span>Material Entregado: {mymaterial.descripcion}</span>
+                                                    <span>Cantidad: {mymaterial.cantidad}</span>
+                                                </li>
                                             ))
                                         ) : (
-                                            <li>Insumos no disponibles</li>
+                                            <li>El material aun no ha sido entregado</li>
                                         )}
                                     </ul>
                                     <input
@@ -291,6 +299,7 @@ export const VerInforme = () => {
                                         type="hidden"
                                     />
                                 </div>
+
 
                                 <div className="bg-slate-200 rounded p-2 mb-4">
                                     <Label>Observaciones técnicas:</Label>

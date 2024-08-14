@@ -13,7 +13,7 @@ import "../../css/solicitud.css";
 import "../../css/Animaciones.css";
 import { GridContainer, Label, Title } from "../../components/ui";
 import { useOrden } from "../../context/ordenDeTrabajoContext";
-import scrollToTop from "../../util/Scroll";
+import scrollToTop from '../../util/Scroll';
 
 export const RegisterTecPage2 = () => {
 
@@ -59,13 +59,9 @@ export const RegisterTecPage2 = () => {
 
     const [recentSuggestions, setRecentSuggestions] = useState([]);
 
-    const [fechaOrden, setFechaOrden] = useState(() => {
-        const today = new Date();
-        return today.toISOString().split("T")[0];
-    });
-
     const [folioExterno, setFolioExterno] = useState("");
     const [items, setItems] = useState([{ cantidad: "", unidad: "", descripcion: "" }]);
+
     const refs = useRef([]);
 
     const [cargarDatos, setDatosCargados] = useState(false);
@@ -88,6 +84,9 @@ export const RegisterTecPage2 = () => {
 
     const onSubmit = async (data) => {
         try {
+
+            console.log('Datos del formulario:', data);
+            console.log('Errores:', errors);
             if (subiendoImagenesRef.current && !subiendoImagenesRef.current.hasFiles()) {
                 setError("images", { type: "manual", message: "Debe subir al menos una imagen." });
                 return;
@@ -136,10 +135,6 @@ export const RegisterTecPage2 = () => {
 
     const limpiar = () => {
         reset();
-        setFechaOrden(() => {
-            const today = new Date();
-            return today.toISOString().split("T")[0];
-        });
         setFolioExterno("");
         setItems([{ cantidad: "", unidad: "", descripcion: "" }]);
         if (subiendoImagenesRef.current) {
@@ -166,7 +161,6 @@ export const RegisterTecPage2 = () => {
         const newItems = [...items];
         newItems[index].cantidad = newValue;
         setItems(newItems);
-        
     };
 
     const handleInputChange = (index, value, field) => {
@@ -191,6 +185,8 @@ export const RegisterTecPage2 = () => {
         const newItems = [...items, duplicatedItem]; // Agrega el ítem duplicado a la lista
         setItems(newItems); // Actualiza el estado con el nuevo array
     };
+
+    
 
     const eliminarItem = (index, e) => {
         e.preventDefault();
@@ -366,7 +362,7 @@ export const RegisterTecPage2 = () => {
                                                         setRecentSuggestions={setRecentSuggestions}
                                                         inputRefs={refs}
                                                         placeholder="Ingrese una descripción"
-                                                        fieldsToCheck={['Observacionestecnicas', 'descripcionDelServicio', 'soliInsumosDescripcion']}
+                                                        fieldsToCheck={['materialesDescripcion']}
                                                         inputProps={{
                                                             type: "text",
                                                             maxLength: 200,

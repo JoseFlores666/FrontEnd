@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 import { Title, Label, GridContainer } from '../../components/ui/index.js';
 import { useOrden } from '../../context/ordenDeTrabajoContext.jsx';
 import { EncabezadoFormulario } from '../../components/ui/Encabezado.jsx';
-import scrollToTop from "../../util/Scroll";
+import scrollToTop from '../../util/Scroll';
 
 export default function AsignarTecnico() {
     const navigate = useNavigate();
@@ -19,9 +19,9 @@ export default function AsignarTecnico() {
     const { traerUnaInfo, traerTecnicos, tecnicos, evaluarInforme, unaInfo } = useOrden()
 
     const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm(
-        // {
-        // resolver: zodResolver(asignarTecnicoSchema),
-        // }
+        {
+            resolver: zodResolver(asignarTecnicoSchema),
+        }
     );
 
     const [datosCargados, setDatosCargados] = useState(false);
@@ -92,7 +92,11 @@ export default function AsignarTecnico() {
                     <Label>Encargado de la actividad:</Label>
                     <select
                         {...register("tecnico", { required: "Seleccionar un técnico es requerido" })}
-                        className="w-full p-3 border border-gray-400 bg-gray-50 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                        className="w-full p-3 border border-gray-400 bg-gray-50 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                        onChange={(e) => {
+                            setValue("tecnico", e.target.value, { shouldValidate: true });
+                        }}
+                    >
                         <option value="">Selecciona un Técnico</option>
                         {tecnicos.map(tecnico => (
                             <option key={tecnico._id} value={tecnico._id}>
@@ -100,6 +104,9 @@ export default function AsignarTecnico() {
                             </option>
                         ))}
                     </select>
+                    {errors.tecnico && (
+                <p className="text-red-500">{errors.tecnico.message}</p>
+              )}
                     <div className="flex gap-2 justify-center mt-4">
                         <Link
                             to={`/tecnico/orden`}
@@ -115,7 +122,7 @@ export default function AsignarTecnico() {
                         </button>
                     </div>
                 </div>
-            </form>
-        </div>
+            </form >
+        </div >
     );
 }

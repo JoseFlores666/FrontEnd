@@ -8,7 +8,7 @@ import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { ImFileEmpty } from "react-icons/im";
 import { Td, Th, EstadoButton } from "../../../components/ui";
 import Swal from "sweetalert2";
-import scrollToTop from "../../../util/Scroll";
+import scrollToTop from '../../../util/Scroll';
 
 export function SolicitudTable({ }) {
   const [searchTerm, setSearchTerm] = useState("");
