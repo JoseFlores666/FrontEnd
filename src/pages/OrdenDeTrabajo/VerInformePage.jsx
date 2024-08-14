@@ -284,9 +284,9 @@ export const VerInforme = () => {
                                         {hasSolicitud && unaInfo.informe?.solicitud?.material?.length > 0 ? (
                                             unaInfo.informe?.solicitud?.material?.map((mymaterial) => (
                                                 <li key={mymaterial._id} className="grid grid-cols-3 gap-4">
+                                                    <span>Cantidad: {mymaterial.cantidad}</span>
                                                     <span>Unidad: {mymaterial.unidad}</span> {/* Campo de unidad */}
                                                     <span>Material Entregado: {mymaterial.descripcion}</span>
-                                                    <span>Cantidad: {mymaterial.cantidad}</span>
                                                 </li>
                                             ))
                                         ) : (
