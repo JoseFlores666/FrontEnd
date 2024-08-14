@@ -128,13 +128,16 @@ export const VerInforme = () => {
             try {
                 await traerUnaInfo(id);
                 setDatosCargados(true);
+                
                 await getFirmas();
+
             } catch (error) {
                 console.error("Error al ejecutar la funcion traer datos", error);
             }
         };
         if (!datosCargados) {
             traerdatos();
+            llenadoFirmas();
         }
     }, [datosCargados, traerUnaInfo, id]);
 
@@ -325,9 +328,9 @@ export const VerInforme = () => {
                                 <div className="grid grid-cols-2 text-center">
                                     <div>
                                         <Label>Nombre del Personal del DEP MSG</Label>
-                                        
 
-                                        <input type="hidden" id="personalDEP" name="personalDEP" />
+
+                                        <input type="text" id="personalDEP" name="personalDEP" />
                                     </div>
                                     <div>
                                         <Label>Nombre y Firma de Conformidad del Servicio
