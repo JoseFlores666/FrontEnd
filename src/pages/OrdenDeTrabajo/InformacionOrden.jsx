@@ -38,7 +38,7 @@ export const InformacionOrden = () => {
                 await await traerUnaInfo(id);
                 await await traerHistorialOrden(id);
                 if (unaInfo.informe?.solicitud?.diagnostico) {
-                    setDiagnostico()
+                    setDiagnostico(unaInfo.informe?.solicitud?.diagnostico)
                 }
             } catch (error) {
                 console.error("Error al cargar los datos", error);

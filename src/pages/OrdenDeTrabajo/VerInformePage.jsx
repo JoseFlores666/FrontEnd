@@ -135,6 +135,10 @@ export const VerInforme = () => {
             try {
                 await traerUnaInfo(id);
                 console.log(unaInfo)
+                if (unaInfo?.informe?.solicitud?.personalDEPMSG) {
+                    setPersonalDEP(unaInfo.informe.solicitud.personalDEPMSG);
+                }
+
                 await getFirmas();
                 await traerHistorialOrden();
 
@@ -148,7 +152,7 @@ export const VerInforme = () => {
             traerdatos();
             llenadoFirmas();
         }
-    }, [datosCargados, traerUnaInfo, id, traerHistorialOrden,]);
+    }, [datosCargados, traerUnaInfo, id, traerHistorialOrden,unaInfo,]);
 
     const hasInforme = unaInfo && unaInfo.informe;
     const hasSolicitud = unaInfo && unaInfo.informe?.solicitud;
@@ -371,11 +375,11 @@ export const VerInforme = () => {
                                         </Label>
                                         <p className="w-full rounded-md">{firmas.solicitud}</p>
                                         <input
-                                        id="directivo"
-                                        name="directivo"
-                                        value={firmas.solicitud}
-                                        type="hidden"
-                                    />
+                                            id="directivo"
+                                            name="directivo"
+                                            value={firmas.solicitud}
+                                            type="hidden"
+                                        />
                                     </div>
 
                                 </div>
