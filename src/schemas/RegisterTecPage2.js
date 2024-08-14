@@ -2,12 +2,11 @@ import { z } from "zod";
 
 const itemSchema = z.object({
   cantidad: z
-    .string()
-    .nonempty({ message: "La cantidad es obligatoria" })
-    .transform((val) => parseInt(val, 10))
-    .refine((val) => val >= 0, {
+    .union([z.string(), z.number()])
+    .refine((val) => parseInt(val, 10) >= 0, {
       message: "La cantidad debe ser un número positivo o 0",
-    }),
+    })
+    .transform((val) => parseInt(val, 10)),
   unidad: z.string().nonempty({ message: "La unidad es requerida" }),
   descripcion: z.string().nonempty({ message: "Descripción es requerida" }),
 });

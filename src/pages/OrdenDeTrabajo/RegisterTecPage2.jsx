@@ -31,7 +31,31 @@ export const RegisterTecPage2 = () => {
 
     const [show, setShow] = useState(false);
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+    const [loading, setLoading] = useState(true);
 
+    const { traerUnaInfo, unaInfo,
+        traerHistorialOrden, historialOrden, traerFolioInternoInforme,
+        miFolioInternoInfo, crearDEPInforme, traerImagenInfo, imagenInfo, eliminaImagen } = useOrden();
+
+    const [recentSuggestions, setRecentSuggestions] = useState([]);
+
+    const [folioExterno, setFolioExterno] = useState("");
+    const [items, setItems] = useState([{ cantidad: "", unidad: "", descripcion: "" }]);
+
+    const refs = useRef([]);
+
+    const [cargarDatos, setDatosCargados] = useState(false);
+
+    useEffect(() => {
+        const iniciarDatos = async () => {
+            await traerImagenInfo(id);
+            setDatosCargados(true);
+        };
+        if (!cargarDatos) {
+            iniciarDatos();
+        }
+        scrollToTop();
+    }, [id, traerImagenInfo, cargarDatos]);
 
     const handleShow = (index) => {
         setSelectedImageIndex(index);
@@ -51,35 +75,6 @@ export const RegisterTecPage2 = () => {
             prevIndex === 0 ? imagenInfo.length - 1 : prevIndex - 1
         );
     };
-
-
-    const { traerUnaInfo, unaInfo,
-        traerHistorialOrden, historialOrden, traerFolioInternoInforme,
-        miFolioInternoInfo, crearDEPInforme, traerImagenInfo, imagenInfo, eliminaImagen } = useOrden();
-
-    const [recentSuggestions, setRecentSuggestions] = useState([]);
-
-    const [folioExterno, setFolioExterno] = useState("");
-    const [items, setItems] = useState([{ cantidad: "", unidad: "", descripcion: "" }]);
-
-    const refs = useRef([]);
-
-    const [cargarDatos, setDatosCargados] = useState(false);
-
-    useEffect(() => {
-        const iniciarDatos = async () => {
-            await traerImagenInfo(id);
-
-            setDatosCargados(true);
-        };
-        if (!cargarDatos) {
-            iniciarDatos();
-        }
-        scrollToTop();
-
-    }, [id, traerImagenInfo, cargarDatos]);
-
-
 
 
     const onSubmit = async (data) => {
@@ -120,6 +115,11 @@ export const RegisterTecPage2 = () => {
         }
     };
 
+    useEffect(() => {
+        if (cargarDatos && unaInfo) {
+            llenarTabla();
+        }
+    }, [cargarDatos, unaInfo]);
     const llenarTabla = () => {
         if (unaInfo.informe?.solicitud?.material) {
             console.log(unaInfo.informe?.solicitud?.material)
@@ -129,8 +129,8 @@ export const RegisterTecPage2 = () => {
                 setValue(`items[${index}].descripcion`, material.descripcion);
             });
             setItems(unaInfo.informe?.solicitud?.material);
-
         }
+        setLoading(false)
     };
 
     const limpiar = () => {
@@ -186,8 +186,6 @@ export const RegisterTecPage2 = () => {
         setItems(newItems); // Actualiza el estado con el nuevo array
     };
 
-    
-
     const eliminarItem = (index, e) => {
         e.preventDefault();
         setItems(items.filter((_, i) => i !== index));
@@ -211,7 +209,9 @@ export const RegisterTecPage2 = () => {
             console.error('Error al eliminar técnico:', error);
         }
     };
-
+    if (loading) {
+        return <div>Loading...</div>;
+    }
     return (
         <div className="mx-auto max-w-5xl p-4 text-black">
             <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-6xl">
