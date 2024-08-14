@@ -241,28 +241,63 @@ export function Historial() {
             )}
             {isFiltroModalOpen && (
                 <div
-                    className="fixed inset-0 text-black flex items-center justify-center bg-gray-800 bg-opacity-50"
+                    className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-70"
                     onClick={cerrarModalFiltro}
                 >
                     <div
-                        className="bg-white p-4 rounded-lg w-1/2"
+                        className="bg-white p-6 rounded-lg shadow-lg w-3/4 max-w-md"
                         ref={modalRef}
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <h2 className="text-xl text-center font-bold  text-black mb-4">Seleccionar Movimiento</h2>
-                        <div className="grid grid-cols-2 gap-4">
-                            <button onClick={() => aplicarFiltro("")} className="bg-blue-500 text-white py-2 px-4 rounded">Ver Todos</button>
-                            <button onClick={() => aplicarFiltro("Entrega de materiales")} className="bg-blue-500 text-white py-2 px-4 rounded">Entrega de materiales en la solicitud</button>
-                            <button onClick={() => aplicarFiltro("Creación de la solicitud")} className="bg-blue-500 text-white py-2 px-4 rounded">Creación de la solicitud</button>
-                            <button onClick={() => aplicarFiltro("Eliminación de la solicitud")} className="bg-blue-500 text-white py-2 px-4 rounded">Eliminación de la solicitud</button>
-                            {/* <button onClick={() => aplicarFiltro("Actualización de la solicitud")} className="bg-blue-500 text-white py-2 px-4 rounded">Actualización de la solicitud</button> */}
-                            <button onClick={() => aplicarFiltro("Asignación del folio")} className="bg-blue-500 text-white py-2 px-4 rounded">Asignación del folio</button>
-                            <button onClick={() => aplicarFiltro("Rechazo de la solicitud")} className="bg-blue-500 text-white py-2 px-4 rounded">Rechazo de la solicitud</button>
+                        <h2 className="text-2xl font-bold text-center text-gray-900 mb-6">Seleccionar Movimiento</h2>
+                        <div className="grid grid-cols-1 gap-4 mb-6">
+                            <button
+                                onClick={() => aplicarFiltro("")}
+                                className="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition"
+                            >
+                                Ver Todos
+                            </button>
+                            <button
+                                onClick={() => aplicarFiltro("Entrega de materiales")}
+                                className="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition"
+                            >
+                                Entrega de materiales en la solicitud
+                            </button>
+                            <button
+                                onClick={() => aplicarFiltro("Creación de la solicitud")}
+                                className="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition"
+                            >
+                                Creación de la solicitud
+                            </button>
+                            <button
+                                onClick={() => aplicarFiltro("Eliminación de la solicitud")}
+                                className="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition"
+                            >
+                                Eliminación de la solicitud
+                            </button>
+                            <button
+                                onClick={() => aplicarFiltro("Asignación del folio")}
+                                className="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition"
+                            >
+                                Asignación del folio
+                            </button>
+                            <button
+                                onClick={() => aplicarFiltro("Rechazo de la solicitud")}
+                                className="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition"
+                            >
+                                Rechazo de la solicitud
+                            </button>
                         </div>
-                        <button className="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg" onClick={cerrarModalFiltro}>Cerrar</button>
+                        <button
+                            className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition"
+                            onClick={cerrarModalFiltro}
+                        >
+                            Cerrar
+                        </button>
                     </div>
                 </div>
             )}
+
         </div >
     );
 }
