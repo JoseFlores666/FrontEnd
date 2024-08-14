@@ -4,6 +4,8 @@ import "../../css/solicitud.css";
 import { GridContainer, Label, Title } from "../../components/ui";
 import { useOrden } from "../../context/ordenDeTrabajoContext";
 import scrollToTop from "../../util/Scroll";
+import imgWord from "../../img/imagenWord.png";
+import imgPDF from "../../img/imagenPDF.png";
 
 export const VerInforme = () => {
     const { id } = useParams();
@@ -12,38 +14,104 @@ export const VerInforme = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [clickedPDF, setClickedPDF] = useState(false);
 
+    const validarCampos = () => {
+        if (!unaInfo?.informe?.fecha) {
+            alert('El campo "Fecha" está vacío.');
+            return false;
+        }
+        if (!unaInfo?.informe?.Solicita?.nombre) {
+            alert('El campo "Solicita" está vacío.');
+            return false;
+        }
+        if (!unaInfo?.folio) {
+            alert('El campo "Folio" está vacío.');
+            return false;
+        }
+        if (!unaInfo?.informe?.tipoDeSolicitud) {
+            alert('El campo "Tipo de Solicitud" está vacío.');
+            return false;
+        }
+        if (!unaInfo?.informe?.tipoDeMantenimiento) {
+            alert('El campo "Tipo de Mantenimiento" está vacío.');
+            return false;
+        }
+        if (!unaInfo?.informe?.tipoDeTrabajo) {
+            alert('El campo "Tipo de Trabajo" está vacío.');
+            return false;
+        }
+        if (!unaInfo?.informe?.Solicita?.areaSolicitante) {
+            alert('El campo "Área solicitante" está vacío.');
+            return false;
+        }
+        if (!unaInfo?.informe?.Solicita?.edificio) {
+            alert('El campo "Edificio" está vacío.');
+            return false;
+        }
+        if (!unaInfo?.informe?.descripcion) {
+            alert('El campo "Descripción del servicio" está vacío.');
+            return false;
+        }
+        if (!unaInfo?.informe?.solicitud?.tecnicos?.nombreCompleto) {
+            alert('El campo "Técnico Encargado" está vacío.');
+            return false;
+        }
+        if (!unaInfo?.informe?.solicitud?.fechaAtencion) {
+            alert('El campo "Fecha de atención" está vacío.');
+            return false;
+        }
+        if (!unaInfo?.informe?.solicitud?.diagnostico) {
+            alert('El campo "Observaciones técnicas" está vacío.');
+            return false;
+        }
+    
+        return true;
+    };
+    const handleDownloadClick = (event) => {
+        event.preventDefault();
+        if (validarCampos()) {
+            setIsOpen(true);
+        }
+    };
+        
+    
     const handleCloseModal = (event) => {
         event.preventDefault();
         setIsOpen(false);
-      };
+    };
 
-      const handleFormSubmit = async (data, event) => {
+    const handleOpenModal = (event) => {
         event.preventDefault();
-        await saveData(data);
-    
+        setIsOpen(true);
+    };
+
+    const subirDatos = (event) => {
+        event.preventDefault();
+        setIsOpen(false);
         const form = event.target;
+
         const formData = new FormData(form);
         const url = 'http://localhost/PlantillasWordyPdf/ManejoOrden.php';
-    
+        const method = 'POST';
+
         fetch(url, {
-          method: 'POST',
-          body: formData,
+            method: method,
+            body: formData,
         })
-          .then(response => {
-            if (!response.ok) {
-              throw new Error('Network response was not ok');
-            }
-            return response.text();
-          })
-          .then(text => {
-            console.log('Formulario enviado correctamente:', text);
-            if (clickedPDF) {
-              openVentana();
-            } else {
-              descargarWORD();
-            }
-          });
-      };
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(text => {
+                console.log('Formulario enviado correctamente:', text);
+                if (clickedPDF) {
+                    openVentana();
+                } else {
+                    descargarWORD();
+                }
+            });
+    };
 
     useEffect(() => {
         const traerdatos = async () => {
@@ -57,9 +125,7 @@ export const VerInforme = () => {
         if (!datosCargados) {
             traerdatos();
         }
-        scrollToTop();
-
-    }, [datosCargados, traerUnaInfo, unaInfo]);
+    }, [datosCargados, traerUnaInfo, id]);
 
     const hasInforme = unaInfo && unaInfo.informe;
     const hasSolicitud = unaInfo && unaInfo.informe?.solicitud;
@@ -81,7 +147,7 @@ export const VerInforme = () => {
 
     return (
         <div className="mx-auto max-w-6xl p-4 text-black">
-            <form>
+            <form onSubmit={subirDatos}>
                 {datosCargados && unaInfo ? (
                     <div className="bg-white p-6 rounded-md shadow-md">
                         <Title showBackButton={true}>Informe Completo de Mantenimiento</Title>
@@ -89,48 +155,99 @@ export const VerInforme = () => {
                             <div className="bg-slate-200 rounded p-2">
                                 <Label>Fecha:</Label>
                                 <p className="w-full rounded-md">{hasInforme ? new Date(unaInfo.informe.fecha).toLocaleDateString() : 'Fecha no disponible'}</p>
+                                <input
+                                    id="fechaOrden"
+                                    name="fechaOrden"
+                                    value={hasInforme ? new Date(unaInfo.informe.fecha).toLocaleDateString() : ''}
+                                    type="hidden"
+                                />
                             </div>
                             <div className="bg-slate-200 rounded p-2">
                                 <Label>Solicita:</Label>
                                 <p className="w-full rounded-md">{hasInforme && unaInfo.informe.Solicita ? unaInfo.informe.Solicita.nombre : 'Solicita no disponible'}</p>
+                                <input
+                                    name="solicita"
+                                    value={hasInforme && unaInfo.informe.Solicita ? unaInfo.informe.Solicita.nombre : ''}
+                                    type="hidden"
+                                />
                             </div>
                             <div className="bg-slate-200 rounded p-2">
                                 <Label>Folio:</Label>
                                 <p className="w-full rounded-md">{unaInfo.folio || 'Folio no disponible'}</p>
+                                <input
+                                    name="folio"
+                                    value={unaInfo.folio || ''}
+                                    type="hidden"
+                                />
                             </div>
                         </GridContainer>
                         <GridContainer>
                             <div className="bg-slate-200 rounded p-2">
                                 <Label>Tipo de Solicitud:</Label>
                                 <p className="w-full rounded-md">{hasInforme ? unaInfo.informe?.tipoDeSolicitud : 'Tipo de Solicitud no disponible'}</p>
+                                <input
+                                    name="tipoDeSolicitud"
+                                    value={hasInforme ? unaInfo.informe?.tipoDeSolicitud : ''}
+                                    type="hidden"
+                                />
                             </div>
                             <div className="bg-slate-200 rounded p-2">
                                 <Label>Tipo de Mantenimiento:</Label>
                                 <p className="w-full rounded-md">{hasInforme ? unaInfo.informe?.tipoDeMantenimiento : 'Tipo de Mantenimiento no disponible'}</p>
+                                <input
+                                    name="tipoDeMantenimiento"
+                                    value={hasInforme ? unaInfo.informe?.tipoDeMantenimiento : ''}
+                                    type="hidden"
+                                />
                             </div>
                             <div className="bg-slate-200 rounded p-2">
                                 <Label>Tipo de Trabajo:</Label>
                                 <p className="w-full rounded-md">{hasInforme ? unaInfo.informe?.tipoDeTrabajo : 'Tipo de Trabajo no disponible'}</p>
+                                <input
+                                    name="tipoDeTrabajo"
+                                    value={hasInforme ? unaInfo.informe?.tipoDeTrabajo : ''}
+                                    type="hidden"
+                                />
                             </div>
                         </GridContainer>
                         <GridContainer>
                             <div className="bg-slate-200 rounded p-2">
                                 <Label>Área solicitante:</Label>
                                 <p className="w-full rounded-md">{hasInforme && unaInfo.informe?.Solicita ? unaInfo.informe.Solicita.areaSolicitante : 'Área solicitante no disponible'}</p>
+                                <input
+                                    id="areasoli"
+                                    name="areasoli"
+                                    value={hasInforme && unaInfo.informe?.Solicita ? unaInfo.informe.Solicita.areaSolicitante : ''}
+                                    type="hidden"
+                                />
                             </div>
-
                             <div className="bg-slate-200 rounded p-2">
                                 <Label>Edificio:</Label>
-                                <p className="w-full rounded-md">{hasInforme && unaInfo.informe.Solicita ? unaInfo.informe.Solicita.edificio : 'Edificio no disponible'}</p>
+                                <p className="w-full rounded-md">{hasInforme && unaInfo.informe?.Solicita ? unaInfo.informe.Solicita.edificio : 'Edificio no disponible'}</p>
+                                <input
+                                    name="edificio"
+                                    value={hasInforme && unaInfo.informe?.Solicita ? unaInfo.informe.Solicita.edificio : ''}
+                                    type="hidden"
+                                />
                             </div>
                         </GridContainer>
                         <div className="bg-slate-200 rounded p-2 mb-5">
                             <Label>Descripción del servicio:</Label>
                             <p className="w-full">{hasInforme ? unaInfo.informe.descripcion : 'Descripción no disponible'}</p>
+                            <input
+                                name="descripcion"
+                                value={hasInforme ? unaInfo.informe.descripcion : ''}
+                                type="hidden"
+                            />
                         </div>
                         <div className="bg-slate-200 rounded p-2 mb-5">
-                            <Label>Tecnico Encargado:</Label>
-                            <p className="w-full">{hasInforme ? unaInfo.informe?.solicitud?.tecnicos?.nombreCompleto : 'Tenico no disponible'}</p>
+                            <Label>Técnico Encargado:</Label>
+                            <p className="w-full">{hasInforme ? unaInfo.informe?.solicitud?.tecnicos?.nombreCompleto : 'Técnico no disponible'}</p>
+                            <input
+                                name="tecnicoEncargado"
+                                value={hasInforme ? unaInfo.informe?.solicitud?.tecnicos?.nombreCompleto : ''}
+                                type="hidden"
+                            />
                         </div>
 
                         {unaInfo.estado !== "Declinada" && hasSolicitud && (
@@ -140,11 +257,21 @@ export const VerInforme = () => {
                                     <div className="bg-slate-200 rounded p-2">
                                         <Label>Fecha de atención:</Label>
                                         <p className="w-full rounded-md">{hasSolicitud && unaInfo.informe?.solicitud?.fechaAtencion ? new Date(unaInfo.informe?.solicitud?.fechaAtencion).toLocaleDateString() : 'Fecha de atención no disponible'}</p>
+                                        <input
+                                            name="fechaAtencion"
+                                            value={hasSolicitud && unaInfo.informe?.solicitud?.fechaAtencion ? new Date(unaInfo.informe?.solicitud?.fechaAtencion).toLocaleDateString() : ''}
+                                            type="hidden"
+                                        />
                                     </div>
                                     <div></div>
                                     <div className="bg-slate-200 rounded p-2">
                                         <Label>Estado:</Label>
                                         <p className="w-full rounded-md">{unaInfo.informe?.estado?.nombre || 'Estado no disponible'}</p>
+                                        <input
+                                            name="estado"
+                                            value={unaInfo.informe?.estado?.nombre || ''}
+                                            type="hidden"
+                                        />
                                     </div>
                                 </GridContainer>
                                 <div className="bg-slate-200 rounded p-2 mb-4">
@@ -158,19 +285,32 @@ export const VerInforme = () => {
                                             <li>Insumos no disponibles</li>
                                         )}
                                     </ul>
+                                    <input
+                                        name="items"
+                                        value={JSON.stringify(hasSolicitud && unaInfo.informe?.solicitud?.material ? unaInfo.informe.solicitud.material : [])}
+                                        type="hidden"
+                                    />
                                 </div>
+
                                 <div className="bg-slate-200 rounded p-2 mb-4">
                                     <Label>Observaciones técnicas:</Label>
-                                    <p className="w-full rounded-md">{hasSolicitud ? unaInfo.informe?.solicitud?.diagnostico : 'Diagnostoco técnico no disponibles'}</p>
+                                    <p className="w-full rounded-md">{hasSolicitud ? unaInfo.informe?.solicitud?.diagnostico : 'Diagnóstico técnico no disponible'}</p>
+                                    <input
+                                        id="obs"
+                                        name="obs"
+                                        value={hasSolicitud ? unaInfo.informe?.solicitud?.diagnostico : ''}
+                                        type="hidden"
+                                    />
                                 </div>
                             </>
                         )}
                         <div className="flex items-center justify-center">
                             <button
-                                type="submit"
+                                type="button"
+                                onClick={handleDownloadClick}
                                 className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md border border-black"
                             >
-                                Guardar cambios
+                                Descargar Archivo
                             </button>
                         </div>
                     </div>

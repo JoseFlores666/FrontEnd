@@ -150,12 +150,12 @@ export const RegisterSolicitudPage = () => {
         getIdsProyectYAct(unasoli.proyecto._id);
 
         if (unasoli.actividades && unasoli.actividades.length > 0) {
-        
+
 
           const primeraActividad = unasoli.actividades[0];
 
           console.log(primeraActividad)
-          setActividad(primeraActividad.actividadRef );
+          setActividad(primeraActividad.actividadRef);
           setMyActividad_(primeraActividad.nombre || "");
 
           setSelectedActividad({ id: primeraActividad.actividadRef, nombre: primeraActividad.nombreActividadPropio })
