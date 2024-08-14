@@ -17,7 +17,7 @@ import {
     getEstadosOrdenTrabajo,
     createTecnico, deleteTecnico,
     getTecnicoPorId, getTecnicosPorInforme,
-    updateTecnico, actualizarInformes, eliminarUnaImagen,AsignarlePersonalDEPMSG
+    updateTecnico, actualizarInformes, eliminarUnaImagen, AsignarlePersonalDEPMSG
 } from "../api/informe";
 
 import { gethistorialOrdenTrabajo, getHistorialNombreFirmas } from '../api/historialInput'
@@ -60,7 +60,6 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
     const traerFiltrarInformesEstado = async (mesAnioIdestado) => {
         try {
             const res = await filtrarInformes(mesAnioIdestado);
-            console.log(res.data);
             setfiltrarInforme(res.data);
         } catch (error) {
             console.error("Error al traer informes:", error);
@@ -141,7 +140,7 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
     };
     const asignarPersonalDEPMSG = async (id, personalDEP) => {
         try {
-           
+
             const res = await AsignarlePersonalDEPMSG(id, personalDEP);
             return res;
         } catch (error) {
@@ -182,7 +181,6 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
     const eliminaImagen = async (id, public_id) => {
         try {
             const res = await eliminarUnaImagen(id, public_id);
-            console.log(res)
             return res;
         } catch (error) {
             console.error("Error al eliminar informe:", error);

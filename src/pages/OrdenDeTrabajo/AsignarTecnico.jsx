@@ -44,9 +44,10 @@ export default function AsignarTecnico() {
     }, [traerTecnicos, traerUnaInfo, datosCargados]);
 
     const llenarDatos = () => {
-        if (tecnicos.length > 0) {
-            setDatosCargados(true);
+        if (tecnicos.length > 0 && unaInfo && unaInfo.informe?.solicitud?.tecnicos?._id) {
+            setValue("tecnico", unaInfo.informe?.solicitud?.tecnicos?._id);
         }
+        setDatosCargados(true);
     };
 
     const onSubmit = async (data, e) => {
@@ -105,8 +106,8 @@ export default function AsignarTecnico() {
                         ))}
                     </select>
                     {errors.tecnico && (
-                <p className="text-red-500">{errors.tecnico.message}</p>
-              )}
+                        <p className="text-red-500">{errors.tecnico.message}</p>
+                    )}
                     <div className="flex gap-2 justify-center mt-4">
                         <Link
                             to={`/tecnico/orden`}

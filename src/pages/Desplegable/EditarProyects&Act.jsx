@@ -76,6 +76,8 @@ export const ProjectAndActManager = () => {
                 Swal.fire("Error de servidor", "Error al crear su actividad ", "info");
             }
             setNewActivity({ nombre: '', descripcion: '' });
+        } else {
+            Swal.fire("Informativo", "Llena el campo", "info");
         }
     };
     const updateActivity = async () => {
@@ -172,8 +174,11 @@ export const ProjectAndActManager = () => {
     };
 
     const removeActivityField = (index) => {
-        const updatedActivities = newActivities.filter((_, i) => i !== index);
-        setNewActivities(updatedActivities);
+        if (newActivities.length > 1) {
+            const updatedActivities = newActivities.filter((_, i) => i !== index);
+            setNewActivities(updatedActivities);
+        }
+        setNewActivities([{ nombre: '', descripcion: '' }]);
     };
 
     const CrearNuevasActividades = async () => {
@@ -315,7 +320,7 @@ export const ProjectAndActManager = () => {
     const manejarActualizacionProyecto = async (projectId) => {
         if (editingProject.nombre.trim()) {
             try {
-                console.log('Actualizar Proyecto:', projectId, editingProject.nombre);
+
                 const res = await editarMyProyect(projectId, editingProject.nombre);// Asegúrate de enviar un objeto
                 if (res && res.data?.mensaje) {
                     Swal.fire("Proyecto Actualizado", res.data?.mensaje, "success");
@@ -502,10 +507,12 @@ export const ProjectAndActManager = () => {
                             </div>
                             <div className="mt-4">
                                 {modalView === 'create' ? (
-                                    <div>
+                                    <div className="h-96 overflow-y-auto p-4 border border-gray-300 rounded-lg">
+
                                         <h3 className="text-lg font-bold mb-4">Agregar Nuevas Actividades</h3>
                                         {newActivities.map((activity, index) => (
                                             <div key={index} className="mb-4 border p-4 rounded-lg shadow-sm">
+                                                <h4 className="text-md font-semibold mb-2">Actividad {index + 1}</h4>
                                                 <input
                                                     type="text"
                                                     placeholder="Nombre de la nueva actividad"

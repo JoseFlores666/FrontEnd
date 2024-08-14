@@ -3,13 +3,11 @@ import { useParams } from "react-router-dom";
 import "../../css/solicitud.css";
 import { GridContainer, Label, Title } from "../../components/ui";
 import { useOrden } from "../../context/ordenDeTrabajoContext";
-import scrollToTop from "../../util/Scroll";
 import imgWord from "../../img/imagenWord.png";
 import imgPDF from "../../img/imagenPDF.png";
 import { useSoli } from "../../context/SolicitudContext";
 import { AutocompleteInput } from "../../components/ui/AutocompleteInput";
-import Swal from "sweetalert2";
-import { faL } from "@fortawesome/free-solid-svg-icons";
+import { ImFileEmpty } from "react-icons/im";
 
 export const VerInforme = () => {
     const { id } = useParams();
@@ -134,7 +132,6 @@ export const VerInforme = () => {
         const traerdatos = async () => {
             try {
                 await traerUnaInfo(id);
-                console.log(unaInfo)
                 if (unaInfo?.informe?.solicitud?.personalDEPMSG) {
                     setPersonalDEP(unaInfo.informe.solicitud.personalDEPMSG);
                 }
@@ -152,7 +149,7 @@ export const VerInforme = () => {
             traerdatos();
             llenadoFirmas();
         }
-    }, [datosCargados, traerUnaInfo, id, traerHistorialOrden,unaInfo,]);
+    }, [datosCargados, traerUnaInfo, id, traerHistorialOrden, unaInfo,]);
 
     const hasInforme = unaInfo && unaInfo.informe;
     const hasSolicitud = unaInfo && unaInfo.informe?.solicitud;
@@ -397,9 +394,13 @@ export const VerInforme = () => {
                         </div>
                     </div>
                 ) : (
-                    <p>Cargando datos...</p>
+                    <div className="flex justify-center items-center  h-screen">
+                        <div className="text-center mt-50 bg-slate-2000 font-bold  ">
+                            <div className="mb-4 text-white">Cargando...</div>
+                            <ImFileEmpty className="animate-spin text-purple-50-500 text-white text-6xl " />
+                        </div>
+                    </div>
                 )}
-
                 {isOpen && (
                     <div
                         id="static-modal"

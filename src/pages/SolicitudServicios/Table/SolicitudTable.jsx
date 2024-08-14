@@ -57,7 +57,6 @@ export function SolicitudTable({ }) {
       try {
         await getSoli();
         await VercantTotalEstado();
-        console.log(soli)
         setSolicitudesFetched(true);
         setLoading(false);
       } catch (error) {
@@ -206,7 +205,6 @@ export function SolicitudTable({ }) {
 
   const handleOpenModal = (id, actividades) => {
     setSolicitudToReject(id);
-    console.log(actividades)
     setActividades(actividades.actividades)
     setIsModalOpen(true);
   };
@@ -227,7 +225,6 @@ export function SolicitudTable({ }) {
       }
       handleCloseModal();
     } catch (error) {
-      console.error("Error updating solicitud state:", error);
       alert("Hubo un error al rechazar la solicitud. Intenta nuevamente.");
       console.error("Error updating solicitud state:", error);
     }
@@ -602,7 +599,6 @@ export function SolicitudTable({ }) {
                       className="border text-black border-gray-300 rounded p-1 w-full"
                       value={estadoSeleccionado}
                       onChange={(e) => {
-                        console.log('estadoSeleccionado (onChange):', e.target.value);
                         setEstadoSeleccionado(e.target.value);
                       }}
                     >
@@ -618,7 +614,6 @@ export function SolicitudTable({ }) {
                   <div className="flex-1 flex items-end">
                     <button
                       onClick={() => {
-                        console.log('estadoSeleccionado (before filter):', estadoSeleccionado);
                         handleFilterChange();
                       }}
                       className="bg-green-500 text-white px-4 py-1 rounded h-fit"
@@ -640,7 +635,7 @@ export function SolicitudTable({ }) {
                   </thead>
                   <tbody>
                     {cantidadEstados.map((item, index) => (
-                      <tr key={editedData[index]?.id || item.id}>
+                      <tr key={item.id || `item-${index}`}>
                         <td className="border-b border-black px-4 py-2">
 
                           {isEditing ? (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faEdit, faSave, faTimes, faUserTie, faClipboard, faShippingFast } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faEdit, faSave, faTimes, faUserTie, faClipboard,faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 
 import { Link } from 'react-router-dom';
 import { ImFileEmpty } from "react-icons/im";
@@ -359,9 +359,9 @@ export const TecnicoPage = () => {
                       <Link
                         className="text-blue-600 hover:text-blue-800"
                         to={`/tecnico2/${solicitud._id}?`}
-                        title="Área de entrega del material"
+                        title="Finalización de informe"
                       >
-                        <FontAwesomeIcon icon={faShippingFast} />
+                        <FontAwesomeIcon icon={faCheckCircle} />
                       </Link>
                     )}
 
