@@ -56,6 +56,7 @@ export const InformacionOrden = () => {
 
     const onSubmit = async (flag, e) => {
         e.preventDefault();
+
         if (flag === false) {
             if (subiendoImagenesRef.current && !subiendoImagenesRef.current.hasFiles()) {
                 Swal.fire("Evidencia requerida", "Ingrese su evidencia", "info");
@@ -65,6 +66,7 @@ export const InformacionOrden = () => {
         }
         if (diagnostico.trim() !== "") {
 
+           
             try {
 
 
