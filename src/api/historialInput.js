@@ -5,3 +5,5 @@ export const gethistorialOrdenTrabajo = async () =>
   
 export const gethistorialSoli = async () =>
   axios.get(`/historialInput/historialSoli`);
+export const getHistorialNombreFirmas = async () =>
+  axios.get(`/historialInput/historialNombreFirmas`);

@@ -26,6 +26,9 @@ export const evaluacionDelInfome = async (id, idTecnico) =>
 export const capturarDiagnostico = async (id, diagnostico) =>
   axios.put(`/informe/capturarDiagnostico/${id}`, diagnostico);
 
+export const AsignarlePersonalDEPMSG = async (id, personalDEP) =>
+  axios.put(`/informe/AsignarlePersonalDEPMSG/${id}`, {personalDEP});
+
 export const eliminarUnaImagen = async (id, public_id) =>
   axios.delete(`/informe/eliminarUnaImagen/${id}`, { data: { public_id } });
 

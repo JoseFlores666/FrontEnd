@@ -17,10 +17,10 @@ import {
     getEstadosOrdenTrabajo,
     createTecnico, deleteTecnico,
     getTecnicoPorId, getTecnicosPorInforme,
-    updateTecnico, actualizarInformes,eliminarUnaImagen,
+    updateTecnico, actualizarInformes, eliminarUnaImagen,AsignarlePersonalDEPMSG
 } from "../api/informe";
 
-import { gethistorialOrdenTrabajo } from '../api/historialInput'
+import { gethistorialOrdenTrabajo, getHistorialNombreFirmas } from '../api/historialInput'
 import { getfolioInternoInforme } from '../api/folio'
 
 const OrdenTrabajoContext = createContext();
@@ -40,6 +40,8 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
     const [unTecnicoinfo, setUnTecnicoinfo] = useState([]);
     const [estados, setEstados] = useState([]);
     const [unaInfo, setUnaInfo] = useState([]);
+    const [historialNombreFirmas, setHistorialNombreFirmas] = useState([]);
+
     const [imagenInfo, setImagenInfo] = useState([]);
     const [encabezado, setEncabezado] = useState([]);
     const [historialOrden, setHistorialOrden] = useState([]);
@@ -137,6 +139,16 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
             setErrores(["Error al crear solicitud"]);
         }
     };
+    const asignarPersonalDEPMSG = async (id, personalDEP) => {
+        try {
+           
+            const res = await AsignarlePersonalDEPMSG(id, personalDEP);
+            return res;
+        } catch (error) {
+            console.error("Error al crear solicitud:", error);
+            setErrores(["Error al crear solicitud"]);
+        }
+    };
 
     const traerUnaInfo = async (id) => {
         try {
@@ -167,9 +179,9 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
             setErrores(["Error al eliminar informe"]);
         }
     };
-    const eliminaImagen = async (id,public_id) => {
+    const eliminaImagen = async (id, public_id) => {
         try {
-            const res = await eliminarUnaImagen(id,public_id);
+            const res = await eliminarUnaImagen(id, public_id);
             console.log(res)
             return res;
         } catch (error) {
@@ -214,6 +226,15 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
         try {
             const res = await getfolioInternoInforme();
             setMiFolioInternoInfo(res.data.folio);
+        } catch (error) {
+            console.error("Error al traer folio interno del informe:", error);
+            setErrores(["Error al traer folio interno del informe"]);
+        }
+    };
+    const traerHistorialNombreFirmas = async () => {
+        try {
+            const res = await getHistorialNombreFirmas();
+            setHistorialNombreFirmas(res.data);
         } catch (error) {
             console.error("Error al traer folio interno del informe:", error);
             setErrores(["Error al traer folio interno del informe"]);
@@ -334,6 +355,7 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
                 imagenInfo,
                 encabezado,
                 historialOrden,
+                historialNombreFirmas,
                 unTecnicos,
                 unTecnicoinfo,
                 //funciones
@@ -351,7 +373,9 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
                 editarEstadoInfo,
                 traerTecnicos,
                 traerHistorialOrden,
+                traerHistorialNombreFirmas,
                 traerFolioInternoInforme,
+                asignarPersonalDEPMSG,
                 // Otras funciones y estados...
                 actualizarEstadosOrden,
                 crearEstadosOrdenTrabajo,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import "../../css/solicitud.css";
 import { GridContainer, Label, Title } from "../../components/ui";
@@ -7,15 +7,24 @@ import scrollToTop from "../../util/Scroll";
 import imgWord from "../../img/imagenWord.png";
 import imgPDF from "../../img/imagenPDF.png";
 import { useSoli } from "../../context/SolicitudContext";
+import { AutocompleteInput } from "../../components/ui/AutocompleteInput";
+import Swal from "sweetalert2";
+import { faL } from "@fortawesome/free-solid-svg-icons";
 
 export const VerInforme = () => {
     const { id } = useParams();
-    const { traerUnaInfo, unaInfo } = useOrden();
+    const { traerUnaInfo, unaInfo, traerHistorialOrden,
+        historialOrden, asignarPersonalDEPMSG } = useOrden();
     const [datosCargados, setDatosCargados] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [clickedPDF, setClickedPDF] = useState(false);
     const { getFirmas, nombresFirmas } = useSoli();
+    const [personalDEP, setPersonalDEP] = useState("");
     const [firmas, setFirmas] = useState({ solicitud: "", jefeInmediato: "", direccion: "", autorizo: "" });
+    const [recentSuggestions, setRecentSuggestions] = useState([]);
+
+    const inputRef = useRef([]);
+
 
     const llenadoFirmas = () => {
         if (nombresFirmas.length > 0) {
@@ -79,6 +88,7 @@ export const VerInforme = () => {
     const handleDownloadClick = (event) => {
         event.preventDefault();
         if (validarCampos()) {
+            RegistrarNombrePersonalDEPMSG()
             setIsOpen(true);
         }
     };
@@ -89,16 +99,12 @@ export const VerInforme = () => {
         setIsOpen(false);
     };
 
-    const handleOpenModal = (event) => {
-        event.preventDefault();
-        setIsOpen(true);
-    };
 
     const subirDatos = (event) => {
         event.preventDefault();
         setIsOpen(false);
         const form = event.target;
-
+        setDatosCargados(false)
         const formData = new FormData(form);
         const url = 'http://localhost/PlantillasWordyPdf/ManejoOrden.php';
         const method = 'POST';
@@ -121,16 +127,19 @@ export const VerInforme = () => {
                     descargarWORD();
                 }
             });
+
     };
 
     useEffect(() => {
         const traerdatos = async () => {
             try {
                 await traerUnaInfo(id);
-                setDatosCargados(true);
-                
+                console.log(unaInfo)
                 await getFirmas();
+                await traerHistorialOrden();
 
+                llenadoFirmas()
+                setDatosCargados(true);
             } catch (error) {
                 console.error("Error al ejecutar la funcion traer datos", error);
             }
@@ -139,7 +148,7 @@ export const VerInforme = () => {
             traerdatos();
             llenadoFirmas();
         }
-    }, [datosCargados, traerUnaInfo, id]);
+    }, [datosCargados, traerUnaInfo, id, traerHistorialOrden,]);
 
     const hasInforme = unaInfo && unaInfo.informe;
     const hasSolicitud = unaInfo && unaInfo.informe?.solicitud;
@@ -157,6 +166,14 @@ export const VerInforme = () => {
         const url = 'http://localhost/PlantillasWordyPdf/ResultadoOrden.pdf';
         const features = 'menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes';
         window.open(url, '_blank', features);
+    };
+    const RegistrarNombrePersonalDEPMSG = async () => {
+        try {
+            await asignarPersonalDEPMSG(id, personalDEP)
+
+        } catch (error) {
+            console.log(error)
+        }
     };
 
     return (
@@ -328,16 +345,37 @@ export const VerInforme = () => {
                                 <div className="grid grid-cols-2 text-center">
                                     <div>
                                         <Label>Nombre del Personal del DEP MSG</Label>
+                                        <AutocompleteInput
+                                            index={0}
+                                            value={personalDEP || ""}
+                                            onChange={(newValue) => setPersonalDEP(newValue)}
+                                            data={historialOrden}
+                                            recentSuggestions={recentSuggestions}
+                                            setRecentSuggestions={setRecentSuggestions}
+                                            inputRefs={inputRef}
+                                            placeholder="Ingrese el nombre del Personal del DEP MSG"
+                                            fieldsToCheck={['personalDEPMSG']}
+                                            ConvertirAInput={true}
+                                            inputProps={{
+                                                type: "text",
+                                                maxLength: 500,
+                                                className: "w-full text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
+                                            }}
 
-
-                                        <input type="text" id="personalDEP" name="personalDEP" />
+                                        />
+                                        <input type="hidden" id="personalDEP" name="personalDEP" value={personalDEP} />
                                     </div>
                                     <div>
                                         <Label>Nombre y Firma de Conformidad del Servicio
                                             (Directivo y/o Jefatura de Dep., y/o Responsable de Área)
                                         </Label>
-                                        <input type="text" id="directivo" name="directivo" value={firmas.solicitud} />
-
+                                        <p className="w-full rounded-md">{firmas.solicitud}</p>
+                                        <input
+                                        id="directivo"
+                                        name="directivo"
+                                        value={firmas.solicitud}
+                                        type="hidden"
+                                    />
                                     </div>
 
                                 </div>
