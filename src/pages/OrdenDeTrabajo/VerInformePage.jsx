@@ -6,6 +6,7 @@ import { useOrden } from "../../context/ordenDeTrabajoContext";
 import scrollToTop from "../../util/Scroll";
 import imgWord from "../../img/imagenWord.png";
 import imgPDF from "../../img/imagenPDF.png";
+import { useSoli } from "../../context/SolicitudContext";
 
 export const VerInforme = () => {
     const { id } = useParams();
@@ -13,6 +14,15 @@ export const VerInforme = () => {
     const [datosCargados, setDatosCargados] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [clickedPDF, setClickedPDF] = useState(false);
+    const { getFirmas, nombresFirmas } = useSoli();
+    const [firmas, setFirmas] = useState({ solicitud: "", jefeInmediato: "", direccion: "", autorizo: "" });
+
+    const llenadoFirmas = () => {
+        if (nombresFirmas.length > 0) {
+            const { solicitud, revision, validacion, autorizacion } = nombresFirmas[0];
+            setFirmas({ solicitud, jefeInmediato: revision, direccion: validacion, autorizo: autorizacion });
+        }
+    };
 
     const validarCampos = () => {
         if (!unaInfo?.informe?.fecha) {
@@ -117,8 +127,8 @@ export const VerInforme = () => {
         const traerdatos = async () => {
             try {
                 await traerUnaInfo(id);
-                console.log(unaInfo)
                 setDatosCargados(true);
+                await getFirmas();
             } catch (error) {
                 console.error("Error al ejecutar la funcion traer datos", error);
             }
@@ -246,6 +256,7 @@ export const VerInforme = () => {
                             <Label>Técnico Encargado:</Label>
                             <p className="w-full">{hasInforme ? unaInfo.informe?.solicitud?.tecnicos?.nombreCompleto : 'Técnico no disponible'}</p>
                             <input
+                                id="tecnicoEncargado"
                                 name="tecnicoEncargado"
                                 value={hasInforme ? unaInfo.informe?.solicitud?.tecnicos?.nombreCompleto : ''}
                                 type="hidden"
@@ -311,6 +322,23 @@ export const VerInforme = () => {
                                         type="hidden"
                                     />
                                 </div>
+                                <div className="grid grid-cols-2 text-center">
+                                    <div>
+                                        <Label>Nombre del Personal del DEP MSG</Label>
+                                        
+
+                                        <input type="hidden" id="personalDEP" name="personalDEP" />
+                                    </div>
+                                    <div>
+                                        <Label>Nombre y Firma de Conformidad del Servicio
+                                            (Directivo y/o Jefatura de Dep., y/o Responsable de Área)
+                                        </Label>
+                                        <input type="text" id="directivo" name="directivo" value={firmas.solicitud} />
+
+                                    </div>
+
+                                </div>
+
                             </>
                         )}
                         <div className="flex items-center justify-center">
