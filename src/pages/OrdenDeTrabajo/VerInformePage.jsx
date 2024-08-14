@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import "../../css/solicitud.css";
 import { GridContainer, Label, Title } from "../../components/ui";
 import { useOrden } from "../../context/ordenDeTrabajoContext";
@@ -8,6 +8,7 @@ import imgPDF from "../../img/imagenPDF.png";
 import { useSoli } from "../../context/SolicitudContext";
 import { AutocompleteInput } from "../../components/ui/AutocompleteInput";
 import { ImFileEmpty } from "react-icons/im";
+import Swal from "sweetalert2";
 
 export const VerInforme = () => {
     const { id } = useParams();
@@ -20,7 +21,7 @@ export const VerInforme = () => {
     const [personalDEP, setPersonalDEP] = useState("");
     const [firmas, setFirmas] = useState({ solicitud: "", jefeInmediato: "", direccion: "", autorizo: "" });
     const [recentSuggestions, setRecentSuggestions] = useState([]);
-
+    const navigate = useNavigate();
     const inputRef = useRef([]);
 
 
@@ -118,7 +119,14 @@ export const VerInforme = () => {
                 return response.text();
             })
             .then(text => {
-                console.log('Formulario enviado correctamente:', text);
+
+                if (text) {
+                    Swal.fire("Completado", "Archivo generado con exito", "success").then(() => {
+                        navigate('/tecnico/orden');
+                    });
+                } else {
+                    Swal.fire("Error", "Error por favor revisarlo el api_key del api", "error");
+                }
                 if (clickedPDF) {
                     openVentana();
                 } else {
@@ -171,7 +179,6 @@ export const VerInforme = () => {
     const RegistrarNombrePersonalDEPMSG = async () => {
         try {
             await asignarPersonalDEPMSG(id, personalDEP)
-
         } catch (error) {
             console.log(error)
         }
