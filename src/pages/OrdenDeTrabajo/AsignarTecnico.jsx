@@ -13,16 +13,12 @@ import scrollToTop from '../../util/Scroll';
 
 export default function AsignarTecnico() {
     const navigate = useNavigate();
-
     const { id } = useParams();
+    const { traerUnaInfo, traerTecnicos, tecnicos, evaluarInforme, unaInfo } = useOrden();
 
-    const { traerUnaInfo, traerTecnicos, tecnicos, evaluarInforme, unaInfo } = useOrden()
-
-    const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm(
-        {
-            resolver: zodResolver(asignarTecnicoSchema),
-        }
-    );
+    const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm({
+        resolver: zodResolver(asignarTecnicoSchema),
+    });
 
     const [datosCargados, setDatosCargados] = useState(false);
 
@@ -34,13 +30,12 @@ export default function AsignarTecnico() {
             } catch (error) {
                 console.error("Error al cargar los datos", error);
             }
-        }
+        };
         if (!datosCargados) {
             iniciarDatos();
             llenarDatos();
         }
         scrollToTop();
-
     }, [traerTecnicos, traerUnaInfo, datosCargados]);
 
     const llenarDatos = () => {
@@ -84,11 +79,14 @@ export default function AsignarTecnico() {
         );
     }
 
+    // Filtrar técnicos activos
+    const tecnicosActivos = tecnicos.filter(tecnico => tecnico.activo);
+
     return (
-        <div className="flex items-center justify-center mx-auto max-w-7xl p-4 text-black" >
+        <div className="flex items-center justify-center mx-auto max-w-7xl p-4 text-black">
             <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-6xl">
                 <div className="bg-white p-6 rounded-md shadow-md">
-                    <Title showBackButton={true}>Asignar tecnico</Title>
+                    <Title showBackButton={true}>Asignar técnico</Title>
                     <EncabezadoFormulario unaInfo={unaInfo} />
                     <Label>Encargado de la actividad:</Label>
                     <select
@@ -99,7 +97,7 @@ export default function AsignarTecnico() {
                         }}
                     >
                         <option value="">Selecciona un Técnico</option>
-                        {tecnicos.map(tecnico => (
+                        {tecnicosActivos.map(tecnico => (
                             <option key={tecnico._id} value={tecnico._id}>
                                 {tecnico.nombreCompleto} - {tecnico.correo}
                             </option>
@@ -123,7 +121,7 @@ export default function AsignarTecnico() {
                         </button>
                     </div>
                 </div>
-            </form >
-        </div >
+            </form>
+        </div>
     );
 }

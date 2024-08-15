@@ -69,3 +69,6 @@ export const deleteTecnico = async (id) => axios.delete(`/tecnicos/${id}`);
 
 export const getTecnicosPorInforme = async (id) =>
   axios.get(`/informe/${id}/descripcion`);
+
+  export const desactivarTecnico = async (id) =>
+  axios.put(`/tecnicos/desactivarTecnico/${id}`);
