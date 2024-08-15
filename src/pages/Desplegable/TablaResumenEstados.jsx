@@ -1,12 +1,14 @@
 import React, { useMemo, useEffect, useState } from 'react';
+import { Th } from '../../components/ui/Th';
 
 export const TablaResumenEstados = ({ data, estados }) => {
     const [selectedYear, setSelectedYear] = useState('');
     const [filteredData, setFilteredData] = useState(data);
     const [estadoCounts, setEstadoCounts] = useState({});
+    const [years, setYears] = useState([]);
+    const [sortConfig, setSortConfig] = useState({ key: 'fecha', direction: 'desc' }); // Ordenación por fecha descendente por defecto
 
     useEffect(() => {
-        // Actualiza los conteos de estados a partir de la prop `estados`
         if (estados && estados.length > 0) {
             const estadoMap = {};
             estados.forEach(estado => {
@@ -17,26 +19,36 @@ export const TablaResumenEstados = ({ data, estados }) => {
     }, [estados]);
 
     useEffect(() => {
-        let yearFilteredData = data;
+        const uniqueYears = new Set();
+        data.forEach(solicitud => {
+            const solicitudYear = new Date(solicitud.fecha || solicitud.informe.fecha).getFullYear();
+            uniqueYears.add(solicitudYear);
+        });
+        const currentYear = new Date().getFullYear();
+        setSelectedYear(currentYear);
+        setYears(Array.from(uniqueYears).sort((a, b) => b - a));
+    }, [data]);
 
+    useEffect(() => {
+        let yearFilteredData = data;
         if (selectedYear) {
             yearFilteredData = data.filter(solicitud => {
                 const solicitudYear = new Date(solicitud.fecha || solicitud.informe.fecha).getFullYear();
                 return solicitudYear === parseInt(selectedYear, 10);
             });
         }
-
         setFilteredData(yearFilteredData);
     }, [selectedYear, data]);
 
     const rows = useMemo(() => {
         if (!filteredData) return [];
+
         const meses = [
             'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
             'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
         ];
 
-        return meses.map(mes => {
+        let rowData = meses.map(mes => {
             const solicitudesMes = filteredData.filter(solicitud => {
                 const solicitudMes = new Date(solicitud.fecha || solicitud.informe.fecha).toLocaleString('es-ES', { month: 'long' });
                 return solicitudMes.toLowerCase() === mes;
@@ -55,14 +67,23 @@ export const TablaResumenEstados = ({ data, estados }) => {
             return {
                 mes,
                 ...recibidaCounts,
-                total
+                total,
+                fecha: solicitudesMes.length ? new Date(Math.max(...solicitudesMes.map(s => new Date(s.fecha || s.informe.fecha)))) : null
             };
-        }).filter(row => row.total > 0); // Filtra los meses vacíos
-    }, [filteredData, estadoCounts]);
+        }).filter(row => row.total > 0);
+
+        // Ordenar según la configuración actual de sortConfig
+        rowData = rowData.sort((a, b) => {
+            if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === 'asc' ? -1 : 1;
+            if (a[sortConfig.key] > b[sortConfig.key]) return sortConfig.direction === 'asc' ? 1 : -1;
+            return 0;
+        });
+
+        return rowData;
+    }, [filteredData, estadoCounts, sortConfig]);
 
     const totals = useMemo(() => {
         const totalObj = {};
-
         rows.forEach(row => {
             Object.keys(row).forEach(key => {
                 if (key !== 'mes' && key !== 'total') {
@@ -70,34 +91,46 @@ export const TablaResumenEstados = ({ data, estados }) => {
                 }
             });
         });
-
         totalObj['total'] = rows.reduce((sum, row) => sum + row.total, 0);
-
         return totalObj;
     }, [rows]);
 
+    const requestSort = (key) => {
+        let direction = 'asc';
+        if (sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        } else if (sortConfig.key === key && sortConfig.direction === 'desc') {
+            direction = 'asc';
+        }
+        setSortConfig({ key, direction });
+    };
+
     return (
-        <div className="overflow-x-auto  bg-gray-100">
+        <div className="overflow-x-auto bg-gray-100">
             <div className="mb-4 flex items-center justify-center gap-4">
                 <label htmlFor="yearFilter" className="block text-gray-700 font-medium">Filtrar por año:</label>
-                <input
-                    type="number"
+                <select
                     id="yearFilter"
-                    min={2000}
                     className="max-w-48 text-black p-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                    placeholder="Ingrese el año"
                     value={selectedYear}
-                    onChange={(e) => setSelectedYear(e.target.value)}
-                />
+                    onChange={e => setSelectedYear(e.target.value)}
+                >
+                    <option value="">Todos los años</option>
+                    {years.map(year => (
+                        <option key={year} value={year}>
+                            {year}
+                        </option>
+                    ))}
+                </select>
             </div>
             <table className="w-full min-w-full divide-y divide-white-200 text-sm text-black rounded-lg text-center">
                 <thead className="bg-black text-white">
                     <tr>
-                        <th className="px-3 py-1 border-b text-white">Mes</th>
+                        <Th onClick={() => requestSort('mes')}>Mes</Th>
                         {Object.keys(estadoCounts).map(estado => (
-                            <th key={estado} className="px-3 py-1 border-b  text-white">{estado}</th>
+                            <Th key={estado} onClick={() => requestSort(estado)}>{estado}</Th>
                         ))}
-                        <th className="px-3 py-1 border-b text-left text-white">Total</th>
+                        <Th onClick={() => requestSort('total')}>Total</Th>
                     </tr>
                 </thead>
                 <tbody>
