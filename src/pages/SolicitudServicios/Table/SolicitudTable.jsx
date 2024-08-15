@@ -4,11 +4,13 @@ import { useAuth } from "../../../context/authContext";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faFileAlt, faEdit, faTruck, faTimesCircle, faCopy, faHistory, } from "@fortawesome/free-solid-svg-icons";
-import { faSave, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { ImFileEmpty } from "react-icons/im";
-import { Td, Th, EstadoButton } from "../../../components/ui";
+import { Td, Th, EstadoButton, Title } from "../../../components/ui";
 import Swal from "sweetalert2";
 import scrollToTop from '../../../util/Scroll';
+import { TablaResumenEstados } from "../../Desplegable/TablaResumenEstados";
+
 
 export function SolicitudTable({ }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -21,6 +23,7 @@ export function SolicitudTable({ }) {
 
   const [solicitudToReject, setSolicitudToReject] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpenResuEstado, setIsModalOpenResuEstado] = useState(false);
   const modalRef = useRef(null);
 
   const { soli, getSoli, deleteSolitud, declinarmySoi, VercantTotalEstado,
@@ -43,6 +46,12 @@ export function SolicitudTable({ }) {
   const [estadoCompletado, setEstadoCompletado] = useState([]);
   const [estadoRechazada, setEstadoRechazada] = useState([]);
 
+  const abrirModalResuEstado = () => {
+    setIsModalOpenResuEstado(true);
+  };
+  const cerrarModalResuEstado = () => {
+    setIsModalOpenResuEstado(false);
+  };
   const abrirModal = () => {
     setIsModalOpen2(true);
   };
@@ -57,6 +66,7 @@ export function SolicitudTable({ }) {
       try {
         await getSoli();
         await VercantTotalEstado();
+ 
         setSolicitudesFetched(true);
         setLoading(false);
       } catch (error) {
@@ -362,6 +372,31 @@ export function SolicitudTable({ }) {
         </div>
         <button onClick={abrirModal} className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >Consultar solicitudes</button>
+        <button onClick={abrirModalResuEstado} className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          Tabla Resumen de Solicitudes
+        </button>
+        {
+          isModalOpenResuEstado && (
+            <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+              <div className="bg-white text-gray-900 p-6 md:p-8 rounded-lg shadow-lg max-w-4xl w-full relative">
+                <div className="flex justify-between items-center mb-4 border-b border-gray-200 pb-4">
+                  <h2 className="text-xl font-semibold">Tabla Resumen de Solicitudes por año</h2>
+                  <button
+                    className="text-red-500 border border-red-500 px-2 py-1 rounded-lg hover:bg-red-100 transition-colors duration-150"
+                    title="Cerrar ventana emergente"
+                    onClick={cerrarModalResuEstado}
+                  >
+                    <FontAwesomeIcon icon={faTimes} />
+                  </button>
+                </div>
+                <div className="overflow-x-auto">
+                  <TablaResumenEstados data={soli} estados={cantidadEstados}/>
+                </div>
+              </div>
+            </div>
+          )
+        }
         <div>
           <label htmlFor="entries-per-page" className="mr-2 text-white">Entradas por página:</label>
           <select

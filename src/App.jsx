@@ -23,7 +23,7 @@ import { ProjectAndActManager } from "./pages/Desplegable/EditarProyects&Act"
 import { VerInforme } from "./pages/OrdenDeTrabajo/VerInformePage"
 import { InformacionOrden } from "./pages/OrdenDeTrabajo/InformacionOrden"
 import { Historial } from "./pages/SolicitudServicios/Historial"
-// import { EncabezadoFormulario } from "./pages/Encabezado";
+import { TablaResumenEstados } from "./pages/Desplegable/TablaResumenEstados";
 
 function App() {
   return (
@@ -42,6 +42,7 @@ function App() {
                     <Route path="/soli/registro/:id" element={<RegisterSolicitudPage />} />
                     <Route path="/soli/abonar/:id" element={<AbonoSolicitud />} />
                     <Route path="/soli" element={<SolicitudTable />} />
+                    <Route path="/soli/TablaResumenEstados" element={<TablaResumenEstados />} />
                     <Route path="/dashboard" element={<DashboardMenu />} />
                     <Route path="/soli/folioExterno/:id" element={<FolioExterno />} />
                     <Route path="/soli/editarFirmas/" element={<Firmas />} />
@@ -54,7 +55,7 @@ function App() {
                     <Route path="/proyectAndAct" element={<ProjectAndActManager />} />
                     <Route path="/verInforme/:id" element={<VerInforme />} />
                     <Route path="/informacionOrden/:id" element={<InformacionOrden />} />
-                    {/* <Route path="/encabezadoFormulario" element={<EncabezadoFormulario />} /> */}
+                   
                     <Route path="/historial/:id" element={<Historial />} />
                   </Route>
                 </Routes>

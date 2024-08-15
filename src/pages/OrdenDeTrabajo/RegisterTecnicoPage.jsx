@@ -36,6 +36,7 @@ export const RegisterTecnicoPage = () => {
   });
 
   const [recentSuggestions, setRecentSuggestions] = useState([]);
+  
   const [projectsLoaded, setProjectsLoaded] = useState(false);
   const [cargandoInforme, setCargandoInforme] = useState(editar);
   const showBackButton = editar;
