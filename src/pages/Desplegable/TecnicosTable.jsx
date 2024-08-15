@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useOrden } from '../../context/ordenDeTrabajoContext';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt, faClone, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faLock , faEdit,faClone } from '@fortawesome/free-solid-svg-icons';
 import { Label, Title } from '../../components/ui';
 
 export const TecnicosTable = () => {
@@ -11,13 +11,12 @@ export const TecnicosTable = () => {
     edad: '',
     telefono: '',
     correo: '',
-    area: ''
   });
   const [editId, setEditId] = useState(null);
   const [datosCargados, setDatosCargados] = useState(false);
   const {
     crearTecnico,
-    eliminarTecnico,
+    desactivarElTecnico,
     traerTecnicoPorId,
     traerTecnicos,
     actualizarTecnico,
@@ -32,7 +31,7 @@ export const TecnicosTable = () => {
         edad: unTecnicos.edad || '',
         telefono: unTecnicos.telefono || '',
         correo: unTecnicos.correo || '',
-        area: unTecnicos.area || ''
+      
       });
     } else {
       setForm({
@@ -40,7 +39,7 @@ export const TecnicosTable = () => {
         edad: '',
         telefono: '',
         correo: '',
-        area: ''
+
       });
     }
   }, [unTecnicos, editId]);
@@ -67,7 +66,7 @@ export const TecnicosTable = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (form.nombreCompleto.trim() && form.edad.toString().trim() && form.telefono.trim() && form.correo.trim() && form.area.trim()) {
+    if (form.nombreCompleto.trim() && form.edad.toString().trim() && form.telefono.trim() && form.correo.trim()) {
       try {
         if (editId) {
           const res = await actualizarTecnico(editId, form);
@@ -103,9 +102,9 @@ export const TecnicosTable = () => {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDesactivar = async (id) => {
     try {
-      const res = await eliminarTecnico(id);
+      const res = await desactivarElTecnico(id);
       if (res && res.data?.mensaje) {
         Swal.fire('Completado', res.data?.mensaje, 'success');
         await traerTecnicos();
@@ -113,7 +112,7 @@ export const TecnicosTable = () => {
         Swal.fire('Error', res?.error || 'Error desconocido', 'error');
       }
     } catch (error) {
-      console.error('Error al eliminar técnico:', error);
+      console.error('Error al desactivar al técnico:', error);
     }
   };
 
@@ -132,9 +131,9 @@ export const TecnicosTable = () => {
     <div className="container mx-auto p-4 max-w-4xl text-black">
       <form onSubmit={handleSubmit} className="bg-white shadow-lg rounded-lg px-8 pt-2 pb-8 mb-6">
         <Title showBackButton={true}>Gestión de Personal Técnico</Title>
-        
+
         <div className="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-         
+
           <div>
             <Label>Nombre:</Label>
             <input
@@ -145,7 +144,7 @@ export const TecnicosTable = () => {
               onChange={handleChange}
               required
               className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-              />
+            />
           </div>
           <div>
             <Label>Edad:</Label>
@@ -159,7 +158,7 @@ export const TecnicosTable = () => {
               onChange={handleChange}
               required
               className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-              />
+            />
           </div>
           <div>
             <Label>Número de Tel:</Label>
@@ -172,7 +171,7 @@ export const TecnicosTable = () => {
               required
               maxLength={10}
               className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-              />
+            />
           </div>
           <div>
             <Label>Correo:</Label>
@@ -184,24 +183,11 @@ export const TecnicosTable = () => {
               onChange={handleChange}
               required
               className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-              />
+            />
           </div>
-          <div>
-            <Label>Area Asignada:</Label>
-            <input
-              type="text"
-              name="area"
-              placeholder='Ingrese su Area en la universidad'
-              value={form.area}
-              onChange={handleChange}
-              required
-              className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-              />
-          </div>
-
         </div>
         <div className="flex items-center justify-center">
-        {editId && (
+          {editId && (
             <button
               type="button"
               onClick={limpiar}
@@ -216,7 +202,6 @@ export const TecnicosTable = () => {
           >
             {editId ? 'Actualizar' : 'Agregar Tecnico'}
           </button>
-         
         </div>
       </form>
 
@@ -227,31 +212,41 @@ export const TecnicosTable = () => {
             <th className="py-3 px-6 text-left">Edad</th>
             <th className="py-3 px-6 text-left">Teléfono</th>
             <th className="py-3 px-6 text-left">Correo</th>
-            <th className="py-3 px-6 text-left">Área</th>
             <th className="py-3 px-6 text-center">Acción</th>
           </tr>
         </thead>
         <tbody className="text-black text-sm font-medium">
-          {tecnicos.map((tecnico, index) => (
-            <tr key={index} className="border-b border-gray-200 hover:bg-gray-100">
+        {tecnicos.map((tecnico) => (
+            <tr key={tecnico._id} className="border-b border-gray-200 hover:bg-gray-100">
               <td className="py-3 px-6 text-left whitespace-nowrap">{tecnico.nombreCompleto}</td>
               <td className="py-3 px-6 text-left">{tecnico.edad}</td>
               <td className="py-3 px-6 text-left">{tecnico.telefono}</td>
               <td className="py-3 px-6 text-left">{tecnico.correo}</td>
-              <td className="py-3 px-6 text-left">{tecnico.area}</td>
               <td className="py-3 px-6 text-center">
-                <button
-                  className="text-red-600 hover:text-red-800 mx-1"
-                  onClick={() => handleDelete(tecnico._id)}
-                >
-                  <FontAwesomeIcon icon={faTrashAlt} />
-                </button>
-                <button
-                  className="text-blue-600 hover:text-blue-800 mx-1"
-                  onClick={() => handleEdit(tecnico._id)}
-                >
-                  <FontAwesomeIcon icon={faEdit} />
-                </button>
+                {!tecnico.activo ? (
+                  <button
+                    className="text-gray-500 cursor-not-allowed px-2 py-1 rounded-lg"
+                    title="Técnico inactivo"
+                    disabled
+                  >
+                    <FontAwesomeIcon icon={faLock} />
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      className="text-red-600 hover:text-red-800 mx-1"
+                      onClick={() => handleDesactivar(tecnico._id)}
+                    >
+                      <FontAwesomeIcon icon={faTrashAlt} />
+                    </button>
+                    <button
+                      className="text-blue-600 hover:text-blue-800 mx-1"
+                      onClick={() => handleEdit(tecnico._id)}
+                    >
+                      <FontAwesomeIcon icon={faEdit} />
+                    </button>
+                  </>
+                )}
               </td>
             </tr>
           ))}

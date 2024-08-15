@@ -12,12 +12,15 @@ import {
     llenadoDEPInforme,
     updateInfome,
     actualizarEstadosOrdenTrabajo,
-    crearEstadosOrdenTrabajo, declinarSoliOrdenTrabajo,
+    crearEstadosOrdenTrabajo,
+    declinarSoliOrdenTrabajo,
     getCantidadTotalOrdenTrabajoEstados,
     getEstadosOrdenTrabajo,
     createTecnico, deleteTecnico,
     getTecnicoPorId, getTecnicosPorInforme,
-    updateTecnico, actualizarInformes, eliminarUnaImagen, AsignarlePersonalDEPMSG
+    updateTecnico, actualizarInformes,
+    eliminarUnaImagen, AsignarlePersonalDEPMSG,
+    desactivarTecnico,
 } from "../api/informe";
 
 import { gethistorialOrdenTrabajo, getHistorialNombreFirmas } from '../api/historialInput'
@@ -57,15 +60,24 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
             setErrores(prevErrores => [...prevErrores, "Error al traer informes"]);
         }
     };
-    const traerFiltrarInformesEstado = async (mesAnioIdestado) => {
+    const desactivarElTecnico = async (id) => {
         try {
-            const res = await filtrarInformes(mesAnioIdestado);
-            setfiltrarInforme(res.data);
+            const res = await desactivarTecnico(id);
+            return res
         } catch (error) {
             console.error("Error al traer informes:", error);
             setErrores(prevErrores => [...prevErrores, "Error al traer informes"]);
         }
     };
+    // const traerFiltrarInformesEstado = async (mesAnioIdestado) => {
+    //     try {
+    //         const res = await filtrarInformes(mesAnioIdestado);
+    //         setfiltrarInforme(res.data);
+    //     } catch (error) {
+    //         console.error("Error al traer informes:", error);
+    //         setErrores(prevErrores => [...prevErrores, "Error al traer informes"]);
+    //     }
+    // };
 
     const crearOrdenTrabajo = async (info) => {
         try {
@@ -358,7 +370,7 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
                 unTecnicoinfo,
                 //funciones
                 traerOrdenesDeTrabajo,
-                traerFiltrarInformesEstado,
+                // traerFiltrarInformesEstado,
                 crearOrdenTrabajo,
                 eliminarOrdenTrabajo,
                 actualizarOrdenTrabajo,
@@ -387,6 +399,7 @@ export const OrdenDeTrabajoProvider = ({ children }) => {
                 actualizarTecnico,
                 actualizarMyInforme,
                 eliminaImagen,
+                desactivarElTecnico,
             }}
         >
             {children}
