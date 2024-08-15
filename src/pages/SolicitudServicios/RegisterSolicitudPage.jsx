@@ -124,6 +124,7 @@ export const RegisterSolicitudPage = () => {
     try {
       if (id) {
         await getunSolitud(id);
+        console.log(unasoli)
         setSolicitudLoaded(true);
       }
     } catch (error) {
@@ -153,6 +154,7 @@ export const RegisterSolicitudPage = () => {
 
           const primeraActividad = unasoli.actividades[0];
 
+          console.log(primeraActividad)
           setActividad(primeraActividad.actividadRef);
           setMyActividad_(primeraActividad.nombre || "");
 
@@ -212,6 +214,7 @@ export const RegisterSolicitudPage = () => {
     const fetchActivities = async () => {
       try {
         await getIdsProyectYAct(proyecto);
+        console.log(idsAct)
         setFetchActivitiesFlag(false);
       } catch (error) {
         console.error("Error fetching activities:", error);
@@ -368,7 +371,7 @@ export const RegisterSolicitudPage = () => {
     });
     setMyActividad_(selectedActividad.nombre || "");
     setMyProyecto_(selectedActividad ? selectedActividad.nombre : "");
-console.log(selectedActividad.nombre)
+    console.log(selectedActividad.nombre)
   };
 
   const duplicarItem = async (index, e) => {

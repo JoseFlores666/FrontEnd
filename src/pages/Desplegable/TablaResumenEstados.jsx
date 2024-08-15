@@ -77,45 +77,45 @@ export const TablaResumenEstados = ({ data, estados }) => {
     }, [rows]);
 
     return (
-        <div className="overflow-x-auto p-4 bg-gray-100">
-            <div className="mb-4 flex items-center gap-4">
+        <div className="overflow-x-auto  bg-gray-100">
+            <div className="mb-4 flex items-center justify-center gap-4">
                 <label htmlFor="yearFilter" className="block text-gray-700 font-medium">Filtrar por año:</label>
                 <input
                     type="number"
                     id="yearFilter"
                     min={2000}
-                    className="w-full text-black p-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                    className="max-w-48 text-black p-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                     placeholder="Ingrese el año"
                     value={selectedYear}
                     onChange={(e) => setSelectedYear(e.target.value)}
                 />
             </div>
-            <table className="w-full min-w-full divide-y divide-white-200 text-sm text-black rounded-lg overflow-hidden">
+            <table className="w-full min-w-full divide-y divide-white-200 text-sm text-black rounded-lg text-center">
                 <thead className="bg-black text-white">
                     <tr>
-                        <th className="px-4 py-2 border-b text-left text-white">Mes</th>
+                        <th className="px-3 py-1 border-b text-white">Mes</th>
                         {Object.keys(estadoCounts).map(estado => (
-                            <th key={estado} className="px-4 py-2 border-b text-left text-white">{estado}</th>
+                            <th key={estado} className="px-3 py-1 border-b  text-white">{estado}</th>
                         ))}
-                        <th className="px-4 py-2 border-b text-left text-white">Total</th>
+                        <th className="px-3 py-1 border-b text-left text-white">Total</th>
                     </tr>
                 </thead>
                 <tbody>
                     {rows.map((row, index) => (
                         <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                            <td className="px-4 py-2 border-b text-gray-700">{row.mes}</td>
+                            <td className="px-3 py-1 border-b text-gray-700">{row.mes}</td>
                             {Object.keys(estadoCounts).map(estado => (
-                                <td key={estado} className="px-4 py-2 border-b text-center text-gray-700">{row[estado] || 0}</td>
+                                <td key={estado} className="px-3 py-1 border-b text-center text-gray-700">{row[estado] || 0}</td>
                             ))}
-                            <td className="px-4 py-2 border-b text-center font-bold text-gray-700">{row.total}</td>
+                            <td className="px-3 py-1 border-b text-center font-bold text-gray-700">{row.total}</td>
                         </tr>
                     ))}
                     <tr className="bg-gray-200 font-bold">
-                        <td className="px-4 py-2 border-b text-gray-800">Totales</td>
+                        <td className="px-3 py-1 border-b text-gray-800">Totales</td>
                         {Object.keys(estadoCounts).map(estado => (
-                            <td key={estado} className="px-4 py-2 border-b text-center text-gray-800">{totals[estado] || 0}</td>
+                            <td key={estado} className="px-3 py-1 border-b text-center text-gray-800">{totals[estado] || 0}</td>
                         ))}
-                        <td className="px-4 py-2 border-b text-center font-bold text-gray-800">{totals['total']}</td>
+                        <td className="px-3 py-1 border-b text-center font-bold text-gray-800">{totals['total']}</td>
                     </tr>
                 </tbody>
             </table>

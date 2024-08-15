@@ -18,7 +18,6 @@ export const Evidencias = () => {
       setSolicitudInfo(unaInfo);
       await traerImagenInfo(id);
       setDatosCargados(true);
-      console.log('Descripcion:', unaInfo?.informe?.descripcion);
     };
     if (!cargarDatos) {
       iniciarDatos();
@@ -45,88 +44,69 @@ export const Evidencias = () => {
 
   const enviarImagenes = async () => {
     if (imagenInfo.length === 0) {
-        console.log('No hay imágenes para enviar');
-        return;
+      return;
     }
 
-    try {
-        const formData = new FormData();
-        formData.append('numero_de_imagenes', imagenInfo.length);
+    const formData = new FormData();
+    formData.append('numero_de_imagenes', imagenInfo.length);
 
-        for (let i = 0; i < imagenInfo.length; i++) {
-            const imagen = imagenInfo[i];
-            const blob = await obtenerBlobDesdeUrl(imagen.secure_url);
-            formData.append('imagenes[]', blob, `imagen${i + 1}.jpg`);
-        }
-
-        if (solicitudInfo && solicitudInfo.informe?.folio) {
-            formData.append('folio', solicitudInfo.informe.folio);
-            console.log('Folio enviado:', solicitudInfo.informe.folio);
-        }
-
-        if (solicitudInfo && solicitudInfo.informe?.descripcion) {
-            formData.append('descripcion', solicitudInfo.informe.descripcion);
-            console.log('Descripción enviada:', solicitudInfo.informe.descripcion);
-        }
-
-        await axios.post('http://localhost/PlantillasWordyPdf/DescargarEvidencias.php', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        }).then(response => {
-            console.log('Imágenes enviadas correctamente', response.data);
-
-            axios.post('http://localhost/PlantillasWordyPdf/GuardarFolio.php', {
-                folio: solicitudInfo.informe.folio,
-                descripcion: solicitudInfo.informe.descripcion
-            }, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(response => {
-                console.log(response.data.message);
-            }).catch(error => {
-                console.error('Error al guardar el folio y la descripción', error);
-            });
-
-            const save_as = '';
-            const downloadUrl = `http://localhost/PlantillasWordyPdf/DescargarEvidencias.php?save_as=${save_as}`;
-            window.location.href = downloadUrl;
-
-            setTimeout(() => {
-                eliminarImagenes();
-            }, 3000); // 3000 milisegundos = 3 segundos
-
-        }).catch(error => {
-            console.error('Error al enviar las imágenes', error);
-        });
-    } catch (error) {
-        console.error('Error al enviar las imágenes', error);
+    for (let i = 0; i < imagenInfo.length; i++) {
+      const imagen = imagenInfo[i];
+      const blob = await obtenerBlobDesdeUrl(imagen.secure_url);
+      formData.append('imagenes[]', blob, `imagen${i + 1}.jpg`);
     }
-};
+
+    if (solicitudInfo && solicitudInfo.informe?.folio) {
+      formData.append('folio', solicitudInfo.informe.folio);
+    }
+
+    if (solicitudInfo && solicitudInfo.informe?.descripcion) {
+      formData.append('descripcion', solicitudInfo.informe.descripcion);
+    }
+
+    await axios.post('http://localhost/PlantillasWordyPdf/DescargarEvidencias.php', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }).then(response => {
+
+      axios.post('http://localhost/PlantillasWordyPdf/GuardarFolio.php', {
+        folio: solicitudInfo.informe.folio,
+        descripcion: solicitudInfo.informe.descripcion
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+
+      const save_as = '';
+      const downloadUrl = `http://localhost/PlantillasWordyPdf/DescargarEvidencias.php?save_as=${save_as}`;
+      window.location.href = downloadUrl;
+
+      setTimeout(() => {
+        eliminarImagenes();
+      }, 3000);
+    })
+  };
 
   const eliminarImagenes = async () => {
-    try {
-      await axios.post('http://localhost/PlantillasWordyPdf/EliminarImagenes.php');
-      console.log('Imágenes eliminadas correctamente');
-    } catch (error) {
-      console.error('Error al eliminar las imágenes', error);
-    }
+    await axios.post('http://localhost/PlantillasWordyPdf/EliminarImagenes.php');
+
   };
 
   return (
     <div className="mx-auto max-w-5xl p-4 text-center text-black">
       <form onSubmit={(e) => { e.preventDefault(); enviarImagenes(); }} encType='multipart/form-data'>
         <div className="bg-white p-6 rounded-md shadow-md">
-<Title showBackButton={true}>Evidencias</Title>
+          <Title showBackButton={true}>Evidencias</Title>
           <table className="w-full caption-bottom text-sm border border-t border-gray-400 bg-white rounded-b-lg mb-6">
             <thead className="[&_tr]:border border-gray-400">
-                <tr className="border transition-colors hover:bg-gray-100 border-b border-gray-400 hover:bg-muted/50 data-[state=selected]:bg-muted">
-                  <th colSpan="2" className="h-12 text-center px-4 hover:bg-gray-100 border-b border-gray-400 align-middle font-medium text-black">
-                    Solicitud: {solicitudInfo ? solicitudInfo.informe?.folio : 'Cargando...'}<br />
-                    Descripción:<br /> {solicitudInfo ? solicitudInfo.informe?.descripcion:'Cargando...'}
-                  </th>
-                </tr>
+              <tr className="border transition-colors hover:bg-gray-100 border-b border-gray-400 hover:bg-muted/50 data-[state=selected]:bg-muted">
+                <th colSpan="2" className="h-12 text-center px-4 hover:bg-gray-100 border-b border-gray-400 align-middle font-medium text-black">
+                  Solicitud: {solicitudInfo ? solicitudInfo.informe?.folio : 'Cargando...'}<br />
+                  Descripción:<br /> {solicitudInfo ? solicitudInfo.informe?.descripcion : 'Cargando...'}
+                </th>
+              </tr>
             </thead>
             <tbody className="[&_tr:last-child]:border-0 border-b border-gray-400">
               {imagenesPares.length > 0 ? (

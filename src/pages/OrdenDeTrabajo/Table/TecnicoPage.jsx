@@ -261,9 +261,13 @@ export const TecnicoPage = () => {
             </button>
           )}
         </div>
-        <button onClick={abrirModal} className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >Consultar solicitudes</button>
-        <button onClick={abrirModalResuEstado} className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        <button onClick={abrirModal} 
+        className="bg-green-500 border border-black font-bold text-white py-2 px-4 rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          Consultar solicitudes
+        </button>
+        <button onClick={abrirModalResuEstado} 
+        className="bg-green-500 border border-black font-bold text-white py-2 px-4 rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           Tabla Resumen informes
         </button>
