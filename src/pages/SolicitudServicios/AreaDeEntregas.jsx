@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import { FaCheckCircle } from "react-icons/fa";
 import scrollToTop from '../../util/Scroll';
 
-export const AbonoSolicitud = () => {
+export const AreaDeEntregas = () => {
     const { id } = useParams();
     const navigate = useNavigate();
 

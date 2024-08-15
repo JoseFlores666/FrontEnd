@@ -10,7 +10,7 @@ import { AutocompleteInput } from "../../components/ui/AutocompleteInput";
 import { ImFileEmpty } from "react-icons/im";
 import Swal from "sweetalert2";
 
-export const VerInforme = () => {
+export const InformeCompleto = () => {
     const { id } = useParams();
     const { traerUnaInfo, unaInfo, traerHistorialOrden,
         historialOrden, asignarPersonalDEPMSG } = useOrden();

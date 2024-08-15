@@ -8,20 +8,20 @@ import { Firmas } from "./pages/Desplegable/Firmas";
 import RegisterPage from "./pages/RegisterPage";
 import { LoginPage } from "./pages/LoginPage";
 import { SoliProvider } from "./context/SolicitudContext";
-import { RegisterSolicitudPage } from "./pages/SolicitudServicios/RegisterSolicitudPage";
-import { SolicitudTable } from "./pages/SolicitudServicios/Table/SolicitudTable";
-import { RegisterTecnicoPage } from "./pages/OrdenDeTrabajo/RegisterTecnicoPage";
-import { TecnicoPage } from "./pages/OrdenDeTrabajo/Table/TecnicoPage";
-import { AbonoSolicitud } from "./pages/SolicitudServicios/AbonoSolicitud";
-import { FolioExterno } from "./pages/SolicitudServicios/FolioExterno";
-import { RegisterTecPage2 } from "./pages/OrdenDeTrabajo/RegisterTecPage2";
+import { FormularioSolicitud } from "./pages/SolicitudServicios/FormularioSolicitud";
+import { TablaDeRegistros } from "./pages/SolicitudServicios/Table/TablaDeRegistros";
+import { FormularioOrden } from "./pages/OrdenDeTrabajo/FormularioOrden";
+import { TablaDeOrdenes } from "./pages/OrdenDeTrabajo/Table/TablaDeOrdenes";
+import { AreaDeEntregas } from "./pages/SolicitudServicios/AreaDeEntregas";
+import { AsignarFolioExterno } from "./pages/SolicitudServicios/AsignarFolioExterno";
+import { CierreDelInforme } from "./pages/OrdenDeTrabajo/CierreDelInforme";
 import { DashboardMenu } from "./components/ui/DashboardMenu";
 import { Evidencias } from "./pages/OrdenDeTrabajo/Evidencias"
 import AsignarTecnico from "./pages/OrdenDeTrabajo/AsignarTecnico"
 import {TecnicosTable} from "./pages/Desplegable/TecnicosTable"
 import { ProjectAndActManager } from "./pages/Desplegable/EditarProyects&Act"
-import { VerInforme } from "./pages/OrdenDeTrabajo/VerInformePage"
-import { InformacionOrden } from "./pages/OrdenDeTrabajo/InformacionOrden"
+import { InformeCompleto } from "./pages/OrdenDeTrabajo/InformeCompleto"
+import { DiagnosticoTecnico } from "./pages/OrdenDeTrabajo/DiagnosticoTecnico"
 import { Historial } from "./pages/SolicitudServicios/Historial"
 import { TablaResumenEstados } from "./pages/Desplegable/TablaResumenEstados";
 
@@ -39,22 +39,22 @@ function App() {
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/register" element={<RegisterPage />} />
                   <Route element={<ProtectedRoute />}>
-                    <Route path="/soli/registro/:id" element={<RegisterSolicitudPage />} />
-                    <Route path="/soli/abonar/:id" element={<AbonoSolicitud />} />
-                    <Route path="/soli" element={<SolicitudTable />} />
+                    <Route path="/soli/registro/:id" element={<FormularioSolicitud />} />
+                    <Route path="/soli/abonar/:id" element={<AreaDeEntregas />} />
+                    <Route path="/soli" element={<TablaDeRegistros />} />
                     <Route path="/soli/TablaResumenEstados" element={<TablaResumenEstados />} />
                     <Route path="/dashboard" element={<DashboardMenu />} />
-                    <Route path="/soli/folioExterno/:id" element={<FolioExterno />} />
+                    <Route path="/soli/folioExterno/:id" element={<AsignarFolioExterno />} />
                     <Route path="/soli/editarFirmas/" element={<Firmas />} />
-                    <Route path="/tecnico/:id" element={<RegisterTecnicoPage />} />
+                    <Route path="/tecnico/:id" element={<FormularioOrden />} />
                     <Route path="/personalTecnicos" element={<TecnicosTable />} />
-                    <Route path="/tecnico/orden" element={<TecnicoPage />} />
-                    <Route path="/tecnico2/:id" element={<RegisterTecPage2 />} />
+                    <Route path="/tecnico/orden" element={<TablaDeOrdenes />} />
+                    <Route path="/tecnico2/:id" element={<CierreDelInforme />} />
                     <Route path="/evidencias/:id" element={<Evidencias />} />
                     <Route path="/asignarTec/:id" element={<AsignarTecnico />} />
                     <Route path="/proyectAndAct" element={<ProjectAndActManager />} />
-                    <Route path="/verInforme/:id" element={<VerInforme />} />
-                    <Route path="/informacionOrden/:id" element={<InformacionOrden />} />
+                    <Route path="/verInforme/:id" element={<InformeCompleto />} />
+                    <Route path="/informacionOrden/:id" element={<DiagnosticoTecnico />} />
                    
                     <Route path="/historial/:id" element={<Historial />} />
                   </Route>

@@ -10,7 +10,7 @@ import { GridContainer, Label, Title } from "../../components/ui";
 import { registerTecnicoPageSchema } from '../../schemas/RegisterTecnicoPage'
 import { zodResolver } from "@hookform/resolvers/zod";
 
-export const RegisterTecnicoPage = () => {
+export const FormularioOrden = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const editar = new URLSearchParams(location.search).get("editar");

@@ -9,7 +9,7 @@ import Swal from 'sweetalert2';
 import scrollToTop from '../../../util/Scroll';
 import { TablaResumenEstados } from '../../Desplegable/TablaResumenEstados';
 
-export const TecnicoPage = () => {
+export const TablaDeOrdenes = () => {
 
   const { traerOrdenesDeTrabajo, informes, getCantidadTotalOrden,
     estadosTotales, eliminarInfo, actualizarEstadosOrden } = useOrden();

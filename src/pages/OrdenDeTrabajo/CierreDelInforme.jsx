@@ -15,7 +15,7 @@ import { GridContainer, Label, Title } from "../../components/ui";
 import { useOrden } from "../../context/ordenDeTrabajoContext";
 import scrollToTop from '../../util/Scroll';
 
-export const RegisterTecPage2 = () => {
+export const CierreDelInforme = () => {
 
     const { id } = useParams();
     const subiendoImagenesRef = useRef(null);
@@ -216,7 +216,7 @@ export const RegisterTecPage2 = () => {
         <div className="mx-auto max-w-5xl p-4 text-black">
             <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-6xl">
                 <div className="bg-white p-6 rounded-md shadow-md">
-                    <Title showBackButton={true}>Área De Entregas</Title>
+                    <Title showBackButton={true}>Cierre Del Informe</Title>
                     <GridContainer>
                         <div className="bg-slate-200 rounded p-2">
                             <Label>Fecha:</Label>

@@ -13,7 +13,7 @@ import { AutocompleteInput } from "../../components/ui/AutocompleteInput";
 import { GridContainer, Label, Title } from "../../components/ui";
 import { ValidacionSoli } from "../../schemas/ValidacionSoli";
 
-export const RegisterSolicitudPage = () => {
+export const FormularioSolicitud = () => {
   const navigate = useNavigate();
   const [value, setValue] = useState('');
   const [errors, setErrors] = useState({});

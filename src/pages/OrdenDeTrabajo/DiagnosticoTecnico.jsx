@@ -2,18 +2,18 @@ import React, { useRef, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { diagnosticoSchema } from '../../schemas/AsignarTecnico.js';
-import { useOrden } from "../../context/ordenDeTrabajoContext";
+import { useOrden } from "../../context/ordenDeTrabajoContext.jsx";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Swal from "sweetalert2";
 import "../../css/solicitud.css";
 import "../../css/Animaciones.css";
-import { AutocompleteInput } from "../../components/ui/AutocompleteInput";
-import SubiendoImagenes from "../../components/ui/SubiendoImagenes";
-import { Title, Label } from "../../components/ui";
+import { AutocompleteInput } from "../../components/ui/AutocompleteInput.jsx";
+import SubiendoImagenes from "../../components/ui/SubiendoImagenes.jsx";
+import { Title, Label } from "../../components/ui/index.js";
 import { EncabezadoFormulario } from "../../components/ui/Encabezado.jsx";
-import scrollToTop from '../../util/Scroll';
+import scrollToTop from '../../util/Scroll.js';
 
-export const InformacionOrden = () => {
+export const DiagnosticoTecnico = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { traerHistorialOrden, historialOrden, traerUnaInfo, unaInfo, diagnosticoDelTecnico, editarEstadoInfo } = useOrden();
@@ -117,7 +117,7 @@ export const InformacionOrden = () => {
         <div className="flex items-center justify-center mx-auto max-w-7xl p-4 text-black">
             <form onSubmit={handleSubmit((data, e) => onSubmit(true, e))} className="w-full max-w-6xl">
                 <div className="bg-white p-6 rounded-md shadow-md">
-                    <Title showBackButton={true}>Información del encargo</Title>
+                    <Title showBackButton={true}>Diagnóstico y Evaluación de Servicios</Title>
                     <EncabezadoFormulario unaInfo={unaInfo} />
                     <div className="bg-slate-200 rounded p-2 mb-4">
                         <Label>Diagnostico del servicio requerido</Label>

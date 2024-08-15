@@ -12,7 +12,7 @@ import scrollToTop from '../../../util/Scroll';
 import { TablaResumenEstados } from "../../Desplegable/TablaResumenEstados";
 
 
-export function SolicitudTable({ }) {
+export function TablaDeRegistros({ }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [solicitudesPerPage, setSolicitudesPerPage] = useState(10);
