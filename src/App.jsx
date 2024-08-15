@@ -23,7 +23,7 @@ import { ProjectAndActManager } from "./pages/Desplegable/EditarProyects&Act"
 import { VerInforme } from "./pages/OrdenDeTrabajo/VerInformePage"
 import { InformacionOrden } from "./pages/OrdenDeTrabajo/InformacionOrden"
 import { Historial } from "./pages/SolicitudServicios/Historial"
-import { TablaResumenEstados } from "./pages/SolicitudServicios/Table/TablaResumenEstados";
+import { TablaResumenEstados } from "./pages/Desplegable/TablaResumenEstados";
 
 function App() {
   return (

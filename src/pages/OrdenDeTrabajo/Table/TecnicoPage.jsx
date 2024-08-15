@@ -7,7 +7,7 @@ import { Th, Td, EstadoButton } from '../../../components/ui';
 import { useOrden } from '../../../context/ordenDeTrabajoContext';
 import Swal from 'sweetalert2';
 import scrollToTop from '../../../util/Scroll';
-import { TablaResumenEstados } from '../../SolicitudServicios/Table/TablaResumenEstados';
+import { TablaResumenEstados } from '../../Desplegable/TablaResumenEstados';
 
 export const TecnicoPage = () => {
 
