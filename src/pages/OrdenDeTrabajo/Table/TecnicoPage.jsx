@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useMemo, } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faEdit, faSave, faTimes, faUserTie, faClipboard,faCheckCircle } from '@fortawesome/free-solid-svg-icons';
-
+import { faTrash, faEdit, faSave, faTimes, faUserTie, faClipboard, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import { ImFileEmpty } from "react-icons/im";
 import { Th, Td, EstadoButton } from '../../../components/ui';
 import { useOrden } from '../../../context/ordenDeTrabajoContext';
 import Swal from 'sweetalert2';
 import scrollToTop from '../../../util/Scroll';
+import { TablaResumenEstados } from '../../SolicitudServicios/Table/TablaResumenEstados';
 
 export const TecnicoPage = () => {
 
@@ -30,7 +30,14 @@ export const TecnicoPage = () => {
   const [editedData, setEditedData] = useState([]);
   const [estadoSeleccionado, setEstadoSeleccionado] = useState("");
 
+  const [isModalOpenResuEstado, setIsModalOpenResuEstado] = useState(false);
 
+  const abrirModalResuEstado = () => {
+    setIsModalOpenResuEstado(true);
+  };
+  const cerrarModalResuEstado = () => {
+    setIsModalOpenResuEstado(false);
+  };
   const abrirModal = () => {
     setIsModalOpen2(true);
   };
@@ -71,6 +78,7 @@ export const TecnicoPage = () => {
 
   useEffect(() => {
     setFilteredSolicitudes(informes);
+    console.log(informes)
   }, [informes]);
 
   const filtrarSolicitud = (solicitud) => {
@@ -255,6 +263,31 @@ export const TecnicoPage = () => {
         </div>
         <button onClick={abrirModal} className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >Consultar solicitudes</button>
+        <button onClick={abrirModalResuEstado} className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          Tabla Resumen informes
+        </button>
+        {
+          isModalOpenResuEstado && (
+            <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+              <div className="bg-white text-gray-900 p-6 md:p-8 rounded-lg shadow-lg max-w-4xl w-full relative">
+                <div className="flex justify-between items-center mb-4 border-b border-gray-200 pb-4">
+                  <h2 className="text-xl font-semibold">Tabla Resumen de Solicitudes por año</h2>
+                  <button
+                    className="text-red-500 border border-red-500 px-2 py-1 rounded-lg hover:bg-red-100 transition-colors duration-150"
+                    title="Cerrar ventana emergente"
+                    onClick={cerrarModalResuEstado}
+                  >
+                    <FontAwesomeIcon icon={faTimes} />
+                  </button>
+                </div>
+                <div className="overflow-x-auto">
+                  <TablaResumenEstados data={informes} estados={estadosTotales} />
+                </div>
+              </div>
+            </div>
+          )
+        }
         <div>
           <label htmlFor="entries-per-page" className="mr-2 text-white">Entradas por página:</label>
           <select
@@ -302,7 +335,7 @@ export const TecnicoPage = () => {
               <Td>{solicitud.informe?.solicitud?.tecnicos?.nombreCompleto || "Sin Asignar"}</Td>
               <Td>
                 <Link to={`/evidencias/${solicitud._id}?`} className="text-black font-bold"
-                 title="Ver imagenes"
+                  title="Ver imagenes"
                 >
                   VER
                 </Link>
@@ -377,7 +410,7 @@ export const TecnicoPage = () => {
               </Td>
               <Td>
                 <Link to={`/verInforme/${solicitud._id}?`} className="text-black font-bold"
-                 title="Ver Informe"
+                  title="Ver Informe"
                 >
                   CONSULTAR
                 </Link>
