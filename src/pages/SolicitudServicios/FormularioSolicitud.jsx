@@ -3,8 +3,6 @@ import { useSoli } from "../../context/SolicitudContext";
 import { useAuth } from "../../context/authContext";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
-import imgPDF from '../../img/imagenPDF.png';
-import imgWord from '../../img/imagenWord.png';
 import Swal from "sweetalert2";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faClone } from '@fortawesome/free-solid-svg-icons';
@@ -42,8 +40,6 @@ export const FormularioSolicitud = () => {
   const [selectedActividad, setSelectedActividad] = useState({ id: "", nombre: "" });
   const [justificacion, setJustificacion] = useState("");
   const [items, setItems] = useState([{ cantidad: "", unidad: "", descripcion: "", cantidadAcumulada: 0, cantidadEntregada: 0, NumeroDeEntregas: 0, },]);
-
-  const [clickedPDF, setClickedPDF] = useState(false);
 
   const [projectsLoaded, setProjectsLoaded] = useState(false);
   const [fetchActivitiesFlag, setFetchActivitiesFlag] = useState(false);
@@ -364,14 +360,11 @@ export const FormularioSolicitud = () => {
       (actividad) => actividad._id === selectedActividadId
     );
 
-    console.log(selectedActividad)
     setSelectedActividad({
       id: selectedActividad ? selectedActividad._id : "",
       nombre: selectedActividad ? selectedActividad.nombre : ""
     });
     setMyActividad_(selectedActividad.nombre || "");
-    setMyProyecto_(selectedActividad ? selectedActividad.nombre : "");
-    console.log(selectedActividad.nombre)
   };
 
   const duplicarItem = async (index, e) => {
@@ -382,55 +375,9 @@ export const FormularioSolicitud = () => {
     setItems(newItems);
   };
 
-  const openVentana = () => {
-    const url = 'http://localhost/PlantillasWordyPdf/ResultadoSoli.pdf';
-    const features = 'menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes';
-    window.open(url, '_blank', features);
-  };
-
-  const subirDatos = (event) => {
-    event.preventDefault();
-    setIsOpen(false);
-    navigate('/soli');
-    const form = event.target;
-
-    const formData = new FormData(form);
-    const url = 'http://localhost/PlantillasWordyPdf/ManejoSolicitud.php';
-    const method = 'POST';
-
-    fetch(url, {
-      method: method,
-      body: formData,
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.text();
-      })
-      .then(text => {
-        console.log('Formulario enviado correctamente:', text);
-        if (clickedPDF) {
-          openVentana();
-        } else {
-          descargarWORD();
-        }
-      });
-  };
-
-  const descargarWORD = () => {
-    const a = document.createElement('a');
-    a.href = 'http://localhost/PlantillasWordyPdf/DescargarWordSoli.php';
-
-    a.download = 'formSolicitud.docx';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  };
-
   return (
     <div className="mx-auto max-w-6xl p-4 text-black">
-      <form onSubmit={subirDatos} className="slide-down">
+      <form className="slide-down">
         <div className="bg-white p-6 rounded-md shadow-md">
           <Title showBackButton={showBackButton}>
             {duplicar ? "Solicitud de Servicios y Bienes de Consumo Final" : titleText}
@@ -550,8 +497,7 @@ export const FormularioSolicitud = () => {
 
             </div>
           </GridContainer>
-          <input type="hidden" id="myProyectoInput" name="myProyecto" value={myProyecto_ || ""} />
-          <input type="hidden" id="myActividadInput" name="myActividad" value={myActividad_ || ""} />
+
           <div className="relative w-full">
             <table className="w-full caption-bottom text-sm border">
               <thead className="[&_tr]:border border-gray-400">
@@ -695,7 +641,6 @@ export const FormularioSolicitud = () => {
                   onChange={(e) => setSolicitante(e.target.value)}
                   disabled
                 />
-                <input type="hidden" name="solicitud" value={solicitante} />
               </div>
               <div>
                 <Label>Revisión <br />Jefe Inmediato:</Label>
@@ -708,7 +653,6 @@ export const FormularioSolicitud = () => {
                   onChange={(e) => setJefeInmediato(e.target.value)}
                   disabled
                 />
-                <input type="hidden" name="JefeInmediato" value={jefeInmediato} />
               </div>
               <div>
                 <Label>Validación <br />Dirección de Admón. y Finanzas:</Label>
@@ -721,7 +665,6 @@ export const FormularioSolicitud = () => {
                   onChange={(e) => setDirrecion(e.target.value)}
                   disabled
                 />
-                <input type="hidden" name="Validacion" value={dirrecion} />
               </div>
               <div>
                 <Label>Autorizó <br />Rectoría:</Label>
@@ -734,7 +677,6 @@ export const FormularioSolicitud = () => {
                   onChange={(e) => setRectoría(e.target.value)}
                   disabled
                 />
-                <input type="hidden" name="Autorizo" value={rectoría} />
               </div>
             </div>
             <div className="flex justify-center">
@@ -750,19 +692,17 @@ export const FormularioSolicitud = () => {
             {isOpen && (
               <div>
                 <LlenarSolicitud
-                fecha={fecha || ""}
-                tipoSuministro={suministro || ""}
-                procesoClave={pc || ""}
-                proyecto={myProyecto_ || ""} 
-                actividad={myActividad_ || ""}
-
-
-
-                justificacion={justificacion}
-                solicitante={solicitante}
-                jefeInmediato={jefeInmediato}
-                dirrecion={dirrecion}
-                rectoría={rectoría}
+                  fecha={fecha || ""}
+                  tipoSuministro={suministro || ""}
+                  procesoClave={pc || ""}
+                  proyecto={myProyecto_ || ""}
+                  actividad={myActividad_ || ""}
+                  items={items}
+                  justificacion={justificacion}
+                  solicitante={solicitante}
+                  jefeInmediato={jefeInmediato}
+                  dirrecion={dirrecion}
+                  rectoría={rectoría}
                 />
               </div>
             )}

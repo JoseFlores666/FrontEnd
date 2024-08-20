@@ -1,12 +1,26 @@
-// apiPDF.js
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useSoli } from "../../src/context/SolicitudContext";
 
-// Reemplaza con tu clave API de PDF.co
-const API_KEY = 'fejj5587@gmail.com_yPgoFrNGM1YM8rxAMhqPyJpLH8LXSnl7nwVXQtvEXWeygTj2fsPDfdVIWKeuaaA2';
+const { traeApis_keys, api_Key } = useSoli();
+const [datosCargados, setDatosCargados] = useState(false);
 
 export const apiPDF = async (docxBlob) => {
+    useEffect(() => {
+        const llamaApi = async () => {
+            try {
+                await traeApis_keys();
+                setDatosCargados(true);
+                console.log(api_Key)
+            } catch (error) {
+            }
+        };
+        if (!datosCargados) {
+            llamaApi();
+        }
+    }, [traeApis_keys,datosCargados,api_Key ]);
+
     try {
-        // Subir el archivo DOCX a PDF.co
         const formData = new FormData();
         formData.append('file', docxBlob, 'document.docx');
 
@@ -15,7 +29,7 @@ export const apiPDF = async (docxBlob) => {
             formData,
             {
                 headers: {
-                    'x-api-key': API_KEY,
+                    'x-api-key': api_Key,
                     'Content-Type': 'multipart/form-data',
                 },
             }
@@ -23,7 +37,6 @@ export const apiPDF = async (docxBlob) => {
 
         const uploadedFileUrl = uploadResponse.data.url;
 
-        // Convertir el archivo DOCX a PDF
         const conversionResponse = await axios.post(
             'https://api.pdf.co/v1/pdf/convert/from/doc',
             JSON.stringify({
@@ -32,7 +45,7 @@ export const apiPDF = async (docxBlob) => {
             }),
             {
                 headers: {
-                    'x-api-key': API_KEY,
+                    'x-api-key': api_Key,
                     'Content-Type': 'application/json',
                 },
             }
@@ -40,7 +53,6 @@ export const apiPDF = async (docxBlob) => {
 
         const pdfUrl = conversionResponse.data.url;
 
-        // Descargar el PDF generado
         const pdfResponse = await axios.get(pdfUrl, {
             responseType: 'blob',
         });
