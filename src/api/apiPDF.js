@@ -1,25 +1,10 @@
-import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useSoli } from "../../src/context/SolicitudContext";
 
-const { traeApis_keys, api_Key } = useSoli();
-const [datosCargados, setDatosCargados] = useState(false);
-
 export const apiPDF = async (docxBlob) => {
-    useEffect(() => {
-        const llamaApi = async () => {
-            try {
-                await traeApis_keys();
-                setDatosCargados(true);
-                console.log(api_Key)
-            } catch (error) {
-            }
-        };
-        if (!datosCargados) {
-            llamaApi();
-        }
-    }, [traeApis_keys,datosCargados,api_Key ]);
-
+   
+    const { traeApis_keys, api_Key } = useSoli();
+    const [datosCargados, setDatosCargados] = useState(false);
     try {
         const formData = new FormData();
         formData.append('file', docxBlob, 'document.docx');
