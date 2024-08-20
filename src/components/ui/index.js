@@ -10,6 +10,8 @@ export {GridContainer} from "./GridContainer"
 export {EstadoButton} from "./EstadoButton"
 export {Th} from "./Th"
 export {Td} from "./Td"
+export {BackButton} from "./BackButton"
 
 //Nuevos componentes
-export {BackButton} from "./BackButton"
+export {LlenarOrden} from "./LlenarOrden"
+export {LlenarSolicitud} from "./LlenarSolicitud"
