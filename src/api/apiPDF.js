@@ -2,9 +2,8 @@ import axios from 'axios';
 import { useSoli } from "../../src/context/SolicitudContext";
 
 export const apiPDF = async (docxBlob) => {
-   
-    const { traeApis_keys, api_Key } = useSoli();
-    const [datosCargados, setDatosCargados] = useState(false);
+    const api_Key='fejj5587@gmail.com_yPgoFrNGM1YM8rxAMhqPyJpLH8LXSnl7nwVXQtvEXWeygTj2fsPDfdVIWKeuaaA2'
+
     try {
         const formData = new FormData();
         formData.append('file', docxBlob, 'document.docx');

@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import PizZip from 'pizzip';
 import Docxtemplater from 'docxtemplater';
 import { saveAs } from 'file-saver';
-import { apiPDF } from '../../api/apiPDF'; // Asegúrate de la ruta correcta
+import { apiPDF } from '../../api/apiPDF'; 
 import imgWord from '../../img/imagenWord.png'; 
-import imgPDF from '../../img/imagenPDF.png';   
+import imgPDF from '../../img/imagenPDF.png';
 
 export const LlenarOrden = ({
     fecha,

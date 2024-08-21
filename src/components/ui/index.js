@@ -15,3 +15,4 @@ export {BackButton} from "./BackButton"
 //Nuevos componentes
 export {LlenarOrden} from "./LlenarOrden"
 export {LlenarSolicitud} from "./LlenarSolicitud"
+export {LlenarEvidencias} from "./LlenarEvidencias"
