@@ -60,9 +60,10 @@ export const Evidencias = () => {
               {imagenesPares.length > 0 ? (
                 imagenesPares.map((par, index) => (
                   <tr key={index} className="border-b border-gray-400">
-                    {par.map((imagen) => (
-                      <td key={imagen._id} className="p-4 border border-gray-400 w-1/4 bg-light-50">
-                        <img src={imagen.secure_url} alt="Evidencia" className="w-48 h-48 object-cover mx-auto" />
+                  {par.map((imagen) => (
+                      <td key={imagen._id} className="p-4 border border-gray-400 w-1/2 bg-light-50">
+                        <img src={imagen.secure_url} alt="Evidencia" className="w-[300px] h-[200px] object-contain mx-auto  drop-shadow-custom"
+                        />
                       </td>
                     ))}
                     {par.length < 2 && (

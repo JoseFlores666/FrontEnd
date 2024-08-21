@@ -173,7 +173,7 @@ export const FormularioOrden = () => {
       ...prev,
       fecha: newFecha,
     }));
-    trigger("fecha"); // Disparar validación manualmente
+    trigger("fecha"); 
   };
 
   return (

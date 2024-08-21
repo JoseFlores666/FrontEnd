@@ -3,9 +3,13 @@ import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, Width
 import { saveAs } from "file-saver";
 import imgWord from '../../img/imagenWord.png';
 import imgPDF from '../../img/imagenPDF.png';
-import { apiPDF } from '../../api/apiPDF'; // Ajusta la ruta según sea necesario
+import { apiPDF } from '../../api/apiPDF';
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares }) => {
+    const navigate = useNavigate();
+
     const [isOpen, setIsOpen] = useState(true);
     const [error, setError] = useState(null);
 
@@ -56,20 +60,17 @@ export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares }) => {
             alignment: AlignmentType.CENTER,
         });
 
-        // Crear filas de la tabla con imágenes
         const tableRows = await Promise.all(imagenesPares.map(async (par) => {
             return new TableRow({
                 children: await Promise.all(par.map(async (imagen) => {
                     const imageBlob = await fetchImageBlob(imagen.secure_url);
                     const dimensions = await getImageDimensions(imagen.secure_url);
-                    
+
                     let width, height;
                     if (dimensions.width > dimensions.height) {
-                        // Imagen horizontal
                         width = 300;
                         height = (dimensions.height / dimensions.width) * 300;
                     } else {
-                        // Imagen vertical
                         width = (dimensions.width / dimensions.height) * 300;
                         height = 300;
                     }
@@ -127,6 +128,13 @@ export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares }) => {
             const doc = await createDocument();
             const docxBlob = await Packer.toBlob(doc);
             saveAs(docxBlob, 'Solicitud.docx');
+            Swal.fire({
+                title: "Descarga Exitosa",
+                text: "Archivo Word generado con éxito",
+                icon: "success",
+                confirmButtonText: "OK",
+            })
+            navigate('/tecnico/orden');
         } catch (error) {
             console.error(error);
             setError('Failed to generate Word document');
@@ -138,9 +146,17 @@ export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares }) => {
         try {
             const doc = await createDocument();
             const docxBlob = await Packer.toBlob(doc);
+            Swal.fire({
+                title: "Descarga Exitosa",
+                text: "Archivo PDF generado con éxito",
+                icon: "success",
+                confirmButtonText: "OK",
+            })
+            navigate('/tecnico/orden');
             const pdfBlob = await apiPDF(docxBlob);
             const pdfUrl = URL.createObjectURL(pdfBlob);
             window.open(pdfUrl, '_blank');
+           
         } catch (error) {
             console.error(error);
             setError('Failed to convert DOCX to PDF');
