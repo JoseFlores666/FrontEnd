@@ -122,8 +122,16 @@ export const InformeCompleto = () => {
     const hasInforme = unaInfo && unaInfo.informe;
     const hasSolicitud = unaInfo && unaInfo.informe?.solicitud;
 
-
-
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+    
+          const form = e.target.form;
+          const index = Array.prototype.indexOf.call(form, e.target);
+          form.elements[index + 1].focus();
+        }
+      };
+    
 
     const RegistrarNombrePersonalDEPMSG = async () => {
         try {
@@ -135,7 +143,7 @@ export const InformeCompleto = () => {
 
     return (
         <div className="mx-auto max-w-6xl p-4 text-black">
-            <form >
+            <form onKeyDown={handleKeyDown}>
                 {datosCargados && unaInfo ? (
                     <div className="bg-white p-6 rounded-md shadow-md">
                         <Title showBackButton={true}>Informe Completo de Mantenimiento</Title>

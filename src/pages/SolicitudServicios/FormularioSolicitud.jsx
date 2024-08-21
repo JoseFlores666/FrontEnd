@@ -375,9 +375,19 @@ export const FormularioSolicitud = () => {
     setItems(newItems);
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+
+      const form = e.target.form;
+      const index = Array.prototype.indexOf.call(form, e.target);
+      form.elements[index + 1].focus();
+    }
+  };
+
   return (
     <div className="mx-auto max-w-6xl p-4 text-black">
-      <form className="slide-down">
+      <form className="slide-down" onKeyDown={handleKeyDown}>
         <div className="bg-white p-6 rounded-md shadow-md">
           <Title showBackButton={showBackButton}>
             {duplicar ? "Solicitud de Servicios y Bienes de Consumo Final" : titleText}

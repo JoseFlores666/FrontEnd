@@ -113,9 +113,19 @@ export const DiagnosticoTecnico = () => {
         }
     }
 
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+    
+          const form = e.target.form;
+          const index = Array.prototype.indexOf.call(form, e.target);
+          form.elements[index + 1].focus();
+        }
+      };
+
     return (
         <div className="flex items-center justify-center mx-auto max-w-7xl p-4 text-black">
-            <form onSubmit={handleSubmit((data, e) => onSubmit(true, e))} className="w-full max-w-6xl">
+            <form onSubmit={handleSubmit((data, e) => onSubmit(true, e))} onKeyDown={handleKeyDown} className="w-full max-w-6xl">
                 <div className="bg-white p-6 rounded-md shadow-md">
                     <Title showBackButton={true}>Diagnóstico y Evaluación de Servicios</Title>
                     <EncabezadoFormulario unaInfo={unaInfo} />

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, ImageRun, AlignmentType, VerticalAlign } from "docx";
+import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, ImageRun, AlignmentType, VerticalAlign, Spacing } from "docx";
 import { saveAs } from "file-saver";
 import imgWord from '../../img/imagenWord.png';
 import imgPDF from '../../img/imagenPDF.png';
@@ -88,6 +88,11 @@ export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares }) => {
                             new Paragraph({
                                 children: [image],
                                 alignment: AlignmentType.CENTER,
+                                spacing: {
+                                    before: 100, 
+                                    after: 100,  
+                                    line: 100,   
+                                },
                             }),
                         ],
                         verticalAlign: VerticalAlign.CENTER,

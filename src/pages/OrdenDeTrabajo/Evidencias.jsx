@@ -42,9 +42,18 @@ export const Evidencias = () => {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+
+      const form = e.target.form;
+      const index = Array.prototype.indexOf.call(form, e.target);
+      form.elements[index + 1].focus();
+    }
+  };
   return (
     <div className="mx-auto max-w-5xl p-4 text-center text-black">
-      <form onSubmit={(e) => { e.preventDefault(); enviarImagenes(); }} encType="multipart/form-data">
+      <form onSubmit={(e) => { e.preventDefault(); enviarImagenes(); }} onKeyDown={handleKeyDown} encType="multipart/form-data">
         <div className="bg-white p-6 rounded-md shadow-md">
           <Title showBackButton={true}>Evidencias</Title>
           <table className="w-full caption-bottom text-sm border border-t border-gray-400 bg-white rounded-b-lg mb-6">

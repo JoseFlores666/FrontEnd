@@ -155,9 +155,19 @@ export const AreaDeEntregas = () => {
         );
     }
 
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+    
+          const form = e.target.form;
+          const index = Array.prototype.indexOf.call(form, e.target);
+          form.elements[index + 1].focus();
+        }
+      };
+
     return (
         <div className="mx-auto max-w-6xl p-4 text-black">
-            <form ref={formRef} onSubmit={handleSubmit(onSubmit)} className="slide-down">
+            <form ref={formRef} onSubmit={handleSubmit(onSubmit)} onKeyDown={handleKeyDown} className="slide-down">
                 <div className="bg-white p-6 rounded-md shadow-md mb-4">
                     <Title showBackButton={true}>Área de Entregas </Title>
                     <GridContainer>
