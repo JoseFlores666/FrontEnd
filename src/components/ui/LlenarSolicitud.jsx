@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PizZip from 'pizzip';
 import Docxtemplater from 'docxtemplater';
 import { saveAs } from 'file-saver';
@@ -7,6 +7,7 @@ import imgWord from '../../img/imagenWord.png';
 import imgPDF from '../../img/imagenPDF.png';
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { useSoli } from '../../context/SolicitudContext';
 
 export const LlenarSolicitud = ({
     fecha,
@@ -29,6 +30,23 @@ export const LlenarSolicitud = ({
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
+    const { traeApis_keys, api_Key } = useSoli();
+    const [datosCargados, setDatosCargados] = useState(false);
+
+    useEffect(() => {
+        const llamaApi = async () => {
+            try {
+                await traeApis_keys();
+                setDatosCargados(true);
+            } catch (error) {
+                console.log(error)
+            }
+        };
+        if (!datosCargados) {
+            llamaApi();
+        }
+    }, [traeApis_keys, datosCargados, api_Key]);
+
     const handleCloseModal = () => {
         setIsOpen(false);
     };
@@ -39,13 +57,13 @@ export const LlenarSolicitud = ({
         try {
             const response = await fetch("/PlantillaSolicitud.docx");
             const content = await response.arrayBuffer();
-    
+
             const zip = new PizZip(content);
             const doc = new Docxtemplater(zip, {
                 paragraphLoop: true,
                 linebreaks: true,
             });
-    
+
             const maxItems = 10; // Define el número máximo de items
             const fields = {
                 dia: day || "",
@@ -63,7 +81,7 @@ export const LlenarSolicitud = ({
                 val: dirrecion || "",
                 aut: rectoría || "",
             };
-    
+
             // Agrega los campos para los ítems
             for (let i = 0; i < maxItems; i++) {
                 const item = items[i] || { cantidad: '', unidad: '', descripcion: '' };
@@ -71,7 +89,7 @@ export const LlenarSolicitud = ({
                 fields[`uni${i + 1}`] = item.unidad || '';
                 fields[`desc${i + 1}`] = item.descripcion || '';
             }
-    
+
             doc.render(fields);
             return doc.getZip().generate({
                 type: 'blob',
@@ -83,7 +101,7 @@ export const LlenarSolicitud = ({
             throw error;
         }
     };
-        const generateWordDocument = async () => {
+    const generateWordDocument = async () => {
         setError(null);
         try {
             const docxBlob = await fetchAndGenerateDoc();
@@ -103,17 +121,21 @@ export const LlenarSolicitud = ({
     const generatePDFDocument = async () => {
         setError(null);
         try {
-            const docxBlob = await fetchAndGenerateDoc();
-            const pdfBlob = await apiPDF(docxBlob);
-            const pdfUrl = URL.createObjectURL(pdfBlob);
-            window.open(pdfUrl, '_blank');
-            Swal.fire({
-                title: "Descarga Exitosa",
-                text: "Archivo PDF generado con éxito",
-                icon: "success",
-                confirmButtonText: "OK",
-            })
-            navigate('/soli');
+            if (api_Key.length > 0) {
+                const apiKey = api_Key[0].api_key;
+
+                const docxBlob = await fetchAndGenerateDoc();
+                const pdfBlob = await apiPDF(docxBlob, apiKey);
+                const pdfUrl = URL.createObjectURL(pdfBlob);
+                window.open(pdfUrl, '_blank');
+                Swal.fire({
+                    title: "Descarga Exitosa",
+                    text: "Archivo PDF generado con éxito",
+                    icon: "success",
+                    confirmButtonText: "OK",
+                })
+                navigate('/soli');
+            }
         } catch (error) {
             console.error(error);
         }
