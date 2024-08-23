@@ -128,6 +128,8 @@ export const LlenarSolicitud = ({
                 const pdfBlob = await apiPDF(docxBlob, apiKey);
                 const pdfUrl = URL.createObjectURL(pdfBlob);
                 window.open(pdfUrl, '_blank');
+                Swal.fire("Descarga Exitosa", "Debe ingresar un diagnóstico y subir al menos una imagen como evidencia.", "warning");
+
                 Swal.fire({
                     title: "Descarga Exitosa",
                     text: "Archivo PDF generado con éxito",
