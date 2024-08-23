@@ -246,7 +246,7 @@ export const TablaDeOrdenes = () => {
             type="text"
             id="table-search"
             className="block p-2 ps-10 text-sm text-black border border-black rounded-lg w-80 bg-white focus:ring-blue-500 focus:border-blue-500"
-            placeholder="Search for items"
+            placeholder="Buscador"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />

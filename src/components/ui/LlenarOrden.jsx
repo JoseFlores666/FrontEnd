@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PizZip from 'pizzip';
 import Docxtemplater from 'docxtemplater';
 import { saveAs } from 'file-saver';
 import { apiPDF } from '../../api/apiPDF'; // Asegúrate de la ruta correcta
-import imgWord from '../../img/imagenWord.png'; 
-import imgPDF from '../../img/imagenPDF.png';   
+import imgWord from '../../img/imagenWord.png';
+import imgPDF from '../../img/imagenPDF.png';
+import { useSoli } from '../../context/SolicitudContext';
 
 export const LlenarOrden = ({
     fecha,
@@ -24,6 +25,23 @@ export const LlenarOrden = ({
 }) => {
     const [isOpen, setIsOpen] = useState(true);
     const [error, setError] = useState(null);
+
+    const { traeApis_keys, api_Key } = useSoli();
+    const [datosCargados, setDatosCargados] = useState(false);
+
+    useEffect(() => {
+        const llamaApi = async () => {
+            try {
+                await traeApis_keys();
+                setDatosCargados(true);
+            } catch (error) {
+                console.log(error)
+            }
+        };
+        if (!datosCargados) {
+            llamaApi();
+        }
+    }, [traeApis_keys, datosCargados, api_Key]);
 
     const handleCloseModal = () => {
         setIsOpen(false);
@@ -91,7 +109,10 @@ export const LlenarOrden = ({
 
     const generateWordDocument = async () => {
         setError(null);
+
         try {
+
+
             const docxBlob = await fetchAndGenerateDoc();
             saveAs(docxBlob, 'OrdenDeMantenimiento.docx');
         } catch (error) {
@@ -102,13 +123,17 @@ export const LlenarOrden = ({
     const generatePDFDocument = async () => {
         setError(null);
         try {
-            const docxBlob = await fetchAndGenerateDoc();
-            const pdfBlob = await apiPDF(docxBlob);
-            const pdfUrl = URL.createObjectURL(pdfBlob);
-            window.open(pdfUrl, '_blank');
+            if (api_Key.length > 0) {
+                const apiKey = api_Key[0].api_key;
+
+                const docxBlob = await fetchAndGenerateDoc();
+                const pdfBlob = await apiPDF(docxBlob, apiKey);
+                const pdfUrl = URL.createObjectURL(pdfBlob);
+                window.open(pdfUrl, '_blank');
+            }
         } catch (error) {
             console.error(error);
-        } 
+        }
     };
 
     return (

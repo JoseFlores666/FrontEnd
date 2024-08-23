@@ -36,7 +36,7 @@ export const FormularioOrden = () => {
   });
 
   const [recentSuggestions, setRecentSuggestions] = useState([]);
-  
+
   const [projectsLoaded, setProjectsLoaded] = useState(false);
   const [cargandoInforme, setCargandoInforme] = useState(editar);
   const showBackButton = editar;
@@ -109,7 +109,7 @@ export const FormularioOrden = () => {
   const llenar = () => {
     if (id && editar) {
       setValue("folio", unaInfo?.informe?.folio || "");
-      setFecha(unaInfo.informe.fecha ? unaInfo.informe.fecha.split("T")[0] : "");
+      setFecha(unaInfo.informe.fecha ? new Date(unaInfo.informe.fecha).toISOString().slice(0, 10) : "");
       setInforme({
         fecha: unaInfo.informe.fecha ? unaInfo.informe.fecha.split("T")[0] : "",
         areasoli: unaInfo.informe.Solicita ? unaInfo.informe.Solicita.areaSolicitante : "",
@@ -141,6 +141,7 @@ export const FormularioOrden = () => {
   const handleFormSubmit = async () => {
     try {
       let res;
+      console.log(informe)
       if (id && editar) {
         res = await actualizarMyInforme(id, informe);
       } else {
@@ -165,6 +166,13 @@ export const FormularioOrden = () => {
       Swal.fire("Error", "Ocurrió un error al guardar la información", "error");
     }
   };
+
+  useEffect(() => {
+    setInforme((prev) => ({
+      ...prev,
+      fecha: fecha,
+    }));
+  }, [fecha]);
 
   const handleFechaChange = (e) => {
     const newFecha = e.target.value;

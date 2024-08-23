@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from "react-router-dom";
 import { ImFileEmpty } from "react-icons/im";
 import Swal from "sweetalert2";
-import { Title, Label, GridContainer } from '../../components/ui/index.js';
+import { Title, Label } from '../../components/ui/index.js';
 import { useOrden } from '../../context/ordenDeTrabajoContext.jsx';
 import { EncabezadoFormulario } from '../../components/ui/Encabezado.jsx';
 import scrollToTop from '../../util/Scroll';
@@ -15,12 +15,12 @@ export default function AsignarTecnico() {
     const navigate = useNavigate();
     const { id } = useParams();
     const { traerUnaInfo, traerTecnicos, tecnicos, evaluarInforme, unaInfo } = useOrden();
+    const [datosCargados, setDatosCargados] = useState(false);
 
     const { register, handleSubmit, formState: { errors }, setValue, reset } = useForm({
         resolver: zodResolver(asignarTecnicoSchema),
     });
 
-    const [datosCargados, setDatosCargados] = useState(false);
 
     useEffect(() => {
         const iniciarDatos = async () => {
