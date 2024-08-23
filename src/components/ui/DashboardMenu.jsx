@@ -99,7 +99,7 @@ export const DashboardMenu = ({ isOpen, toggleMenu }) => {
             Swal.fire("API Key actualizada correctamente", "", "success");
 
         } catch (error) {
-            Swal.fire("Error al actualizar la API Key", "", "error");
+            Swal.fire("Error ", "", "error");
         }
     };
 
