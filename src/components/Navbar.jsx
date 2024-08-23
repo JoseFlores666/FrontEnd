@@ -117,7 +117,7 @@ export function Navbar() {
                       onClick={() => setIsSolicitudesDropdownOpen(!isSolicitudesDropdownOpen)}
                       className={`rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-blue-600 ${activeLink === "/soli" ? "text-blue-600 " : "text-gray-900 dark:text-white"}`}
                     >
-                      Solicitudes
+                      Tablas
                     </button>
                     <div
                       className={`origin-top-right absolute right-0  w-56 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none dark:bg-gray-700 dark:divide-gray-600 ${isSolicitudesDropdownOpen ? "block" : "hidden"}`}
@@ -152,7 +152,7 @@ export function Navbar() {
                       onClick={() => setIsOptionsDropdownOpen(!isOptionsDropdownOpen)}
                       className={`rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-blue-600 ${activeLink === "/opciones" ? "text-blue-600 " : "text-gray-900 dark:text-white"}`}
                     >
-                      Opciones
+                      Adicional
                     </button>
                     <div
                       className={`origin-top-right absolute right-0 w-56 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none dark:bg-gray-700 dark:divide-gray-600 ${isOptionsDropdownOpen ? "block" : "hidden"}`}

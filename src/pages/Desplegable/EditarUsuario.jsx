@@ -121,7 +121,7 @@ function EditarUsuario() {
             ))}
           </div>
 
-          <div className="flex justify-end mt-4">
+          <div className="flex justify-start mt-4">
             <Button type="submit">Actualizar</Button>
           </div>
         </form>
