@@ -1,16 +1,18 @@
 import { useAuth } from "../context/authContext";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, Message, Button, Input, Label } from "../components/ui";
 import { loginSchema } from "../schemas/auth";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 export function LoginPage() {
   const { register, handleSubmit, formState: { errors }, } = useForm({ resolver: zodResolver(loginSchema), });
   const { signin, errors: loginErrors, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-
+  const [showPassword, setShowPassword] = useState(false);
   const onSubmit = (data) => signin(data);
 
   useEffect(() => {
@@ -19,12 +21,17 @@ export function LoginPage() {
     }
   }, [isAuthenticated]);
 
+  const getErrorMessage = (field) => {
+    return loginErrors.find(error => error.toLowerCase().includes(field)) || "";
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
   return (
     <div className="h-[calc(100vh-100px)] flex items-center justify-center">
       <Card className="shadow-xl border border-black">
-        {loginErrors.map((error, i) => (
-          <Message message={error} key={i} />
-        ))}
+
         <h1 className="text-2xl font-bold caret-light-50 text-black">Iniciar Sesión</h1>
 
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -54,22 +61,35 @@ export function LoginPage() {
             {errors.email && (
               <p className="text-red-500 mt-0.5">{errors.email.message}</p>
             )}
+            {getErrorMessage("email") && (
+              <p className="text-red-500 mt-0.5">{getErrorMessage("email")}</p>
+            )}
           </div>
 
           <div className="mb-1">
             <Label>Ingresa tu contraseña:</Label>
             <div className="flex">
               <Input
-                type="password"
+                type={showPassword ? "text" : "password"}  // Cambia el tipo de input según el estado
                 id="password"
                 className="rounded-none rounded-e-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="********"
                 autoComplete="email"
                 {...register("password", { required: true, minLength: 6 })}
               />
+              <button
+                type="button"
+                onClick={togglePasswordVisibility}
+                className="px-2 rounded-e-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              >
+                <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+              </button>
             </div>
             {errors.password && (
               <p className="text-red-500 mt-0.5">{errors.password.message}</p>
+            )}
+            {getErrorMessage("contraseña") && (
+              <p className="text-red-500 mt-0.5">{getErrorMessage("contraseña")}</p>
             )}
           </div>
 
@@ -78,12 +98,7 @@ export function LoginPage() {
           </div>
         </form>
 
-        <p className="flex gap-x-2 justify-between font-bold">
-          ¿No tienes Cuenta?{" "}
-          <Link to="/register" className="text-sky-500 font-bold">
-            Registrarse
-          </Link>
-        </p>
+       
       </Card>
     </div>
   );

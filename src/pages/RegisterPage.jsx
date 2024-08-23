@@ -5,6 +5,7 @@ import { Card, Message, Button, Input, Label } from "../components/ui";
 import { useForm } from "react-hook-form";
 import { registerSchema } from "../schemas/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Swal from "sweetalert2";
 
 function Register() {
   const { signup, errors: registerErrors, isAuthenticated } = useAuth();
@@ -18,19 +19,24 @@ function Register() {
   const navigate = useNavigate();
 
   const onSubmit = async (value) => {
-    await signup(value);
+    try {
+      const res = await signup(value);
+      if (res && res.data?.mensaje) {
+        Swal.fire("Usuario creado", "El usuario se ha creado con exito", "success", "OK",).then(() => {
+          navigate(`/soli/registro/:id`)
+        });
+      }
+    } catch (error) {
+      console.log(error)
+    }
   };
-
-  useEffect(() => {
-    if (isAuthenticated) navigate("/soli/registro/:id");
-  }, [isAuthenticated]);
 
   return (
     <div className="h-[calc(100vh-80px)] flex items-center justify-center">
       <Card className="border border-black">
-        {registerErrors.map((error, i) => (
+        {/* {registerErrors.map((error, i) => (
           <Message message={error} key={i} />
-        ))}
+        ))} */}
         <h1 className="text-3xl font-bold">Registrate</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="">
@@ -58,6 +64,9 @@ function Register() {
             {errors.username?.message && (
               <p className="text-red-500 mt-1">{errors.username?.message}</p>
             )}
+            {registerErrors.map((error, i) => error.toLowerCase().includes("usuario") && (
+              <Message message={error} key={i} />
+            ))}
           </div>
 
           <div className="">
@@ -87,6 +96,9 @@ function Register() {
             {errors.email?.message && (
               <p className="text-red-500 mt-1">{errors.email?.message}</p>
             )}
+            {registerErrors.map((error, i) => error.toLowerCase().includes("email") && (
+              <Message message={error} key={i} />
+            ))}
           </div>
           <div className="">
             <Label htmlFor="password">Contraseña:</Label>
@@ -119,17 +131,13 @@ function Register() {
               <p className="text-red-500 mt-1">{errors.confirmPassword?.message}</p>
             )}
 
+
             <div className="font-bold mr-4">
               <Button>Registrarse</Button>
             </div>
           </div>
         </form>
-        <p>
-          ¿Ya tienes cuenta?
-          <Link className="text-sky-500 font-bold" to="/login">
-            Login
-          </Link>
-        </p>
+       
       </Card>
     </div>
   )

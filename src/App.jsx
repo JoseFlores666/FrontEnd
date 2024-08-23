@@ -18,12 +18,13 @@ import { CierreDelInforme } from "./pages/OrdenDeTrabajo/CierreDelInforme";
 import { DashboardMenu } from "./components/ui/DashboardMenu";
 import { Evidencias } from "./pages/OrdenDeTrabajo/Evidencias"
 import AsignarTecnico from "./pages/OrdenDeTrabajo/AsignarTecnico"
-import {TecnicosTable} from "./pages/Desplegable/TecnicosTable"
+import { TecnicosTable } from "./pages/Desplegable/TecnicosTable"
 import { ProjectAndActManager } from "./pages/Desplegable/EditarProyects&Act"
 import { InformeCompleto } from "./pages/OrdenDeTrabajo/InformeCompleto"
 import { DiagnosticoTecnico } from "./pages/OrdenDeTrabajo/DiagnosticoTecnico"
 import { Historial } from "./pages/SolicitudServicios/Historial"
 import { TablaResumenEstados } from "./pages/Desplegable/TablaResumenEstados";
+import EditarUsuario from "./pages/Desplegable/EditarUsuario";
 
 function App() {
   return (
@@ -37,9 +38,10 @@ function App() {
                 <Routes>
                   <Route path="/" element={<LoginPage />} />
                   <Route path="/login" element={<LoginPage />} />
-                  <Route path="/register" element={<RegisterPage />} />
                   <Route element={<ProtectedRoute />}>
+                    <Route path="/register" element={<RegisterPage />} />
                     <Route path="/soli/registro/:id" element={<FormularioSolicitud />} />
+                    <Route path="/register/EditarUsuario/:id" element={<EditarUsuario />} />
                     <Route path="/soli/abonar/:id" element={<AreaDeEntregas />} />
                     <Route path="/soli" element={<TablaDeRegistros />} />
                     <Route path="/soli/TablaResumenEstados" element={<TablaResumenEstados />} />
@@ -55,7 +57,7 @@ function App() {
                     <Route path="/proyectAndAct" element={<ProjectAndActManager />} />
                     <Route path="/verInforme/:id" element={<InformeCompleto />} />
                     <Route path="/informacionOrden/:id" element={<DiagnosticoTecnico />} />
-                   
+
                     <Route path="/historial/:id" element={<Historial />} />
                   </Route>
                 </Routes>

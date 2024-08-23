@@ -93,21 +93,9 @@ export const DashboardMenu = ({ isOpen, toggleMenu }) => {
             await EditarApis_keys(idApiKeys, newApiKey);
             setValue("apiKey", "");
 
-            const formData = new FormData();
-            formData.append("apiKey", newApiKey);
-
-            const response = await fetch('http://localhost/PlantillasWordyPdf/CambioApi.php', {
-                method: 'POST',
-                body: formData,
-            });
-
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-
-            console.log('Formulario enviado correctamente:', await response.text());
             setValue("newApiKey", "");
             setIsModalOpen(false);
+            setEsperarApiKeys(false);
             Swal.fire("API Key actualizada correctamente", "", "success");
 
         } catch (error) {

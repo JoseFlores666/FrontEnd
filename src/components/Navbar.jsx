@@ -9,6 +9,7 @@ export function Navbar() {
   const [activeLink, setActiveLink] = useState("");
   const [isSolicitudesDropdownOpen, setIsSolicitudesDropdownOpen] = useState(false);
   const [isDashboardMenuOpen, setIsDashboardMenuOpen] = useState(false);
+  const [isOptionsDropdownOpen, setIsOptionsDropdownOpen] = useState(false);
 
   const location = useLocation();
   useEffect(() => {
@@ -38,15 +39,32 @@ export function Navbar() {
   }, []);
 
   useEffect(() => {
-    function handleClickOutside2(event) {
-      if (!event.target.closest('.solicitudes-dropdown')) {
-        setIsSolicitudesDropdownOpen(false)
+    function handleClickOutside(event) {
+      if (!event.target.closest('.dropdown')) {
+        setIsDropdownOpen(false);
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside2);
+    function handleClickOutsideSolicitudes(event) {
+      if (!event.target.closest('.solicitudes-dropdown')) {
+        setIsSolicitudesDropdownOpen(false);
+      }
+    }
+
+    function handleClickOutsideOptions(event) {
+      if (!event.target.closest('.options-dropdown')) {
+        setIsOptionsDropdownOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutsideSolicitudes);
+    document.addEventListener("mousedown", handleClickOutsideOptions);
+
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside2);
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutsideSolicitudes);
+      document.removeEventListener("mousedown", handleClickOutsideOptions);
     };
   }, []);
 
@@ -55,20 +73,16 @@ export function Navbar() {
       <nav className="bg-gray-50 dark:bg-black">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <div className="flex items-center justify-center space-x-1">
-            <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQECmkNjpPwLnbAXf3j5eavPu0QSYoOfiNA8A&s"
-              className="h-8"
-              alt="Flowbite Logo"
-            />
+
             <span className="self-left text-2xl font-semibold whitespace-nowrap hover:text-gray-600 hover:border-gray-300  text-gray-900 dark:text-white">Solicitudes Innego</span>
-          </div>  
+          </div>
           <div className="hidden w-full md:block md:w-auto" id="navbar-solid-bg">
             <ul className="flex items-center space-x-3  font-medium mt-4 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-transparent dark:bg-gray-800 md:dark:bg-transparent dark:border-gray-700">
               {isAuthenticated ? (
                 <>
                   <li>
                     <Link
-                      className={`p-4 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-blue-600 ${activeLink === "/" ? "text-blue-600 " : "text-gray-900 dark:text-white"}`}
+                      className={` rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-blue-600 ${activeLink === "/" ? "text-blue-600 " : "text-gray-900 dark:text-white"}`}
                       onClick={(event) => {
                         event.preventDefault();
                         toggleDashboardMenu(!isDashboardMenuOpen);
@@ -81,7 +95,7 @@ export function Navbar() {
                   <li className="me-2">
                     <Link
                       to="/tecnico/:id"
-                      className={` p-4  rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-blue-600 ${activeLink === "/tecnico/:id" ? "text-blue-600 " : "text-gray-900 dark:text-white"}`}
+                      className={`   rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-blue-600 ${activeLink === "/tecnico/:id" ? "text-blue-600 " : "text-gray-900 dark:text-white"}`}
                       onClick={() => setActiveLink("/tecnico/:id")}
                     >
                       Registrar Orden
@@ -91,7 +105,7 @@ export function Navbar() {
                   <li className="me-2">
                     <Link
                       to="/soli/registro/:id"
-                      className={` p-4 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-blue-600 ${activeLink === "/soli/registro/:id" ? "text-blue-600 " : "text-gray-900 dark:text-white"}`}
+                      className={`  rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-blue-600 ${activeLink === "/soli/registro/:id" ? "text-blue-600 " : "text-gray-900 dark:text-white"}`}
                       onClick={() => setActiveLink("/soli/registro/:id")}
                     >
                       Registrar Solicitud
@@ -127,6 +141,23 @@ export function Navbar() {
                             Orden De Trabajo De Mantenimiento A Mobiliario E Instalaciones
                           </Link>
                         </li>
+
+                      </ul>
+                    </div>
+                  </li>
+
+                  {/* Nuevo Menú de Opciones */}
+                  <li className="me-2 relative options-dropdown">
+                    <button
+                      onClick={() => setIsOptionsDropdownOpen(!isOptionsDropdownOpen)}
+                      className={`rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-blue-600 ${activeLink === "/opciones" ? "text-blue-600 " : "text-gray-900 dark:text-white"}`}
+                    >
+                      Opciones
+                    </button>
+                    <div
+                      className={`origin-top-right absolute right-0 w-56 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none dark:bg-gray-700 dark:divide-gray-600 ${isOptionsDropdownOpen ? "block" : "hidden"}`}
+                    >
+                      <ul className="">
                         <li>
                           <Link
                             to="/soli/editarFirmas"
@@ -135,6 +166,8 @@ export function Navbar() {
                           >
                             Editar nombre de las firmas
                           </Link>
+                        </li>
+                        <li>
                           <Link
                             to="/proyectAndAct"
                             className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white ${activeLink === "/proyectAndAct" ? "text-blue-600" : ""}`}
@@ -142,12 +175,40 @@ export function Navbar() {
                           >
                             Agregar Proyectos
                           </Link>
+                        </li>
+                        <li>
                           <Link
                             to="/personalTecnicos"
-                            className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white ${activeLink === "/proyectAndAct" ? "text-blue-600" : ""}`}
+                            className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white ${activeLink === "/personalTecnicos" ? "text-blue-600" : ""}`}
                             onClick={() => setActiveLink("/personalTecnicos")}
                           >
                             Tabla del personal técnico
+                          </Link> </li>
+                        <li>
+                          <Link
+                            to="/register"
+                            className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white ${activeLink === "/register" ? "text-blue-600" : ""}`}
+                            onClick={() => setActiveLink("/register")}
+                          >
+                            Registrarse
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            to={`/register/EditarUsuario/${user.id}`} // Usa el enlace dinámico correctamente
+                            className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white ${activeLink === `/register/EditarUsuario/${user.id}` ? "text-blue-600" : ""}`} // Usa la interpolación de plantilla
+                            onClick={() => setActiveLink(`/register/EditarUsuario/${user.id}`)} // Usa la interpolación de plantilla
+                          >
+                            Editar Usuario
+                          </Link>
+                        </li>
+                        <li>
+                          <Link
+                            to="/register"
+                            className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white ${activeLink === "/register" ? "text-blue-600" : ""}`}
+                            onClick={() => setActiveLink("/register")}
+                          >
+                            Registrarse
                           </Link>
                         </li>
                       </ul>
@@ -160,8 +221,6 @@ export function Navbar() {
                     >
                       Cerrar Sesión
                     </Link>
-                    {/* <span className="block text-sm text-gray-900 dark:text-white">{user.username}</span>
-                        <span className="block text-sm text-gray-500 truncate dark:text-gray-400">{user.email}</span> */}
                   </div>
                 </>
               ) : (
@@ -175,21 +234,13 @@ export function Navbar() {
                       Iniciar Sesión
                     </Link>
                   </li>
-                  <li className="me-2">
-                    <Link
-                      to="/register"
-                      className={` p-4  rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-blue-600 ${activeLink === "/register" ? "text-blue-600 " : "text-gray-900 dark:text-white"}`}
-                      onClick={() => setActiveLink("/register")}
-                    >
-                      Registrarse
-                    </Link>
-                  </li>
+
                 </>
               )}
             </ul>
           </div>
         </div>
       </nav>
-    </header>
+    </header >
   );
 }

@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Swal from "sweetalert2";
 
 function EditarUsuario() {
-  const { ModificarUsuario, errors: formErrors, user } = useAuth();
+  const { ActualizarMyUsuario, errors: formErrors, user } = useAuth();
   const { id } = useParams(); // Para obtener el ID del usuario de la URL
   const {
     register,
@@ -22,7 +22,7 @@ function EditarUsuario() {
 
   const onSubmit = async (value) => {
     try {
-      const res = await ModificarUsuario(id, value);
+      const res = await ActualizarMyUsuario(id, value);
       if (res && res.data?.mensaje) {
         Swal.fire("Modificación exitosa", "La modificación se ha hecho con exito", "success", "OK",).then(() => {
           navigate(`/soli/registro/:id`)
@@ -33,22 +33,17 @@ function EditarUsuario() {
     }
   };
 
-
+  console.log(formErrors)
 
   return (
     <div className="h-[calc(100vh-80px)] flex items-center justify-center">
       <Card className="border border-black">
-        {/* {updateErrors.map((error, i) => (
-          <Message message={error} key={i} />
-        ))} */}
-
         <h1 className="text-3xl font-bold">Editar Usuario</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="">
             <Label htmlFor="username">Usuario:</Label>
             <div className="flex">
               <span className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border rounded-e-0 border-gray-300 border-e-0 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
-                {/* SVG para el icono de usuario */}
                 <svg
                   className="w-4 h-4 text-gray-500 dark:text-gray-400"
                   aria-hidden="true"
@@ -79,7 +74,6 @@ function EditarUsuario() {
             <Label htmlFor="email">Email:</Label>
             <div className="flex">
               <span className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border rounded-e-0 border-gray-300 border-e-0 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
-                {/* SVG para el icono de email */}
                 <svg
                   className="w-4 h-4 text-gray-500 dark:text-gray-400"
                   aria-hidden="true"
@@ -110,12 +104,11 @@ function EditarUsuario() {
           <div className="">
             <Label htmlFor="password">Contraseña:</Label>
             <div className="flex">
-
               <Input
-                type="text"
+                type="password"
                 name="password"
                 placeholder="Ingresa tu nueva contraseña"
-                autoComplete="password"
+                autoComplete="new-password"
                 {...register("password")}
                 className="rounded-none rounded-e-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               />
@@ -127,7 +120,6 @@ function EditarUsuario() {
               <Message message={error} key={i} />
             ))}
           </div>
-
 
           <div className="flex justify-end mt-4">
             <Button type="submit">Actualizar</Button>

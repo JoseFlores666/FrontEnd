@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { createContext, useContext, useState } from "react";
-import { loginRequest, registerRequest, verifyTokenRequest } from "../api/auth";
+import { loginRequest, registerRequest, ActualizaUsuario, verifyTokenRequest } from "../api/auth";
 import Cookies from "js-cookie";
 
 const AuthContext = createContext();
@@ -35,6 +35,7 @@ export const AuthProvider = ({ children }) => {
 
         //coloca verdadero si ya esta autenticado(si ya se resgitro)
         setIsAuthenticated(true);
+        return res;
       }
     } catch (error) {
       console.log(error.response.data);
@@ -49,8 +50,20 @@ export const AuthProvider = ({ children }) => {
 
       //coloca verdadero si ya esta autenticado(si ya inicio sesion)
       setIsAuthenticated(true);
+      return res;
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data);
+      setErrors(error.response.data.message);
+    }
+  };
+  const ActualizarMyUsuario = async (id, user) => {
+    try {
+      const res = await ActualizaUsuario(id, user);
+      setErrors([]);
+      return res;
+    } catch (error) {
+      console.log(error.response.data.mensaje);
+      setErrors(error.response.data.mensaje);
     }
   };
 
@@ -96,6 +109,7 @@ export const AuthProvider = ({ children }) => {
         user,
         signup,
         signin,
+        ActualizarMyUsuario,
         logout,
         isAuthenticated,
         errors,

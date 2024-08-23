@@ -11,14 +11,12 @@ import "../../css/Animaciones.css";
 import { AutocompleteInput } from "../../components/ui/AutocompleteInput";
 import { GridContainer, Label, LlenarSolicitud, Title } from "../../components/ui";
 import { ValidacionSoli } from "../../schemas/ValidacionSoli";
-import { zodResolver } from "@hookform/resolvers/zod";
 
 export const FormularioSolicitud = () => {
 
   const navigate = useNavigate();
-
-  // const [value, setValue] = useState('');
-  // const [errors, setErrors] = useState({});
+  const [value, setValue] = useState('');
+  const [errors, setErrors] = useState({});
 
   const [fecha, setFecha] = useState(() => {
     const today = new Date();
@@ -33,20 +31,16 @@ export const FormularioSolicitud = () => {
   const showBackButton = editar || duplicar;
   const titleText = editar ? "Actualizar Solicitud" : "Solicitud de Servicios y Bienes de Consumo Final";
 
-  const [items, setItems] = useState([{ cantidad: "", unidad: "", descripcion: "", cantidadAcumulada: 0, cantidadEntregada: 0, NumeroDeEntregas: 0, },]);
-
-  const [solicitud, setSolicitud] = useState({ folio: "", fecha: "", suministro: "", pc: "", proyecto: "", actividad: "", justificacion: "" });
-
   const [folioInterno, setFolioInterno] = useState("");
 
   const [isOpen, setIsOpen] = useState(false);
-
   const [suministro, setSuministro] = useState("");
   const [pc, setPc] = useState("");
   const [proyecto, setProyecto] = useState("");
   const [actividad, setActividad] = useState("");
   const [selectedActividad, setSelectedActividad] = useState({ id: "", nombre: "" });
   const [justificacion, setJustificacion] = useState("");
+  const [items, setItems] = useState([{ cantidad: "", unidad: "", descripcion: "", cantidadAcumulada: 0, cantidadEntregada: 0, NumeroDeEntregas: 0, },]);
 
   const [projectsLoaded, setProjectsLoaded] = useState(false);
   const [fetchActivitiesFlag, setFetchActivitiesFlag] = useState(false);
@@ -67,21 +61,25 @@ export const FormularioSolicitud = () => {
   const { traeHistorialSoli, historialSoli, } = useSoli();
   const { user } = useAuth();
 
-  const { register, setValue, formState: { errors }, handleSubmit, reset, trigger, } = useForm({
-    resolver: zodResolver(registerSoliSchema),
-    defaultValues: {
-      items: [{}]
+  const guardarDatos = (e) => {
+    e.preventDefault();
+    const fields = { fecha, suministro, pc, proyecto, actividad, justificacion };
+    const newErrors = ValidacionSoli(fields, items);
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      setIsOpen(true);
+    } else {
+      Swal.fire({
+        title: "Alerta!",
+        text: "Complete todos los componentes",
+        icon: "warning",
+        confirmButtonText: "Cool",
+      });
+      return;
     }
-  })
-
-  // const guardarDatos = (e) => {
-  //   e.preventDefault();
-
-
-
-  //     setIsOpen(true);
-
-  // }
+    setIsOpen(true);
+  }
 
   const fetchProyecto = async () => {
     try {
@@ -142,10 +140,10 @@ export const FormularioSolicitud = () => {
         if (unasoli.actividades && unasoli.actividades.length > 0) {
           const primeraActividad = unasoli.actividades[0];
           setActividad(primeraActividad.actividadRef);
-          setMyActividad_(primeraActividad.nombre || "");
+          setMyActividad_(primeraActividad.nombreActividad || "");
 
           setSelectedActividad({ id: primeraActividad.actividadRef, nombre: primeraActividad.nombreActividadPropio })
-          setMyActividad_(primeraActividad.nombreActividadPropio || "");
+
         }
       }
       setJustificacion(unasoli.justificacionAdquisicion || "");
@@ -324,17 +322,11 @@ export const FormularioSolicitud = () => {
     images.forEach(img => {
       if (editar) {
         img.onclick = guardarActualizacion;
-
       } else {
         img.onclick = fetchProyecto;
       }
     });
   }, [editar, duplicar]);
-
-
-  const handleFormSubmit = async (data) => {
-    console.log(data)
-  }
 
   const handleProyectoChange = (e) => {
     const selectedProyectoId = e.target.value;
@@ -343,7 +335,6 @@ export const FormularioSolicitud = () => {
     const selectedProyecto = ids.find(
       (proyecto) => proyecto._id === selectedProyectoId
     );
-    console.log(selectedProyecto ? selectedProyecto.nombre : "");
     setMyProyecto_(selectedProyecto ? selectedProyecto.nombre : "");
     setFetchActivitiesFlag(true);
   };
@@ -360,8 +351,7 @@ export const FormularioSolicitud = () => {
       id: selectedActividad ? selectedActividad._id : "",
       nombre: selectedActividad ? selectedActividad.nombre : ""
     });
-
-    setMyActividad_(selectedActividad?.nombre || "");
+    setMyActividad_(selectedActividad.nombre || "");
   };
 
   const duplicarItem = async (index, e) => {
@@ -384,7 +374,7 @@ export const FormularioSolicitud = () => {
 
   return (
     <div className="mx-auto max-w-6xl p-4 text-black">
-      <form className="slide-down" onKeyDown={handleKeyDown}>
+      <form  onKeyDown={handleKeyDown}  className="slide-down">
         <div className="bg-white p-6 rounded-md shadow-md">
           <Title showBackButton={showBackButton}>
             {duplicar ? "Solicitud de Servicios y Bienes de Consumo Final" : titleText}
@@ -399,7 +389,7 @@ export const FormularioSolicitud = () => {
                 disabled
                 className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                 value={folioInterno || ""}
-
+                onChange={(e) => setFolioInterno(e.target.value)}
               />
             </div>
             <div>
@@ -408,32 +398,23 @@ export const FormularioSolicitud = () => {
                 type="date"
                 id="fecha"
                 name="fecha"
-                // required
-
+                required
                 className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                value={fecha}
-                {...register("fecha")}
-                onChange={handleFechaChange}
+                value={fecha || ""}
+                onChange={(e) => setFecha(e.target.value)}
               />
-              {errors.fecha && <p className="text-red-500">{errors?.fecha?.message}</p>}
+              {errors.fecha && <p className="text-red-500">{errors.fecha}</p>}
+
             </div>
             <div>
               <Label>Tipo de Suministro:</Label>
               <select
                 id="suministro"
                 name="suministro"
-                // required
-                // value={suministro || ""}
+                required
+                value={suministro || ""}
                 className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                onChange={(e) => {
-                  setSolicitud((prev) => ({
-                    ...prev,
-                    suministro: e.target.value
-                  }))
-                  setValue("suministro", e.target.value, { shouldValidate: true })
-                }
-                }
-
+                onChange={(e) => setSuministro(e.target.value)}
               >
                 <option value="">Seleccione un suministro</option>
                 <option value="Normal">Normal</option>
@@ -447,19 +428,12 @@ export const FormularioSolicitud = () => {
             <div>
               <Label>Proceso Clave (PC):</Label>
               <select
-                id="pc"
+                id="PC"
                 name="pc"
-                // required
-                // value={pc || ""}
+                required
+                value={pc || ""}
                 className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                onChange={(e) => {
-                  setSolicitud((prev) => ({
-                    ...prev,
-                    pc: e.target.value
-                  }))
-                  setValue("pc", e.target.value, { shouldValidate: true })
-                }
-                }
+                onChange={(e) => setPc(e.target.value)}
               >
                 <option value="">Seleccione el PC</option>
                 <option value="Educativo">PC Educativo</option>
@@ -477,19 +451,13 @@ export const FormularioSolicitud = () => {
                 value={proyecto || ""}
                 className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                 onChange={(e) => {
-                  setSolicitud((prev) => ({
-                    ...prev,
-                    proyecto: e.target.value
-                  }))
-                  setValue("proyecto", e.target.value, { shouldValidate: true });
-                  setProyecto(e.target.value);
-                  handleProyectoChange(e);
+                  {
+                    setProyecto(e.target.value);
+                    handleProyectoChange(e);
+                  }
                   setFetchActivitiesFlag(true);
-                }
-                }
-
+                }}
               >
-
                 <option value="">Seleccione el Proyecto</option>
                 {ids.map((proyecto) => (
                   <option key={proyecto._id} value={proyecto._id}>
@@ -504,20 +472,15 @@ export const FormularioSolicitud = () => {
               <Label>Actividad:</Label>
               <select
                 id="actividad"
-
+                required
                 name="actividad"
                 value={actividad || ""}
                 className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                 onChange={(e) => {
-                  handleChangeActividad(e);
-                  setActividad(e.target.value);
-                  setSolicitud((prev) => ({
-                    ...prev,
-                    actividad: e.target.value
-                  }))
-                  setValue("actividad", e.target.value, { shouldValidate: true });
-
-
+                  {
+                    setActividad(e.target.value);
+                    handleChangeActividad(e);
+                  }
                 }}
               >
                 <option value="">Seleccione una Actividad</option>
@@ -527,7 +490,7 @@ export const FormularioSolicitud = () => {
                   </option>
                 ))}
               </select>
-              {errors.actividad && <p className="text-red-500">{errors.actividad.message}</p>}
+              {errors.actividad && <p className="text-red-500">{errors.actividad}</p>}
 
             </div>
           </GridContainer>
@@ -553,26 +516,28 @@ export const FormularioSolicitud = () => {
                           placeholder="Ingrese la cantidad"
                           maxLength="200"
                           min={0}
-                          // value={item.cantidad || ""}
+                          value={item.cantidad || ""}
                           onChange={(e) => {
                             const newItems = [...items];
                             newItems[index].cantidad = e.target.value;
                             setItems(newItems);
                           }}
-                          {...register(`items.${index}.cantidad`)}
+                          name={`items[${index}][cantidad]`}
                         />
                       </div>
-                      {errors.items?.[index]?.cantidad && <p className="text-red-500">{errors.items[index].cantidad.message}</p>}                    </td>
+                      {errors[`items[${index}].cantidad`] && <p className="text-red-500">{errors[`items[${index}].cantidad`]}</p>}
+
+                    </td>
                     <td className="p-4 align-middle border border-gray-400">
                       <select
                         className="w-full p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                        // value={item.unidad || ""}
+                        value={item.unidad || ""}
                         onChange={(e) => {
                           const newItems = [...items];
                           newItems[index].unidad = e.target.value;
                           setItems(newItems);
                         }}
-                        {...register(`items.${index}.unidad`)}
+                        name={`items[${index}][unidad]`}
                       >
                         <option value="">Seleccione una opción</option>
                         <option value="Paquete">Paquete</option>
@@ -581,7 +546,7 @@ export const FormularioSolicitud = () => {
                         <option value="Caja">Caja</option>
                         <option value="Pieza">Pieza</option>
                       </select>
-                      {/* {errors[`items[${index}].unidad`] && <p className="text-red-500">{errors[`items[${index}].unidad`]}</p>} */}
+                      {errors[`items[${index}].unidad`] && <p className="text-red-500">{errors[`items[${index}].unidad`]}</p>}
 
                     </td>
                     <td className="p-1 align-middle border border-gray-400">
@@ -598,14 +563,14 @@ export const FormularioSolicitud = () => {
                         ]}
                         inputProps={{
                           type: "text",
-                          maxLength: 200,
-                          className: "w-full resize-none text-black p-3 border border-gray-400 bg-gray-50 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
+                          maxLength: 500,
+                          name: `items[${index}][descripcion]`,
+                          className: "w-full resize-none text-black p-3 border border-gray-400 rounded-md focus:ring-indigo-500 focus:border-indigo-500",
                           onBlur: () => setValue(`items[${index}].descripcion`, item.descripcion, { shouldValidate: true })
                         }}
                       />
-                      {errors.items && errors.items[index] && errors.items[index].descripcion && (
-                        <span className="text-red-500">{errors.items[index].descripcion.message}</span>
-                      )}
+                      {errors[`items[${index}].descripcion`] && <p className="text-red-500">{errors[`items[${index}].descripcion`]}</p>}
+
                     </td>
                     <td className="border border-gray-400">
                       <div className="flex justify-center space-x-4">
@@ -626,6 +591,7 @@ export const FormularioSolicitud = () => {
             </table>
 
             <div className="p-4 bg-white border-b border-r border-l border-gray-400 rounded-b-md">
+              {errors.items && <p className="text-red-600 mt-2">{errors.items}</p>}
 
               <button
                 onClick={(e) => agregarItem(e)}
@@ -713,8 +679,8 @@ export const FormularioSolicitud = () => {
             <div className="flex justify-center">
               <button
                 className="bg-green-500 hover:bg-green-700 text-white font-bold mt px-6 py-3 rounded-md border border-black"
-                type="submit"
-              // onClick={editar ? actualizarDatos : guardarDatos}
+                type="button"
+                onClick={editar ? actualizarDatos : guardarDatos}
               >
                 {editar ? "Actualizar" : "Guardar cambios"}
               </button>
