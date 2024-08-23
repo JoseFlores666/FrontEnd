@@ -25,6 +25,7 @@ export const LlenarOrden = ({
 }) => {
     const [isOpen, setIsOpen] = useState(true);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     const { traeApis_keys, api_Key } = useSoli();
     const [datosCargados, setDatosCargados] = useState(false);
@@ -115,6 +116,13 @@ export const LlenarOrden = ({
 
             const docxBlob = await fetchAndGenerateDoc();
             saveAs(docxBlob, 'OrdenDeMantenimiento.docx');
+            Swal.fire({
+                title: "Descarga Exitosa",
+                text: "Archivo Word generado con éxito",
+                icon: "success",
+                confirmButtonText: "OK",
+            })
+            navigate('/soli');
         } catch (error) {
             console.error(error);
         }

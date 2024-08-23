@@ -107,9 +107,19 @@ export const AsignarFolioExterno = () => {
         return <div>Cargando...</div>;
     }
 
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+    
+          const form = e.target.form;
+          const index = Array.prototype.indexOf.call(form, e.target);
+          form.elements[index + 1].focus();
+        }
+      };
+
     return (
         <div className="flex items-center justify-center mx-auto max-w-8xl p-4 text-black" style={{ height: '90vh' }}>
-            <form onSubmit={handleSubmit(onSubmit)} className="slide-down">
+            <form onSubmit={handleSubmit(onSubmit)} onKeyDown={handleKeyDown} className="slide-down">
                 <div className="bg-white p-6 rounded-md shadow-md">
                     <Title showBackButton={true}>Asignar Folio</Title>
                     <GridContainer>

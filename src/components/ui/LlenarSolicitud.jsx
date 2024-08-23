@@ -5,6 +5,8 @@ import { saveAs } from 'file-saver';
 import { apiPDF } from '../../api/apiPDF';
 import imgWord from '../../img/imagenWord.png';
 import imgPDF from '../../img/imagenPDF.png';
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 export const LlenarSolicitud = ({
     fecha,
@@ -25,6 +27,7 @@ export const LlenarSolicitud = ({
 }) => {
     const [isOpen, setIsOpen] = useState(true);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     const handleCloseModal = () => {
         setIsOpen(false);
@@ -85,6 +88,13 @@ export const LlenarSolicitud = ({
         try {
             const docxBlob = await fetchAndGenerateDoc();
             saveAs(docxBlob, 'OrdenDeMantenimiento.docx');
+            Swal.fire({
+                title: "Descarga Exitosa",
+                text: "Archivo Word generado con éxito",
+                icon: "success",
+                confirmButtonText: "OK",
+            })
+            navigate('/soli');
         } catch (error) {
             console.error(error);
         }
@@ -97,6 +107,13 @@ export const LlenarSolicitud = ({
             const pdfBlob = await apiPDF(docxBlob);
             const pdfUrl = URL.createObjectURL(pdfBlob);
             window.open(pdfUrl, '_blank');
+            Swal.fire({
+                title: "Descarga Exitosa",
+                text: "Archivo PDF generado con éxito",
+                icon: "success",
+                confirmButtonText: "OK",
+            })
+            navigate('/soli');
         } catch (error) {
             console.error(error);
         }

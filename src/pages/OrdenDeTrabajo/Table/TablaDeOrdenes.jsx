@@ -78,7 +78,6 @@ export const TablaDeOrdenes = () => {
 
   useEffect(() => {
     setFilteredSolicitudes(informes);
-    console.log(informes)
   }, [informes]);
 
   const filtrarSolicitud = (solicitud) => {

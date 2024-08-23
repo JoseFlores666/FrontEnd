@@ -78,13 +78,21 @@ export default function AsignarTecnico() {
             </div>
         );
     }
-
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+    
+          const form = e.target.form;
+          const index = Array.prototype.indexOf.call(form, e.target);
+          form.elements[index + 1].focus();
+        }
+      };
     // Filtrar técnicos activos
     const tecnicosActivos = tecnicos.filter(tecnico => tecnico.activo);
 
     return (
         <div className="flex items-center justify-center mx-auto max-w-7xl p-4 text-black">
-            <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-6xl">
+            <form onSubmit={handleSubmit(onSubmit)} onKeyDown={handleKeyDown} className="w-full max-w-6xl">
                 <div className="bg-white p-6 rounded-md shadow-md">
                     <Title showBackButton={true}>Asignar técnico</Title>
                     <EncabezadoFormulario unaInfo={unaInfo} />

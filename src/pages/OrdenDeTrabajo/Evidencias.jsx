@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from "react";
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
 import { useOrden } from '../../context/ordenDeTrabajoContext';
-import { Title } from '../../components/ui';
+import { Title, LlenarEvidencias } from "../../components/ui";
 import scrollToTop from '../../util/Scroll';
-import '../../css/img.css'
 
 export const Evidencias = () => {
   const { id } = useParams();
   const { traerImagenInfo, imagenInfo, traerUnaInfo, unaInfo } = useOrden();
-
+  const [isOpen, setIsOpen] = useState(false);
   const [cargarDatos, setDatosCargados] = useState(false);
   const [solicitudInfo, setSolicitudInfo] = useState(null);
 
@@ -21,11 +19,12 @@ export const Evidencias = () => {
       console.log(imagenInfo);
       setDatosCargados(true);
     };
+
     if (!cargarDatos) {
       iniciarDatos();
     }
     scrollToTop();
-  }, [id, traerUnaInfo, traerImagenInfo, unaInfo, cargarDatos]);
+  }, [id, cargarDatos, traerUnaInfo, traerImagenInfo]);
 
   // Establece el número fijo de celdas por fila
   const CELDAS_POR_FILA = 2;
@@ -40,66 +39,24 @@ export const Evidencias = () => {
 
   const imagenesPares = dividirEnPares(imagenInfo);
 
-  const obtenerBlobDesdeUrl = async (url) => {
-    const response = await fetch(url);
-    const blob = await response.blob();
-    return blob;
-  };
-
   const enviarImagenes = async () => {
     if (imagenInfo.length === 0) {
       return;
     }
-
-    const formData = new FormData();
-    formData.append('numero_de_imagenes', imagenInfo.length);
-
-    for (let i = 0; i < imagenInfo.length; i++) {
-      const imagen = imagenInfo[i];
-      const blob = await obtenerBlobDesdeUrl(imagen.secure_url);
-      formData.append('imagenes[]', blob, `imagen${i + 1}.jpg`);
-    }
-
-    if (solicitudInfo && solicitudInfo.informe?.folio) {
-      formData.append('folio', solicitudInfo.informe.folio);
-    }
-
-    if (solicitudInfo && solicitudInfo.informe?.descripcion) {
-      formData.append('descripcion', solicitudInfo.informe.descripcion);
-    }
-
-    await axios.post('http://localhost/PlantillasWordyPdf/DescargarEvidencias.php', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    }).then(response => {
-
-      axios.post('http://localhost/PlantillasWordyPdf/GuardarFolio.php', {
-        folio: solicitudInfo.informe.folio,
-        descripcion: solicitudInfo.informe.descripcion
-      }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      const save_as = '';
-      const downloadUrl = `http://localhost/PlantillasWordyPdf/DescargarEvidencias.php?save_as=${save_as}`;
-      window.location.href = downloadUrl;
-
-      setTimeout(() => {
-        eliminarImagenes();
-      }, 3000);
-    });
   };
 
-  const eliminarImagenes = async () => {
-    await axios.post('http://localhost/PlantillasWordyPdf/EliminarImagenes.php');
-  };
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
 
+      const form = e.target.form;
+      const index = Array.prototype.indexOf.call(form, e.target);
+      form.elements[index + 1].focus();
+    }
+  };
   return (
     <div className="mx-auto max-w-5xl p-4 text-center text-black">
-      <form onSubmit={(e) => { e.preventDefault(); enviarImagenes(); }} encType='multipart/form-data'>
+      <form onSubmit={(e) => { e.preventDefault(); enviarImagenes(); }} onKeyDown={handleKeyDown} encType="multipart/form-data">
         <div className="bg-white p-6 rounded-md shadow-md">
           <Title showBackButton={true}>Evidencias</Title>
           <table className="w-full caption-bottom text-sm border border-gray-400 bg-white rounded-b-lg mb-6">
@@ -136,13 +93,20 @@ export const Evidencias = () => {
             </tbody>
           </table>
           <button
-            type='submit'
+            onClick={() => setIsOpen(true)}
             className="px-4 py-2 border border-black bg-indigo-500 text-white rounded-md hover:bg-indigo-600"
             disabled={imagenInfo.length === 0}
           >
             Descargar Evidencias
           </button>
         </div>
+        {isOpen && (
+          <LlenarEvidencias
+            solicitud={solicitudInfo ? solicitudInfo.informe?.folio : ''}
+            descripcion={solicitudInfo ? solicitudInfo.informe?.descripcion : ''}
+            imagenesPares={imagenesPares}
+          />
+        )}
       </form>
     </div>
   );
