@@ -25,6 +25,7 @@ import { DiagnosticoTecnico } from "./pages/OrdenDeTrabajo/DiagnosticoTecnico"
 import { Historial } from "./pages/SolicitudServicios/Historial"
 import { TablaResumenEstados } from "./pages/Desplegable/TablaResumenEstados";
 import EditarUsuario from "./pages/Desplegable/EditarUsuario";
+import { TablaDeUsuarios } from "./pages/Desplegable/TablaDeUsuarios";
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
                     <Route path="/soli/editarFirmas/" element={<Firmas />} />
                     <Route path="/tecnico/:id" element={<FormularioOrden />} />
                     <Route path="/personalTecnicos" element={<TecnicosTable />} />
+                    <Route path="/TablaDeUsuarios" element={<TablaDeUsuarios />} />
                     <Route path="/tecnico/orden" element={<TablaDeOrdenes />} />
                     <Route path="/tecnico2/:id" element={<CierreDelInforme />} />
                     <Route path="/evidencias/:id" element={<Evidencias />} />

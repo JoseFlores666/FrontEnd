@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { createContext, useContext, useState } from "react";
-import { loginRequest, registerRequest, ActualizaUsuario, verifyTokenRequest } from "../api/auth";
+import { loginRequest, registerRequest, ActualizaUsuario, getUsuarios, verifyTokenRequest } from "../api/auth";
 import Cookies from "js-cookie";
 
 const AuthContext = createContext();
@@ -13,6 +13,7 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [usuarios, setUsuarios] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -54,6 +55,16 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.log(error.response.data);
       setErrors(error.response.data.message);
+    }
+  };
+  const traerUsuarios = async () => {
+    try {
+      const res = await getUsuarios();
+      console.log(res.data)
+      setUsuarios(res.data)
+    } catch (error) {
+      console.log(error.response.data.mensaje);
+      setErrors(error.response.data.mensaje);
     }
   };
   const ActualizarMyUsuario = async (id, user) => {
@@ -110,6 +121,8 @@ export const AuthProvider = ({ children }) => {
         signup,
         signin,
         ActualizarMyUsuario,
+        traerUsuarios,
+        usuarios,
         logout,
         isAuthenticated,
         errors,

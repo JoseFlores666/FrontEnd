@@ -195,11 +195,18 @@ export function Navbar() {
                         </li>
                         <li>
                           <Link
-                            to={`/register/EditarUsuario/${user.id}`} // Usa el enlace dinámico correctamente
+                            to={`/register/EditarUsuario/${user.id}`}
                             className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white ${activeLink === `/register/EditarUsuario/${user.id}` ? "text-blue-600" : ""}`} // Usa la interpolación de plantilla
-                            onClick={() => setActiveLink(`/register/EditarUsuario/${user.id}`)} // Usa la interpolación de plantilla
+                            onClick={() => setActiveLink(`/register/EditarUsuario/${user.id}`)}
                           >
                             Editar Usuario
+                          </Link>
+                          <Link
+                            to={`TablaDeUsuarios`}
+                            className={`block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white ${activeLink === `/register/EditarUsuario/${user.id}` ? "text-blue-600" : ""}`} // Usa la interpolación de plantilla
+                            onClick={() => setActiveLink(`/TablaDeUsuarios`)}
+                          >
+                            Tabla de usuarios
                           </Link>
                         </li>
                         <li>

@@ -6,7 +6,7 @@ export const TablaResumenEstados = ({ data, estados }) => {
     const [filteredData, setFilteredData] = useState(data);
     const [estadoCounts, setEstadoCounts] = useState({});
     const [years, setYears] = useState([]);
-    const [sortConfig, setSortConfig] = useState({ key: 'fecha', direction: 'desc' }); // Ordenación por fecha descendente por defecto
+    const [sortConfig, setSortConfig] = useState({ key: 'fecha', direction: 'desc' });
 
     useEffect(() => {
         if (estados && estados.length > 0) {
