@@ -198,7 +198,7 @@ export const ProjectAndActManager = () => {
 
             setNewActivities([{ nombre: '', descripcion: '' }]);
         } else {
-            Swal.fire("Informativo", "Llenar el campo", "info");
+            Swal.fire("Informativo", "ingresa la actividad", "info");
         }
     }
 

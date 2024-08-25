@@ -32,13 +32,13 @@ export const TablaDeUsuarios = () => {
                             <table className="w-full caption-bottom text-sm border">
                                 <thead className="[&_tr]:border border-gray-400">
                                     <tr className="border transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted border-gray-400">
-                                        <th className="h-12 text-center px-4 align-middle font-medium text-black border-gray-400">
+                                        <th className="h-12 text-center px-3 align-middle font-medium text-black border-gray-400">
                                             id
                                         </th>
-                                        <th className="h-12 text-center px-4 align-middle font-medium text-black border-gray-400">
+                                        <th className="h-12 text-center px-3 align-middle font-medium text-black border-gray-400">
                                             Username
                                         </th>
-                                        <th className="h-12 text-center px-4 align-middle font-medium text-black border-gray-400">
+                                        <th className="h-12 text-center px-3 align-middle font-medium text-black border-gray-400">
                                             Email
                                         </th>
                                     </tr>
@@ -48,13 +48,13 @@ export const TablaDeUsuarios = () => {
                                         const isCurrentUser = usuario.username === user.username && usuario.email === user.email;
                                         return (
                                             <tr key={index} className={`hover:bg-gray-100  border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted border-gray-400 ${isCurrentUser ? 'bg-green-100' : ''}`}>
-                                            <td className="p-4 align-middle border text-center border-gray-400">
+                                            <td className="p-2 align-middle border text-center border-gray-400">
                                                     {index + 1}
                                                 </td>
-                                                <td className="p-4 align-middle border text-center border-gray-400">
+                                                <td className="p-2 align-middle border text-center border-gray-400">
                                                     {usuario.username}
                                                 </td>
-                                                <td className="p-4 align-middle border text-center border-gray-400">
+                                                <td className="p-2 align-middle border text-center border-gray-400">
                                                     {usuario.email}
                                                 </td>
                                             </tr>
