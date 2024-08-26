@@ -1,17 +1,34 @@
-import React, { useState } from "react";
-import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, ImageRun, AlignmentType, VerticalAlign, Spacing } from "docx";
+import React, { useState, useEffect } from 'react';
+import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, ImageRun, AlignmentType, VerticalAlign } from "docx";
 import { saveAs } from "file-saver";
 import imgWord from '../../img/imagenWord.png';
 import imgPDF from '../../img/imagenPDF.png';
 import { apiPDF } from '../../api/apiPDF';
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { useSoli } from '../../context/SolicitudContext';
 
 export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares }) => {
     const navigate = useNavigate();
-
+    const { traeApis_keys, api_Key } = useSoli();
+    const [datosCargados, setDatosCargados] = useState(false);
     const [isOpen, setIsOpen] = useState(true);
     const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const llamaApi = async () => {
+            try {
+                await traeApis_keys();
+                setDatosCargados(true);
+            } catch (error) {
+                console.error("Error al obtener las API keys:", error);
+            }
+        };
+
+        if (!datosCargados) {
+            llamaApi();
+        }
+    }, [traeApis_keys, datosCargados]);
 
     const fetchImageBlob = async (url) => {
         const response = await fetch(url);
@@ -28,7 +45,7 @@ export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares }) => {
     };
 
     const createDocument = async () => {
-        const titlleEvidencias = new Paragraph({
+        const tituloEvidencias = new Paragraph({
             children: [
                 new TextRun({
                     text: `EVIDENCIAS`,
@@ -66,13 +83,25 @@ export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares }) => {
                     const imageBlob = await fetchImageBlob(imagen.secure_url);
                     const dimensions = await getImageDimensions(imagen.secure_url);
 
+                    // Ajustar el tamaño de la imagen
+                    const maxWidth = 400; // Ancho máximo en puntos
+                    const maxHeight = 400; // Alto máximo en puntos
+
                     let width, height;
                     if (dimensions.width > dimensions.height) {
-                        width = 300;
-                        height = (dimensions.height / dimensions.width) * 300;
+                        width = Math.min(dimensions.width, maxWidth);
+                        height = (dimensions.height / dimensions.width) * width;
+                        if (height > maxHeight) {
+                            height = maxHeight;
+                            width = (dimensions.width / dimensions.height) * height;
+                        }
                     } else {
-                        width = (dimensions.width / dimensions.height) * 300;
-                        height = 300;
+                        height = Math.min(dimensions.height, maxHeight);
+                        width = (dimensions.width / dimensions.height) * height;
+                        if (width > maxWidth) {
+                            width = maxWidth;
+                            height = (dimensions.height / dimensions.width) * width;
+                        }
                     }
 
                     const image = new ImageRun({
@@ -88,11 +117,6 @@ export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares }) => {
                             new Paragraph({
                                 children: [image],
                                 alignment: AlignmentType.CENTER,
-                                spacing: {
-                                    before: 100, 
-                                    after: 100,  
-                                    line: 100,   
-                                },
                             }),
                         ],
                         verticalAlign: VerticalAlign.CENTER,
@@ -112,16 +136,16 @@ export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares }) => {
                     properties: {
                         page: {
                             margin: {
-                                top: 800,
-                                right: 800,
-                                bottom: 800,
-                                left: 800,
-                                header: 800,
-                                footer: 800,
+                                top: 600,
+                                right: 600,
+                                bottom: 600,
+                                left: 600,
+                                header: 300,
+                                footer: 300,
                             },
                         },
                     },
-                    children: [titlleEvidencias, solicitudParagraph, descripcionParagraph, table],
+                    children: [tituloEvidencias, solicitudParagraph, descripcionParagraph, table],
                 },
             ],
         });
@@ -138,11 +162,11 @@ export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares }) => {
                 text: "Archivo Word generado con éxito",
                 icon: "success",
                 confirmButtonText: "OK",
-            })
+            });
             navigate('/tecnico/orden');
         } catch (error) {
-            console.error(error);
-            setError('Failed to generate Word document');
+            console.error("Error al generar el documento Word:", error);
+            setError('Error al generar el documento Word');
         }
     };
 
@@ -151,20 +175,26 @@ export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares }) => {
         try {
             const doc = await createDocument();
             const docxBlob = await Packer.toBlob(doc);
-            Swal.fire({
-                title: "Descarga Exitosa",
-                text: "Archivo PDF generado con éxito",
-                icon: "success",
-                confirmButtonText: "OK",
-            })
-            navigate('/tecnico/orden');
-            const pdfBlob = await apiPDF(docxBlob);
-            const pdfUrl = URL.createObjectURL(pdfBlob);
-            window.open(pdfUrl, '_blank');
-           
+
+            if (api_Key.length > 0) {
+                const apiKey = api_Key[0].api_key;
+                const pdfBlob = await apiPDF(docxBlob, apiKey);
+                const pdfUrl = URL.createObjectURL(pdfBlob);
+                window.open(pdfUrl, '_blank');
+                
+                Swal.fire({
+                    title: "Descarga Exitosa",
+                    text: "Archivo PDF generado con éxito",
+                    icon: "success",
+                    confirmButtonText: "OK",
+                });
+                navigate('/tecnico/orden');
+            } else {
+                throw new Error("Falta la API key");
+            }
         } catch (error) {
-            console.error(error);
-            setError('Failed to convert DOCX to PDF');
+            console.error("Error al convertir DOCX a PDF:", error);
+            setError('Error al convertir DOCX a PDF');
         }
     };
 

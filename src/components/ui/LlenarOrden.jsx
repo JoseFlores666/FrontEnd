@@ -6,6 +6,7 @@ import { apiPDF } from '../../api/apiPDF'; // Asegúrate de la ruta correcta
 import imgWord from '../../img/imagenWord.png';
 import imgPDF from '../../img/imagenPDF.png';
 import { useSoli } from '../../context/SolicitudContext';
+import { useNavigate } from "react-router-dom";
 
 export const LlenarOrden = ({
     fecha,

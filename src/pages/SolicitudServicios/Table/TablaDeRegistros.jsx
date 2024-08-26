@@ -10,7 +10,7 @@ import { Td, Th, EstadoButton, Title } from "../../../components/ui";
 import Swal from "sweetalert2";
 import scrollToTop from '../../../util/Scroll';
 import { TablaResumenEstados } from "../../Desplegable/TablaResumenEstados";
-
+import { faSave } from '@fortawesome/free-solid-svg-icons';
 
 export function TablaDeRegistros({ }) {
   const [searchTerm, setSearchTerm] = useState("");
