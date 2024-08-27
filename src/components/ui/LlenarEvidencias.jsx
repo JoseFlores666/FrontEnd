@@ -55,7 +55,7 @@ export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares }) => {
             ],
             alignment: AlignmentType.CENTER,
         });
-
+    
         const solicitudParagraph = new Paragraph({
             children: [
                 new TextRun({
@@ -66,7 +66,7 @@ export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares }) => {
             ],
             alignment: AlignmentType.CENTER,
         });
-
+    
         const descripcionParagraph = new Paragraph({
             children: [
                 new TextRun({
@@ -76,34 +76,29 @@ export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares }) => {
             ],
             alignment: AlignmentType.CENTER,
         });
-
+    
+        const cellWidth = 300;  
+        const cellHeight = 300; 
+    
         const tableRows = await Promise.all(imagenesPares.map(async (par) => {
             return new TableRow({
                 children: await Promise.all(par.map(async (imagen) => {
                     const imageBlob = await fetchImageBlob(imagen.secure_url);
                     const dimensions = await getImageDimensions(imagen.secure_url);
-
-                    // Ajustar el tamaño de la imagen
-                    const maxWidth = 400; // Ancho máximo en puntos
-                    const maxHeight = 400; // Alto máximo en puntos
-
-                    let width, height;
-                    if (dimensions.width > dimensions.height) {
-                        width = Math.min(dimensions.width, maxWidth);
-                        height = (dimensions.height / dimensions.width) * width;
-                        if (height > maxHeight) {
-                            height = maxHeight;
-                            width = (dimensions.width / dimensions.height) * height;
-                        }
-                    } else {
-                        height = Math.min(dimensions.height, maxHeight);
-                        width = (dimensions.width / dimensions.height) * height;
-                        if (width > maxWidth) {
-                            width = maxWidth;
-                            height = (dimensions.height / dimensions.width) * width;
-                        }
-                    }
-
+    
+                    let width = dimensions.width;
+                    let height = dimensions.height;
+    
+                    const widthScale = cellWidth / width;
+                    const heightScale = cellHeight / height;
+                    const scale = Math.min(widthScale, heightScale);
+    
+                    width = width * scale;
+                    height = height * scale;
+    
+                    width = Math.min(width, cellWidth);
+                    height = Math.min(height, cellHeight);
+    
                     const image = new ImageRun({
                         data: imageBlob,
                         transformation: {
@@ -111,7 +106,7 @@ export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares }) => {
                             height: height,
                         },
                     });
-
+    
                     return new TableCell({
                         children: [
                             new Paragraph({
@@ -120,16 +115,20 @@ export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares }) => {
                             }),
                         ],
                         verticalAlign: VerticalAlign.CENTER,
+                        width: {
+                            size: cellWidth,
+                            type: WidthType.DXA,
+                        },
                     });
                 })),
             });
         }));
-
+    
         const table = new Table({
             width: { size: 100, type: WidthType.PERCENTAGE },
             rows: tableRows,
         });
-
+    
         return new Document({
             sections: [
                 {
@@ -150,13 +149,14 @@ export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares }) => {
             ],
         });
     };
+    
+    
 
     const generateWordDocument = async () => {
         setError(null);
         try {
             const doc = await createDocument();
             const docxBlob = await Packer.toBlob(doc);
-            saveAs(docxBlob, 'Solicitud.docx');
             Swal.fire({
                 title: "Descarga Exitosa",
                 text: "Archivo Word generado con éxito",
@@ -164,6 +164,7 @@ export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares }) => {
                 confirmButtonText: "OK",
             });
             navigate('/tecnico/orden');
+            saveAs(docxBlob, 'Solicitud.docx');
         } catch (error) {
             console.error("Error al generar el documento Word:", error);
             setError('Error al generar el documento Word');

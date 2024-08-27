@@ -139,18 +139,19 @@ export const DashboardMenu = ({ isOpen, toggleMenu }) => {
                         >
                             <FontAwesomeIcon icon={faRedo} />
                         </button>
-                        <button
-                            onClick={handleOpenModal}
-                            className="ml-2 p-2 border border-gray-300 rounded bg-gray-200 hover:bg-gray-300"
-                        >
-                            <FontAwesomeIcon icon={faEdit} />
-                        </button>
+
                         <div className="relative">
                             <button
                                 onClick={toggleDropdown}
                                 className="ml-2 p-2 border border-gray-300 rounded bg-gray-200 hover:bg-gray-300"
                             >
                                 <FontAwesomeIcon icon={faUserPlus} />
+                            </button>
+                            <button
+                                onClick={handleOpenModal}
+                                className="ml-2 p-2 border border-gray-300 rounded bg-gray-200 hover:bg-gray-300"
+                            >
+                                <FontAwesomeIcon icon={faEdit} />
                             </button>
 
                             {isDropdownOpen && (
