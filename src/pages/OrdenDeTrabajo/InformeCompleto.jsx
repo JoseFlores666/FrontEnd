@@ -150,7 +150,7 @@ export const InformeCompleto = () => {
                         <GridContainer>
                             <div className="bg-slate-200 rounded p-2">
                                 <Label>Fecha:</Label>
-                                <p className="w-full rounded-md">{hasInforme ? new Date(unaInfo.informe.fecha).toLocaleDateString() : 'Fecha no disponible'}</p>
+                               <p className="w-full rounded-md">{hasInforme ? new Date(unaInfo.informe.fecha).toISOString().split('T')[0] : 'Fecha no disponible'}</p>
                             </div>
                             <div className="bg-slate-200 rounded p-2">
                                 <Label>Solicita:</Label>
