@@ -7,7 +7,7 @@ import "../../css/Animaciones.css";
 import { AutocompleteInput } from "../../components/ui/AutocompleteInput";
 import Swal from "sweetalert2";
 import { GridContainer, Label, Title } from "../../components/ui";
-import { registerTecnicoPageSchema } from '../../schemas/RegisterTecnicoPage'
+import { registerTecnicoPageSchema } from '../../schemas/RegisterTecnicoPage';
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export const FormularioOrden = () => {
@@ -15,8 +15,19 @@ export const FormularioOrden = () => {
   const { id } = useParams();
   const editar = new URLSearchParams(location.search).get("editar");
 
-  const { register, handleSubmit, setValue, formState: { errors }, trigger } = useForm({
+  const { register, handleSubmit, setValue, formState: { errors }, trigger, setValue: setFormValue, reset } = useForm({
     resolver: zodResolver(registerTecnicoPageSchema),
+    defaultValues: {
+      folio: "",
+      fecha: "",
+      areasoli: "",
+      solicita: "",
+      edificio: "",
+      tipoDeMantenimiento: "",
+      tipoDeTrabajo: "",
+      tipoDeSolicitud: "",
+      descripcion: "",
+    }
   });
 
   const [fecha, setFecha] = useState(() => {
@@ -36,12 +47,10 @@ export const FormularioOrden = () => {
   });
 
   const [recentSuggestions, setRecentSuggestions] = useState([]);
-
   const [projectsLoaded, setProjectsLoaded] = useState(false);
   const [cargandoInforme, setCargandoInforme] = useState(editar);
   const showBackButton = editar;
   const titleText = editar ? "Actualizar Orden de trabajo" : "Orden De Trabajo De Mantenimiento A Mobiliario E Instalaciones";
-
   const inputRef = useRef([]);
 
   const {
@@ -58,7 +67,6 @@ export const FormularioOrden = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-
         const today = new Date().toISOString().split("T")[0];
         setFecha(today);
 
@@ -96,9 +104,9 @@ export const FormularioOrden = () => {
 
   useEffect(() => {
     if (miFolioInternoInfo && !editar) {
-      setValue("folio", miFolioInternoInfo);
+      setFormValue("folio", miFolioInternoInfo);
     }
-  }, [miFolioInternoInfo, editar, setValue]);
+  }, [miFolioInternoInfo, editar, setFormValue]);
 
   useEffect(() => {
     if (unaInfo && Object.keys(unaInfo).length > 0) {
@@ -108,10 +116,19 @@ export const FormularioOrden = () => {
 
   const llenar = () => {
     if (id && editar) {
-      setValue("folio", unaInfo?.informe?.folio || "");
-      setFecha(unaInfo.informe.fecha ? new Date(unaInfo.informe.fecha).toISOString().slice(0, 10) : "");
+      reset({
+        folio: unaInfo?.informe?.folio || "",
+        fecha: unaInfo.informe.fecha ? new Date(unaInfo.informe.fecha).toISOString().slice(0, 10) : "",
+        areasoli: unaInfo.informe.Solicita ? unaInfo.informe.Solicita.areaSolicitante : "",
+        solicita: unaInfo.informe.Solicita ? unaInfo.informe.Solicita.nombre : "",
+        edificio: unaInfo.informe.Solicita ? unaInfo.informe.Solicita.edificio : "",
+        tipoDeMantenimiento: unaInfo.informe.tipoDeMantenimiento || "",
+        tipoDeTrabajo: unaInfo.informe.tipoDeTrabajo || "",
+        tipoDeSolicitud: unaInfo.informe.tipoDeSolicitud || "",
+        descripcion: unaInfo.informe.descripcion || ""
+      });
       setInforme({
-        fecha: unaInfo.informe.fecha ? unaInfo.informe.fecha.split("T")[0] : "",
+        fecha: unaInfo.informe.fecha ? new Date(unaInfo.informe.fecha).toISOString().slice(0, 10) : "",
         areasoli: unaInfo.informe.Solicita ? unaInfo.informe.Solicita.areaSolicitante : "",
         solicita: unaInfo.informe.Solicita ? unaInfo.informe.Solicita.nombre : "",
         edificio: unaInfo.informe.Solicita ? unaInfo.informe.Solicita.edificio : "",
@@ -124,9 +141,8 @@ export const FormularioOrden = () => {
   };
 
   const limpiar = () => {
-    setValue("folio", "");
-    setFecha("");
-    setInforme({
+    reset({
+      folio: "",
       fecha: "",
       areasoli: "",
       solicita: "",
@@ -134,36 +150,42 @@ export const FormularioOrden = () => {
       tipoDeMantenimiento: "",
       tipoDeTrabajo: "",
       tipoDeSolicitud: "",
-      descripcion: ""
+      descripcion: "",
     });
   };
 
   const handleFormSubmit = async () => {
-    try {
-      let res;
-      console.log(informe)
-      if (id && editar) {
-        res = await actualizarMyInforme(id, informe);
-      } else {
-        res = await crearOrdenTrabajo(informe);
-      }
+    const isValid = await trigger(); // Trigger validation for all fields
 
-      if (res && res.data?.mensaje) {
-        Swal.fire({
-          title: id && editar ? "Datos actualizados" : "Orden creada",
-          text: res.data?.mensaje,
-          icon: "success",
-          confirmButtonText: "OK",
-        }).then(() => {
-          navigate('/tecnico/orden');
-        });
-        limpiar();
-      } else {
-        Swal.fire("Error", res?.error || "Error desconocido", "error");
+    if (isValid) {
+      try {
+        let res;
+        console.log(informe);
+        if (id && editar) {
+          res = await actualizarMyInforme(id, informe);
+        } else {
+          res = await crearOrdenTrabajo(informe);
+        }
+
+        if (res && res.data?.mensaje) {
+          Swal.fire({
+            title: id && editar ? "Datos actualizados" : "Orden creada",
+            text: res.data?.mensaje,
+            icon: "success",
+            confirmButtonText: "OK",
+          }).then(() => {
+            navigate('/tecnico/orden');
+          });
+          limpiar();
+        } else {
+          Swal.fire("Error", res?.error || "Error desconocido", "error");
+        }
+      } catch (error) {
+        console.error("Error submitting form: ", error);
+        Swal.fire("Error", "Ocurrió un error al guardar la información", "error");
       }
-    } catch (error) {
-      console.error("Error submitting form: ", error);
-      Swal.fire("Error", "Ocurrió un error al guardar la información", "error");
+    } else {
+      Swal.fire("Error", "Por favor, complete todos los campos obligatorios.", "warning");
     }
   };
 
@@ -181,7 +203,7 @@ export const FormularioOrden = () => {
       ...prev,
       fecha: newFecha,
     }));
-    trigger("fecha"); 
+    trigger("fecha");
   };
 
   const handleKeyDown = (e) => {
@@ -198,7 +220,6 @@ export const FormularioOrden = () => {
     <div className="mx-auto max-w-6xl p-4 text-black">
       <form onSubmit={handleSubmit(handleFormSubmit)} onKeyDown={handleKeyDown} className="slide-down">
         <div className="bg-white p-6 rounded-md shadow-md">
-          
           <Title showBackButton={showBackButton}>
             {titleText}
           </Title>
@@ -221,20 +242,20 @@ export const FormularioOrden = () => {
                 id="fechaOrden"
                 name="fecha"
                 className="w-full text-black p-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                value={fecha}
-                {...register("fecha")}
+                value={informe.fecha}
                 onChange={handleFechaChange}
+                {...register("fecha", { required: true })}
               />
               {errors.fecha && <p className="text-red-500">{errors.fecha.message}</p>}
             </div>
-          </GridContainer>
-          <GridContainer>
             <div>
-              <Label>Area solicitante:</Label>
+              <Label>Área Solicitante:</Label>
               <AutocompleteInput
                 index={0}
                 value={informe.areasoli}
-                onChange={(newValue) => setInforme((prev) => ({ ...prev, areasoli: newValue }))}
+                onChange={(newValue) =>
+                  setInforme((prev) => ({ ...prev, areasoli: newValue }))
+                }
                 data={historialOrden}
                 recentSuggestions={recentSuggestions}
                 setRecentSuggestions={setRecentSuggestions}
@@ -303,8 +324,6 @@ export const FormularioOrden = () => {
                   onBlur: () => setValue(`edificio`, informe.edificio, { shouldValidate: true })
                 }}
               />
-
-
               {errors.edificio && <p className="text-red-500">{errors.edificio.message}</p>}
             </div>
           </GridContainer>

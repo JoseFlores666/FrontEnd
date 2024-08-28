@@ -3,7 +3,7 @@ import { useSoli } from "../../../context/SolicitudContext";
 import { useAuth } from "../../../context/authContext";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faFileAlt, faEdit, faTruck, faTimesCircle, faCopy, faHistory,  } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faFileAlt, faEdit, faTruck, faTimesCircle, faCopy, faHistory, } from "@fortawesome/free-solid-svg-icons";
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { ImFileEmpty } from "react-icons/im";
 import { Td, Th, EstadoButton, Title } from "../../../components/ui";
@@ -433,7 +433,7 @@ export function TablaDeRegistros({ }) {
           {currentSolicitudes.map((solicitud, index) => (
             <tr key={index} className={`text-left ${rejectedSolicitudes.includes(solicitud._id) ? 'border-red-500' : ''}`}>
               <Td>{solicitud.folio}</Td>
-              <Td>{new Date(solicitud.fecha).toLocaleDateString()}</Td>
+              <Td>{solicitud.fecha ? new Date(solicitud.fecha).toISOString().split('T')[0] : ""}</Td>
               <Td>{solicitud.folioExterno || "No asignado"}</Td>
               <Td>{solicitud.tipoSuministro}</Td>
               <Td>{solicitud.procesoClave}</Td>
@@ -461,60 +461,60 @@ export function TablaDeRegistros({ }) {
                   </>
                 ) : (
                   <div className="flex justify-center items-center space-x-4">
-                  <Link
+                    <Link
                       to={`/soli/registro/${solicitud._id}?duplicar=true`}
                       className="text-blue-600 hover:text-blue-800"
                       title="Duplicar solicitud"
-                  >
+                    >
                       <FontAwesomeIcon icon={faCopy} />
-                  </Link>
-      
-                  {!solicitud.folio || solicitud.estado.id === estadoInicial.id ? (
-                      <Link
-                          to={`/soli/registro/${solicitud._id}?editar=true`}
-                          className="text-blue-600 hover:text-blue-800"
-                          title="Editar solicitud"
-                      >
-                          <FontAwesomeIcon icon={faEdit} />
-                      </Link>
-                  ) : null}
-      
-                  {solicitud.estado.id !== 4 && (
-                      <Link
-                          to={`/soli/folioExterno/${solicitud._id}`}
-                          className="text-blue-600 hover:text-blue-800"
-                          title="Ver folio externo"
-                      >
-                          <FontAwesomeIcon icon={faFileAlt} />
-                      </Link>
-                  )}
-      
-                  {solicitud.folio && solicitud.estado.id !== estadoInicial.id ? (
-                      <Link
-                          to={`/soli/abonar/${solicitud._id}`}
-                          className="text-green-600 hover:text-green-800"
-                          title="Abonar solicitud"
-                      >
-                          <FontAwesomeIcon icon={faTruck} />
-                      </Link>
-                  ) : null}
+                    </Link>
 
-                  <Link
+                    {!solicitud.folio || solicitud.estado.id === estadoInicial.id ? (
+                      <Link
+                        to={`/soli/registro/${solicitud._id}?editar=true`}
+                        className="text-blue-600 hover:text-blue-800"
+                        title="Editar solicitud"
+                      >
+                        <FontAwesomeIcon icon={faEdit} />
+                      </Link>
+                    ) : null}
+
+                    {solicitud.estado.id !== 4 && (
+                      <Link
+                        to={`/soli/folioExterno/${solicitud._id}`}
+                        className="text-blue-600 hover:text-blue-800"
+                        title="Ver folio externo"
+                      >
+                        <FontAwesomeIcon icon={faFileAlt} />
+                      </Link>
+                    )}
+
+                    {solicitud.folio && solicitud.estado.id !== estadoInicial.id ? (
+                      <Link
+                        to={`/soli/abonar/${solicitud._id}`}
+                        className="text-green-600 hover:text-green-800"
+                        title="Abonar solicitud"
+                      >
+                        <FontAwesomeIcon icon={faTruck} />
+                      </Link>
+                    ) : null}
+
+                    <Link
                       to={`/historial/${solicitud._id}`}
                       className="text-blue-600 hover:text-blue-800"
                       title="Ver historial"
-                  >
+                    >
                       <FontAwesomeIcon icon={faHistory} />
-                  </Link>
-      
-                  <button
+                    </Link>
+
+                    <button
                       onClick={() => { handleOpenModal(solicitud._id, solicitud) }}
                       className="text-red-500 border border-red-500 px-2 py-1 rounded-lg"
                       title="Cancelar solicitud"
-                  >
+                    >
                       <FontAwesomeIcon icon={faTimesCircle} />
-                  </button>
-              </div>
+                    </button>
+                  </div>
                 )}
               </Td>
             </tr>

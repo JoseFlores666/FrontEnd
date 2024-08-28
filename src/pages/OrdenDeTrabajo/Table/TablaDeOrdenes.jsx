@@ -330,8 +330,7 @@ export const TablaDeOrdenes = () => {
               className={`text-left ${solicitud.estado === estadoDeclinado ? 'border-red-900' : ''}`}
             >
               <Td>{solicitud.informe.folio}</Td>
-              <Td>{new Date(solicitud.informe.fecha).toLocaleDateString()}</Td>
-              <Td>{solicitud.informe.tipoDeMantenimiento}</Td>
+              <Td>{solicitud.informe.fecha ? new Date(solicitud.informe.fecha).toISOString().split('T')[0] : ""}</Td>              <Td>{solicitud.informe.tipoDeMantenimiento}</Td>
               <Td>{solicitud.informe.tipoDeTrabajo}</Td>
               <Td>{solicitud.informe.tipoDeSolicitud}</Td>
               <Td>{solicitud.informe.descripcion}</Td>
