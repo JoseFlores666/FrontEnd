@@ -127,8 +127,10 @@ export const FormularioOrden = () => {
         tipoDeSolicitud: unaInfo.informe.tipoDeSolicitud || "",
         descripcion: unaInfo.informe.descripcion || ""
       });
+         const informeFecha = unaInfo.informe.fecha ? new Date(unaInfo.informe.fecha).toISOString().slice(0, 10) : "";
+      setFecha(informeFecha);
       setInforme({
-        fecha: unaInfo.informe.fecha ? new Date(unaInfo.informe.fecha).toISOString().slice(0, 10) : "",
+        fecha: informeFecha,
         areasoli: unaInfo.informe.Solicita ? unaInfo.informe.Solicita.areaSolicitante : "",
         solicita: unaInfo.informe.Solicita ? unaInfo.informe.Solicita.nombre : "",
         edificio: unaInfo.informe.Solicita ? unaInfo.informe.Solicita.edificio : "",
@@ -196,16 +198,6 @@ export const FormularioOrden = () => {
     }));
   }, [fecha]);
 
-  const handleFechaChange = (e) => {
-    const newFecha = e.target.value;
-    setFecha(newFecha);
-    setInforme((prev) => ({
-      ...prev,
-      fecha: newFecha,
-    }));
-    trigger("fecha");
-  };
-
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -242,9 +234,17 @@ export const FormularioOrden = () => {
                 id="fechaOrden"
                 name="fecha"
                 className="w-full text-black p-3 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                value={informe.fecha}
-                onChange={handleFechaChange}
-                {...register("fecha", { required: true })}
+                value={fecha}
+                onChange={(e) => {
+                  const newDate = e.target.value;
+                  setFecha(newDate);
+                  setInforme((prev) => ({
+                    ...prev,
+                    fecha: newDate,
+                  }));
+                  setValue("fecha", newDate, { shouldValidate: true }); // Actualiza el valor en el formulario
+                }}
+
               />
               {errors.fecha && <p className="text-red-500">{errors.fecha.message}</p>}
             </div>
