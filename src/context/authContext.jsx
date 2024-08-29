@@ -31,7 +31,6 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await registerRequest(user);
       if (res.status === 200) {
-        setUser(res.data);
 
         //coloca verdadero si ya esta autenticado(si ya se resgitro)
         setIsAuthenticated(true);
