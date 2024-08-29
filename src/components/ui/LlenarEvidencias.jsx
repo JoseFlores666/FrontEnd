@@ -172,28 +172,27 @@ export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares,closeMo
     };
 
     const generatePDFDocument = async () => {
-          Swal.fire({
-                    title: "Descarga Exitosa",
-                    text: "Archivo PDF generado con éxito",
-                    icon: "success",
-                    confirmButtonText: "OK",
-                });
-                navigate('/tecnico/orden');
         setError(null);
         try {
-            const doc = await createDocument();
-            const docxBlob = await Packer.toBlob(doc);
-
-            if (api_Key.length > 0) {
-                const apiKey = api_Key[0].api_key;
-                const pdfBlob = await apiPDF(docxBlob, apiKey);
-                const pdfUrl = URL.createObjectURL(pdfBlob);
-                window.open(pdfUrl, '_blank');
-                
-              
-            } else {
+             Swal.fire({
+                title: "Descarga Exitosa",
+                text: "Archivo PDF generado con éxito",
+                icon: "success",
+                confirmButtonText: "OK",
+            }).then(async () => {
+                navigate('/tecnico/orden');
+                if (api_Key.length > 0) {
+                    const apiKey = api_Key[0].api_key;
+                    const docxBlob = await fetchAndGenerateDoc();
+                    const pdfBlob = await apiPDF(docxBlob, apiKey);
+                    const pdfUrl = URL.createObjectURL(pdfBlob);
+                    window.open(pdfUrl, '_blank');
+                }   
+                else {
                 throw new Error("Falta la API key");
             }
+            });
+         
         } catch (error) {
             console.error("Error al convertir DOCX a PDF:", error);
             setError('Error al convertir DOCX a PDF');
