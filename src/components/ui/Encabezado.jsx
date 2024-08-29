@@ -12,7 +12,7 @@ export const EncabezadoFormulario = ({ unaInfo }) => {
             <GridContainer>
                 <div className="bg-slate-200 rounded p-2">
                     <Label>Fecha:</Label>
-                    <p className="w-full rounded-md">{formatFecha(unaInfo.informe?.fecha)}</p>
+                   {unaInfo.informe?.fecha ? new Date(unaInfo.informe.fecha).toISOString().split('T')[0] : ""}
                 </div>
                 <div className="bg-slate-200 rounded p-2">
                     <Label>Solicita:</Label>
