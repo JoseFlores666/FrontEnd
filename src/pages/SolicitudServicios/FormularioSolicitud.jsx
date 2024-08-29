@@ -212,7 +212,6 @@ export const FormularioSolicitud = () => {
     const fetchActivities = async () => {
       try {
         await getIdsProyectYAct(proyecto);
-        console.log(idsAct)
         setFetchActivitiesFlag(false);
       } catch (error) {
         console.error("Error fetching activities:", error);
@@ -484,11 +483,13 @@ export const FormularioSolicitud = () => {
                 }}
               >
                 <option value="">Seleccione el Proyecto</option>
-                {ids.map((proyecto) => (
-                  <option key={proyecto._id} value={proyecto._id}>
-                    {proyecto.nombre}
-                  </option>
-                ))}
+                    {ids
+                  .filter((proyecto) => proyecto.actividades && proyecto.actividades.length > 0) // Filtrar proyectos con actividades
+                  .map((proyecto) => (
+                    <option key={proyecto._id} value={proyecto._id}>
+                      {proyecto.nombre}
+                    </option>
+                  ))}
               </select>
               {errors.proyecto && <p className="text-red-500">{errors.proyecto}</p>}
 
