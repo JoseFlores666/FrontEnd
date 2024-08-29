@@ -12,7 +12,7 @@ export const EncabezadoFormulario = ({ unaInfo }) => {
             <GridContainer>
                 <div className="bg-slate-200 rounded p-2">
                     <Label>Fecha:</Label>
-                   {unaInfo.informe?.fecha ? new Date(unaInfo.informe.fecha).toISOString().split('T')[0] : ""}
+                    {unaInfo.informe?.fecha ? new Date(unaInfo.informe.fecha).toLocaleDateString() : 'Fecha no disponible'}
                 </div>
                 <div className="bg-slate-200 rounded p-2">
                     <Label>Solicita:</Label>
