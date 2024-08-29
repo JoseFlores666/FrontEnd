@@ -122,22 +122,24 @@ closeModal,
     };
 
     const generatePDFDocument = async () => {
-          Swal.fire({
-                    title: "Descarga Exitosa",
-                    text: "Archivo PDF generado con éxito",
-                    icon: "success",
-                    confirmButtonText: "OK",
-                });
-                navigate('/soli');
+         
         setError(null);
         try {
-            if (api_Key.length > 0) {
-                const apiKey = api_Key[0].api_key;
-                const docxBlob = await fetchAndGenerateDoc();
-                const pdfBlob = await apiPDF(docxBlob,apiKey);
-                const pdfUrl = URL.createObjectURL(pdfBlob);
-                window.open(pdfUrl, '_blank');
-            }
+                     Swal.fire({
+                title: "Descarga Exitosa",
+                text: "Archivo PDF generado con éxito",
+                icon: "success",
+                confirmButtonText: "OK",
+            }).then(async () => {
+                navigate('/soli')
+                if (api_Key.length > 0) {
+                    const apiKey = api_Key[0].api_key;
+                    const docxBlob = await fetchAndGenerateDoc();
+                    const pdfBlob = await apiPDF(docxBlob, apiKey);
+                    const pdfUrl = URL.createObjectURL(pdfBlob);
+                    window.open(pdfUrl, '_blank');
+                }
+            });
         } catch (error) {
             console.error(error);
         }
