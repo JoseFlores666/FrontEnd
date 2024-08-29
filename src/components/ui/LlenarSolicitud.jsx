@@ -125,6 +125,7 @@ closeModal,
         setError(null);
         try {
             if (api_Key.length > 0) {
+                   navigate('/soli');
                 const apiKey = api_Key[0].api_key;
                 const docxBlob = await fetchAndGenerateDoc();
                 const pdfBlob = await apiPDF(docxBlob,apiKey);
@@ -136,7 +137,6 @@ closeModal,
                     icon: "success",
                     confirmButtonText: "OK",
                 })
-                navigate('/soli');
             }
         } catch (error) {
             console.error(error);
