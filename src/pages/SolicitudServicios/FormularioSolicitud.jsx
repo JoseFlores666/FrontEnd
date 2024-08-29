@@ -141,6 +141,8 @@ export const FormularioSolicitud = () => {
 
   useEffect(() => {
     if (editar && unasoli || duplicar && unasoli) {
+
+         console.log(unasoli)
       setFolioInterno(unasoli.folio || "");
       setFecha(
         unasoli.fecha ? new Date(unasoli.fecha).toISOString().slice(0, 10) : ""
