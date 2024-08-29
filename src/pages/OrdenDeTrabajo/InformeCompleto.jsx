@@ -78,6 +78,10 @@ export const InformeCompleto = () => {
             alert('El campo "Observaciones técnicas" está vacío.');
             return false;
         }
+        if (!personalDEP || personalDEP.trim() === "") {
+            alert('El campo "Nombre del Personal del DEP MSG" está vacío.');
+            return false;
+        }
 
         return true;
     };
@@ -89,12 +93,9 @@ export const InformeCompleto = () => {
         }
     };
 
-
-    const handleCloseModal = (event) => {
-        event.preventDefault();
-        setIsOpen(false);
+    const handleCloseModal = () => {
+        setIsOpen(!isOpen);
     };
-
 
     useEffect(() => {
         const traerdatos = async () => {
@@ -103,10 +104,8 @@ export const InformeCompleto = () => {
                 if (unaInfo?.informe?.solicitud?.personalDEPMSG) {
                     setPersonalDEP(unaInfo.informe.solicitud.personalDEPMSG);
                 }
-
                 await getFirmas();
                 await traerHistorialOrden();
-
                 llenadoFirmas()
                 setDatosCargados(true);
             } catch (error) {
@@ -131,7 +130,6 @@ export const InformeCompleto = () => {
           form.elements[index + 1].focus();
         }
       };
-    
 
     const RegistrarNombrePersonalDEPMSG = async () => {
         try {
@@ -301,6 +299,7 @@ export const InformeCompleto = () => {
                             diagnostico={hasSolicitud ? unaInfo.informe?.solicitud?.diagnostico : 'Diagnóstico técnico no disponible'}
                             personalDEP={personalDEP}
                             firmas={firmas.solicitud}
+                            closeModal={handleCloseModal}
                         />
                     </div>
                 )}

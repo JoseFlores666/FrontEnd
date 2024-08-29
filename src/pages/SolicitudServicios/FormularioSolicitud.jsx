@@ -1,8 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useSoli } from "../../context/SolicitudContext";
 import { useAuth } from "../../context/authContext";
-import { useForm } from "react-hook-form";
-import { registerSoliSchema } from '../../schemas/registerSoliPage'
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -67,6 +65,7 @@ export const FormularioSolicitud = () => {
     const newErrors = ValidacionSoli(fields, items);
     setErrors(newErrors);
 
+  
     if (Object.keys(newErrors).length === 0) {
       setIsOpen(true);
     } else {
@@ -80,6 +79,9 @@ export const FormularioSolicitud = () => {
     }
     setIsOpen(true);
   }
+  const toggleModal = () => {
+    setIsOpen(!isOpen); 
+  };
 
   const fetchProyecto = async () => {
     try {
@@ -292,7 +294,8 @@ export const FormularioSolicitud = () => {
   const datosSolicitud = () => {
 
     return {
-      id, user,
+      id, 
+      user,
       fecha,
       suministro,
       pc,
@@ -700,6 +703,7 @@ export const FormularioSolicitud = () => {
                   jefeInmediato={jefeInmediato}
                   dirrecion={dirrecion}
                   rectoría={rectoría}
+                  closeModal={toggleModal}  
                 />
               </div>
             )}

@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useSoli } from '../../context/SolicitudContext';
 
-export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares }) => {
+export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares,closeModal }) => {
     const navigate = useNavigate();
     const { traeApis_keys, api_Key } = useSoli();
     const [datosCargados, setDatosCargados] = useState(false);
@@ -201,6 +201,7 @@ export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares }) => {
 
     const handleCloseModal = () => {
         setIsOpen(false);
+        closeModal();
     };
 
     return (

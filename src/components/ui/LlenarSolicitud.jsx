@@ -16,7 +16,7 @@ export const LlenarSolicitud = ({
     proyecto,
     actividad,
 
-
+closeModal,
     items,  // Aquí recibes los items
 
     justificacion,
@@ -49,6 +49,8 @@ export const LlenarSolicitud = ({
 
     const handleCloseModal = () => {
         setIsOpen(false);
+        closeModal(); 
+
     };
 
     const [day, month, year] = (fecha || "").split("-").reverse();

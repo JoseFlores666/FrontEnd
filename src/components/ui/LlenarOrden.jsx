@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import PizZip from 'pizzip';
 import Docxtemplater from 'docxtemplater';
 import { saveAs } from 'file-saver';
-import { apiPDF } from '../../api/apiPDF'; // Asegúrate de la ruta correcta
+import { apiPDF } from '../../api/apiPDF'; 
 import imgWord from '../../img/imagenWord.png';
 import imgPDF from '../../img/imagenPDF.png';
 import { useSoli } from '../../context/SolicitudContext';
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 export const LlenarOrden = ({
     fecha,
@@ -23,6 +24,7 @@ export const LlenarOrden = ({
     items = [],
     diagnostico,
     personalDEP,
+    closeModal
 }) => {
     const [isOpen, setIsOpen] = useState(true);
     const [error, setError] = useState(null);
@@ -47,6 +49,7 @@ export const LlenarOrden = ({
 
     const handleCloseModal = () => {
         setIsOpen(false);
+        closeModal();
     };
 
     const fetchAndGenerateDoc = async () => {

@@ -11,6 +11,10 @@ export const Evidencias = () => {
   const [cargarDatos, setDatosCargados] = useState(false);
   const [solicitudInfo, setSolicitudInfo] = useState(null);
 
+  const handleCloseModal = () => {
+    setIsOpen(!isOpen);
+  };
+
   useEffect(() => {
     const iniciarDatos = async () => {
       await traerUnaInfo(id);
@@ -105,6 +109,7 @@ export const Evidencias = () => {
             solicitud={solicitudInfo ? solicitudInfo.informe?.folio : ''}
             descripcion={solicitudInfo ? solicitudInfo.informe?.descripcion : ''}
             imagenesPares={imagenesPares}
+            closeModal={handleCloseModal}
           />
         )}
       </form>
