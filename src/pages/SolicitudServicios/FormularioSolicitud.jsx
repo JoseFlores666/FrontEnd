@@ -156,7 +156,7 @@ export const FormularioSolicitud = () => {
           setActividad(primeraActividad.actividadRef);
           setMyActividad_(primeraActividad.nombreActividad || "");
 
-          setSelectedActividad({ id: primeraActividad.actividadRef, nombre: primeraActividad.nombreActividadPropio })
+          setSelectedActividad({ id: primeraActividad.actividadRef, nombre: primeraActividad.nombreActividad })
 
         }
       }
