@@ -67,7 +67,20 @@ export const FormularioSolicitud = () => {
 
   
     if (Object.keys(newErrors).length === 0) {
-      setIsOpen(true);
+      const res = await fetchProyecto();
+
+      // Muestra el Swal y espera a que el usuario presione "OK"
+      const result = await Swal.fire({
+        title: "Registro Exitoso",
+        text: res?.mensaje,
+        icon: "success",
+        confirmButtonText: "OK"
+      });
+
+      // Una vez que el usuario haya presionado "OK", muestra el modal
+      if (result.isConfirmed) {
+        setIsOpen(true);
+      }
     } else {
       Swal.fire({
         title: "Alerta!",
@@ -277,8 +290,19 @@ export const FormularioSolicitud = () => {
     const newErrors = ValidacionSoli(fields, items);
     setErrors(newErrors);
 
-    if (Object.keys(newErrors).length === 0) {
-      setIsOpen(true);
+ if (Object.keys(newErrors).length === 0) {
+      const res = guardarActualizacion()
+
+      const result = await Swal.fire({
+        title: "Registro Exitoso",
+        text: res?.mensaje,
+        icon: "success",
+        confirmButtonText: "OK"
+      });
+
+      if (result.isConfirmed) {
+        setIsOpen(true);
+      }
     } else {
       Swal.fire({
         title: "Alerta!",
