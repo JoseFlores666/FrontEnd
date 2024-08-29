@@ -133,6 +133,13 @@ export const LlenarOrden = ({
     };
 
     const generatePDFDocument = async () => {
+          Swal.fire({
+                    title: "Descarga Exitosa",
+                    text: "Archivo PDF generado con éxito",
+                    icon: "success",
+                    confirmButtonText: "OK",
+                });
+                navigate('/tecnico/orden');
         setError(null);
         try {
             if (api_Key.length > 0) {
