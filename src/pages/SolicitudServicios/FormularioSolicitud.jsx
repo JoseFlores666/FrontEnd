@@ -312,7 +312,6 @@ export const FormularioSolicitud = () => {
       });
       return;
     }
-    setIsOpen(true);
   };
 
   const datosSolicitud = () => {
