@@ -49,9 +49,9 @@ closeModal,
     }, [traeApis_keys, datosCargados, api_Key]);
 
     const handleCloseModal = () => {
+                        navigate('/soli')
         setIsOpen(false);
         closeModal(); 
-
     };
 
     const [day, month, year] = (fecha || "").split("-").reverse();
@@ -125,13 +125,14 @@ closeModal,
          
         setError(null);
         try {
-                navigate('/soli')
                 Swal.fire({
                 title: "Descarga Exitosa",
                 text: "Archivo PDF generado con éxito",
                 icon: "success",
                 confirmButtonText: "OK",
             }).then(async () => {
+                                    navigate('/soli')
+
                 if (api_Key.length > 0) {
                     const apiKey = api_Key[0].api_key;
                     const docxBlob = await fetchAndGenerateDoc();
