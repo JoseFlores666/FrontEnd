@@ -50,7 +50,6 @@ closeModal,
 
     const handleCloseModal = () => {
         setIsOpen(false);
-        navigate('/soli');
         closeModal(); 
 
     };
