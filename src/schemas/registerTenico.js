@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const registerTecnicoSchema = z.object({
-  fechaOrden: z.string().nonempty({ message: "La fecha es requerida" }),
+
   areasoli: z
     .string()
     .nonempty({ message: "El área solicitante es requerida" }),
