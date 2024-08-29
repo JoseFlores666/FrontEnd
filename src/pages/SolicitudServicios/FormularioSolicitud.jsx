@@ -59,7 +59,7 @@ export const FormularioSolicitud = () => {
   const { traeHistorialSoli, historialSoli, } = useSoli();
   const { user } = useAuth();
 
-  const guardarDatos = (e) => {
+  const guardarDatos = async (e) => {
     e.preventDefault();
     const fields = { fecha, suministro, pc, proyecto, actividad, justificacion };
     const newErrors = ValidacionSoli(fields, items);
@@ -285,7 +285,7 @@ export const FormularioSolicitud = () => {
     }, 3000);
   };
 
-  const actualizarDatos = () => {
+  const actualizarDatos = async () => {
     const fields = { fecha, suministro, pc, proyecto, actividad, justificacion };
     const newErrors = ValidacionSoli(fields, items);
     setErrors(newErrors);
