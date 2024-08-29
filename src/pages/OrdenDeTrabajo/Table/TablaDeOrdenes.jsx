@@ -41,6 +41,10 @@ export const TablaDeOrdenes = () => {
   const abrirModal = () => {
     setIsModalOpen2(true);
   };
+  
+const handleSelectAll = (e) => {
+  e.target.select();
+};
 
   const cerrarModal = () => {
     setIsModalOpen2(false);
@@ -565,6 +569,8 @@ export const TablaDeOrdenes = () => {
                               value={editedData[index]?.nombre || item.nombre}
                               onChange={(e) => handleChange(index, 'nombre', e.target.value)}
                               className="border border-gray-300 rounded p-1"
+                             onClick={handleSelectAll}
+
                             />
                           ) : (
                             item.nombre
