@@ -126,7 +126,7 @@ export const LlenarOrden = ({
                 icon: "success",
                 confirmButtonText: "OK",
             })
-            navigate('/soli');
+                 navigate('/tecnico/orden');
         } catch (error) {
             console.error(error);
         }
