@@ -112,7 +112,6 @@ export const FormularioSolicitud = () => {
       const res = crearmySoli(datosSolicitud);
 
       Swal.fire("Registro Exitoso", res.data?.mensaje, "success");
-      limpiarDatos();
 
       localStorage.setItem("datosSolicitud", JSON.stringify(datosSolicitud));
 
