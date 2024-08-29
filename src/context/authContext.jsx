@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { createContext, useContext, useState } from "react";
-import { loginRequest, registerRequest, verifyTokenRequest } from "../api/auth";
+import { loginRequest, registerRequest, ActualizaUsuario, getUsuarios, verifyTokenRequest } from "../api/auth";
 import Cookies from "js-cookie";
 
 const AuthContext = createContext();
@@ -13,6 +13,7 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [usuarios, setUsuarios] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,8 +33,10 @@ export const AuthProvider = ({ children }) => {
       const res = await registerRequest(user);
       if (res.status === 200) {
 
+
         //coloca verdadero si ya esta autenticado(si ya se resgitro)
         setIsAuthenticated(true);
+        return res;
       }
     } catch (error) {
       console.log(error.response.data);
@@ -48,8 +51,29 @@ export const AuthProvider = ({ children }) => {
 
       //coloca verdadero si ya esta autenticado(si ya inicio sesion)
       setIsAuthenticated(true);
+      return res;
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data);
+      setErrors(error.response.data.message);
+    }
+  };
+  const traerUsuarios = async () => {
+    try {
+      const res = await getUsuarios();
+      setUsuarios(res.data)
+    } catch (error) {
+      console.log(error.response.data.mensaje);
+      setErrors(error.response.data.mensaje);
+    }
+  };
+  const ActualizarMyUsuario = async (id, user) => {
+    try {
+      const res = await ActualizaUsuario(id, user);
+      setErrors([]);
+      return res;
+    } catch (error) {
+      console.log(error.response.data.mensaje);
+      setErrors(error.response.data.mensaje);
     }
   };
 
@@ -95,6 +119,9 @@ export const AuthProvider = ({ children }) => {
         user,
         signup,
         signin,
+        ActualizarMyUsuario,
+        traerUsuarios,
+        usuarios,
         logout,
         isAuthenticated,
         errors,
