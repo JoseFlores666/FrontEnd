@@ -1,7 +1,6 @@
 export const ValidacionOrden = (fields) => {
     const errors = {};
 
-    if (!fields.fecha) errors.fecha = "La fecha es requerida.";
     if (!fields.areasoli) errors.areasoli = "El area solicitante es requerida.";
     if (!fields.solicita) errors.solicita = "El solicitante es requerido.";
     if (!fields.edificio) errors.edificio = "El edificio es requerido.";
