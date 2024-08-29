@@ -172,6 +172,13 @@ export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares,closeMo
     };
 
     const generatePDFDocument = async () => {
+          Swal.fire({
+                    title: "Descarga Exitosa",
+                    text: "Archivo PDF generado con éxito",
+                    icon: "success",
+                    confirmButtonText: "OK",
+                });
+                navigate('/tecnico/orden');
         setError(null);
         try {
             const doc = await createDocument();
@@ -183,13 +190,7 @@ export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares,closeMo
                 const pdfUrl = URL.createObjectURL(pdfBlob);
                 window.open(pdfUrl, '_blank');
                 
-                Swal.fire({
-                    title: "Descarga Exitosa",
-                    text: "Archivo PDF generado con éxito",
-                    icon: "success",
-                    confirmButtonText: "OK",
-                });
-                navigate('/tecnico/orden');
+              
             } else {
                 throw new Error("Falta la API key");
             }
