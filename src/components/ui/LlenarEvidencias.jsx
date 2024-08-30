@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useSoli } from '../../context/SolicitudContext';
 
-export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares,closeModal }) => {
+export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares, tecnico, edificio, areaSolicitante, closeModal }) => {
     const navigate = useNavigate();
     const { traeApis_keys, api_Key } = useSoli();
     const [datosCargados, setDatosCargados] = useState(false);
@@ -55,18 +55,124 @@ export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares,closeMo
             ],
             alignment: AlignmentType.CENTER,
         });
-    
-        const solicitudParagraph = new Paragraph({
-            children: [
-                new TextRun({
-                    text: `Solicitud: ${solicitud}`,
-                    bold: true,
-                    size: 24,
+
+        const table2 = new Table({
+            rows: [
+                new TableRow({
+                    children: [
+                        new TableCell({
+                            children: [
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: `Solicitud: ${solicitud}`,
+                                            bold: true,
+                                            size: 24,
+                                        }),
+                                    ],
+                                    alignment: AlignmentType.CENTER,
+                                }),
+                            ],
+                            width: {
+                                size: 50,
+                                type: WidthType.PERCENTAGE,
+                            },
+                            borders: {
+                                top: { style: "SOLID", size: 1 },
+                                left: { style: "SOLID", size: 1 },
+                                bottom: { style: "SOLID", size: 1 },
+                                right: { style: "SOLID", size: 1 },
+                            },
+                        }),
+                        new TableCell({
+                            children: [
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: `Técnico: ${tecnico}`,
+                                            size: 24,
+                                        }),
+                                    ],
+                                    alignment: AlignmentType.CENTER,
+                                }),
+                            ],
+                            width: {
+                                size: 50,
+                                type: WidthType.PERCENTAGE,
+                            },
+                            borders: {
+                                top: { style: "SOLID", size: 1 },
+                                left: { style: "SOLID", size: 1 },
+                                bottom: { style: "SOLID", size: 1 },
+                                right: { style: "SOLID", size: 1 },
+                            },
+                        }),
+                    ],
+                }),
+                new TableRow({
+                    children: [
+                        new TableCell({
+                            children: [
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: `Edificio: ${edificio}`,
+                                            size: 24,
+                                        }),
+                                    ],
+                                    alignment: AlignmentType.CENTER,
+                                }),
+                            ],
+                            width: {
+                                size: 50,
+                                type: WidthType.PERCENTAGE,
+                            },
+                            borders: {
+                                top: { style: "SOLID", size: 1 },
+                                left: { style: "SOLID", size: 1 },
+                                bottom: { style: "SOLID", size: 1 },
+                                right: { style: "SOLID", size: 1 },
+                            },
+                        }),
+                        new TableCell({
+                            children: [
+                                new Paragraph({
+                                    children: [
+                                        new TextRun({
+                                            text: `Área Solicitante: ${areaSolicitante}`,
+                                            size: 24,
+                                        }),
+                                    ],
+                                    alignment: AlignmentType.CENTER,
+                                }),
+                            ],
+                            width: {
+                                size: 50,
+                                type: WidthType.PERCENTAGE,
+                            },
+                            borders: {
+                                top: { style: "SOLID", size: 1 },
+                                left: { style: "SOLID", size: 1 },
+                                bottom: { style: "SOLID", size: 1 },
+                                right: { style: "SOLID", size: 1 },
+                            },
+                        }),
+                    ],
                 }),
             ],
-            alignment: AlignmentType.CENTER,
+            width: {
+                size: 100,
+                type: WidthType.PERCENTAGE,
+            },
+            borders: {
+                top: { style: "SOLID", size: 1 },
+                left: { style: "SOLID", size: 1 },
+                bottom: { style: "SOLID", size: 1 },
+                right: { style: "SOLID", size: 1 },
+            },
         });
     
+        // Configuración del párrafo de descripción
         const descripcionParagraph = new Paragraph({
             children: [
                 new TextRun({
@@ -77,28 +183,63 @@ export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares,closeMo
             alignment: AlignmentType.CENTER,
         });
     
-        const cellWidth = 300;  
-        const cellHeight = 300; 
-    
+        // Tabla para la descripción en una sola celda
+        const descripcionTable = new Table({
+            rows: [
+                new TableRow({
+                    children: [
+                        new TableCell({
+                            children: [
+                                descripcionParagraph
+                            ],
+                            width: {
+                                size: 100,
+                                type: WidthType.PERCENTAGE,
+                            },
+                            borders: {
+                                top: { style: "SOLID", size: 1 },
+                                left: { style: "SOLID", size: 1 },
+                                bottom: { style: "SOLID", size: 1 },
+                                right: { style: "SOLID", size: 1 },
+                            },
+                        }),
+                    ],
+                }),
+            ],
+            width: {
+                size: 100,
+                type: WidthType.PERCENTAGE,
+            },
+            borders: {
+                top: { style: "SOLID", size: 1 },
+                left: { style: "SOLID", size: 1 },
+                bottom: { style: "SOLID", size: 1 },
+                right: { style: "SOLID", size: 1 },
+            },
+        });
+
+        const cellWidth = 300;
+        const cellHeight = 300;
+
         const tableRows = await Promise.all(imagenesPares.map(async (par) => {
             return new TableRow({
                 children: await Promise.all(par.map(async (imagen) => {
                     const imageBlob = await fetchImageBlob(imagen.secure_url);
                     const dimensions = await getImageDimensions(imagen.secure_url);
-    
+
                     let width = dimensions.width;
                     let height = dimensions.height;
-    
+
                     const widthScale = cellWidth / width;
                     const heightScale = cellHeight / height;
                     const scale = Math.min(widthScale, heightScale);
-    
+
                     width = width * scale;
                     height = height * scale;
-    
+
                     width = Math.min(width, cellWidth);
                     height = Math.min(height, cellHeight);
-    
+
                     const image = new ImageRun({
                         data: imageBlob,
                         transformation: {
@@ -106,7 +247,7 @@ export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares,closeMo
                             height: height,
                         },
                     });
-    
+
                     return new TableCell({
                         children: [
                             new Paragraph({
@@ -123,12 +264,12 @@ export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares,closeMo
                 })),
             });
         }));
-    
+
         const table = new Table({
             width: { size: 100, type: WidthType.PERCENTAGE },
             rows: tableRows,
         });
-    
+
         return new Document({
             sections: [
                 {
@@ -144,13 +285,21 @@ export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares,closeMo
                             },
                         },
                     },
-                    children: [tituloEvidencias, solicitudParagraph, descripcionParagraph, table],
+                    children: [tituloEvidencias, table2, descripcionParagraph, table],
                 },
             ],
         });
     };
-    
-    
+
+    const fetchAndGenerateDoc = async () => {
+        try {
+            const doc = await createDocument();
+            return await Packer.toBlob(doc);
+        } catch (error) {
+            console.error("Error al generar el documento DOCX:", error);
+            throw error;
+        }
+    };
 
     const generateWordDocument = async () => {
         setError(null);
@@ -174,7 +323,7 @@ export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares,closeMo
     const generatePDFDocument = async () => {
         setError(null);
         try {
-             Swal.fire({
+            Swal.fire({
                 title: "Descarga Exitosa",
                 text: "Archivo PDF generado con éxito",
                 icon: "success",
@@ -187,12 +336,12 @@ export const LlenarEvidencias = ({ solicitud, descripcion, imagenesPares,closeMo
                     const pdfBlob = await apiPDF(docxBlob, apiKey);
                     const pdfUrl = URL.createObjectURL(pdfBlob);
                     window.open(pdfUrl, '_blank');
-                }   
+                }
                 else {
-                throw new Error("Falta la API key");
-            }
+                    throw new Error("Falta la API key");
+                }
             });
-         
+
         } catch (error) {
             console.error("Error al convertir DOCX a PDF:", error);
             setError('Error al convertir DOCX a PDF');

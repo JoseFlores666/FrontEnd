@@ -24,6 +24,7 @@ export const LlenarOrden = ({
     items = [],
     diagnostico,
     personalDEP,
+    firmas,
     closeModal
 }) => {
     const [isOpen, setIsOpen] = useState(true);
@@ -90,7 +91,7 @@ export const LlenarOrden = ({
                 n: tipodeSolicitud === 'Normal' ? 'X' : ' ',
                 u: tipodeSolicitud === 'Normal' ? ' ' : 'X',
                 personal: personalDEP || "",
-                solicitud: solicita || "",
+                solicitud: firmas || "",
                 tecnico: tecnicoEncargado || "",
             };
 

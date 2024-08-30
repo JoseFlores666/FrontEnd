@@ -10,6 +10,7 @@ export const Evidencias = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [cargarDatos, setDatosCargados] = useState(false);
   const [solicitudInfo, setSolicitudInfo] = useState(null);
+  const hasInforme = unaInfo && unaInfo.informe;
 
   const handleCloseModal = () => {
     setIsOpen(!isOpen);
@@ -63,15 +64,35 @@ export const Evidencias = () => {
       <form onSubmit={(e) => { e.preventDefault(); enviarImagenes(); }} onKeyDown={handleKeyDown} encType="multipart/form-data">
         <div className="bg-white p-6 rounded-md shadow-md">
           <Title showBackButton={true}>Evidencias</Title>
-          <table className="w-full caption-bottom text-sm border border-gray-400 bg-white rounded-b-lg mb-6">
+          <table className="w-full caption-bottom text-sm  bg-white rounded-b-lg mb-6">
             <thead>
-              <tr className="border-b border-gray-400">
-                <th colSpan={CELDAS_POR_FILA} className="h-12 text-center px-4 border-b border-gray-400 align-middle font-medium text-black">
-                  Solicitud: {solicitudInfo ? solicitudInfo.informe?.folio : 'Cargando...'}<br />
-                  Descripción:<br /> {solicitudInfo ? solicitudInfo.informe?.descripcion : 'Cargando...'}
+              <tr className="text-center col-span-2">
+                <th className=" text-center border-none  font-medium text-black">
+                  <strong>Solicitud: </strong>{solicitudInfo ? solicitudInfo.informe?.folio : 'Cargando...'}
+                </th>
+                <th className=" text-center border-none align-middle font-medium text-black">
+                  <strong>Tecnico Encargado: </strong>{hasInforme ? unaInfo.informe?.solicitud?.tecnicos?.nombreCompleto : 'Técnico no disponible'}
+                </th>
+              </tr>
+
+              <tr>
+                <th className=" text-center border-none align-middle font-medium text-black">
+                  <strong>Area Solicitante: </strong>{solicitudInfo ? solicitudInfo.informe?.Solicita.areaSolicitante : 'Cargando...'}
+                </th>
+                <th className=" text-center border-none align-middle font-medium text-black">
+                 <strong>Edificio: </strong>{solicitudInfo ? solicitudInfo.informe?.Solicita.edificio : 'Cargando...'}
+                </th>
+              </tr>
+              <tr>
+
+              </tr>
+              <tr className="">
+                <th colSpan={CELDAS_POR_FILA} className=" text-center  border-none align-middle font-medium text-black">
+                  <strong>Descripción: </strong>{solicitudInfo ? solicitudInfo.informe?.descripcion : 'Cargando...'}
                 </th>
               </tr>
             </thead>
+
             <tbody>
               {imagenesPares.length > 0 ? (
                 imagenesPares.map((par, index) => (
@@ -109,6 +130,9 @@ export const Evidencias = () => {
             solicitud={solicitudInfo ? solicitudInfo.informe?.folio : ''}
             descripcion={solicitudInfo ? solicitudInfo.informe?.descripcion : ''}
             imagenesPares={imagenesPares}
+            tecnico={hasInforme ? unaInfo.informe?.solicitud?.tecnicos?.nombreCompleto : 'Técnico no disponible'}
+            areaSolicitante={solicitudInfo ? solicitudInfo.informe?.Solicita.areaSolicitante : ''}
+            edificio={solicitudInfo ? solicitudInfo.informe?.Solicita.edificio : ''}
             closeModal={handleCloseModal}
           />
         )}
